@@ -1,0 +1,35 @@
+{
+  "baselineSignature": 4164.222837820736,
+  "tasks": {
+    "T1": {
+      "title": "rename two control buttons",
+      "desc": "Rename two control buttons in the control panel: the button currently labelled `Reset` should read `Restart`, and the button labelled `Pause` should read `Play / Pause`. Do not change their behavior.",
+      "accept": "The control panel shows buttons labelled `Restart` and `Play / Pause`. The project must pass `npm run typecheck`. No other behavior changes.",
+      "expected": ["src/ui/Controls.ts"]
+    },
+    "T2": {
+      "title": "change default gravity + clamp the slider",
+      "desc": "Two changes to gravity: (1) change the default gravity value from 980 to 500; (2) make the Gravity slider clamp the value it applies into the range [0, 2000].",
+      "accept": "On load, settings.gravity is 500. The Gravity slider clamps its applied value to [0, 2000]. The project must pass `npm run typecheck`.",
+      "expected": ["src/config.ts", "src/ui/Controls.ts"]
+    },
+    "T3": {
+      "title": "add air drag",
+      "desc": "Add air drag (air resistance). Requirements: (1) add a numeric field `drag` to the live settings in src/state/settings.ts (default 0, intended range 0..2); (2) implement a drag acceleration that opposes a body's velocity (contribution to acceleration = -settings.drag * body.vel) and include it in the per-step total acceleration; (3) add a slider labelled `Drag` (min 0, max 2, step 0.05) to the control panel that updates settings.drag.",
+      "accept": "settings.drag exists (default 0). With gravity 0 and drag > 0, bodies lose kinetic energy faster than with drag = 0. A Drag slider is present. The project must pass `npm run typecheck`.",
+      "expected": ["src/state/settings.ts", "src/physics/forces.ts", "src/ui/Controls.ts"]
+    },
+    "T4": {
+      "title": "make Vector2 immutable",
+      "desc": "Refactor the Vector2 class to be immutable: the methods add, sub, scale, and normalize must each return a NEW Vector2 and must NOT mutate `this`. Update every call site across the codebase so that the simulation's behavior is exactly unchanged. (clone, set, dot, length, lengthSq may stay.)",
+      "accept": "Vector2.add/sub/scale/normalize return new instances and do not mutate this. The simulation behaves identically to before (same motion). The project must pass `npm run typecheck`.",
+      "expected": ["src/math/Vector2.ts", "src/physics/integrator.ts", "src/physics/collisions.ts", "src/physics/forces.ts"]
+    },
+    "T5": {
+      "title": "make the simulation conserve energy",
+      "desc": "Make the simulation conserve energy. A moving ball should keep its kinetic energy over time: collisions should be perfectly elastic and nothing should damp or add friction to motion. Adjust the relevant constants/parameters wherever they live in the code.",
+      "accept": "With gravity 0, total kinetic energy stays essentially constant over thousands of steps (no decay). The project must pass `npm run typecheck`.",
+      "expected": ["src/config.ts", "src/physics/integrator.ts", "src/physics/collisions.ts"]
+    }
+  }
+}

@@ -1,0 +1,123 @@
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="akrs-system" name="AKRS System (reconstructed)">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2060" pageHeight="1260" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===================== ZONE BACKGROUNDS ===================== -->
+        <mxCell id="z1" value="LEADER  —  Workflow Generation (plan once)  [Appendix: generation algorithm]" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontStyle=1;fontSize=14;opacity=40;" vertex="1" parent="1">
+          <mxGeometry x="20" y="80" width="1560" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="z2" value="RUNTIME NAVIGATION  —  one route, never random  [Constitution: Navigation]" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;fontStyle=1;fontSize=14;opacity=40;" vertex="1" parent="1">
+          <mxGeometry x="20" y="330" width="1560" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="z3" value="WORKER  —  Execution (execute many)  [Execution Contract]" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;verticalAlign=top;fontStyle=1;fontSize=14;opacity=40;" vertex="1" parent="1">
+          <mxGeometry x="20" y="540" width="1560" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="zg" value="OPEN GAPS / MYSTERIES&#10;(red = NOT resolved by the 3 docs)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0f0;strokeColor=#b85450;verticalAlign=top;fontStyle=1;fontSize=13;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1620" y="80" width="400" height="930" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== LEADER PIPELINE (snake) ===================== -->
+        <mxCell id="a1" value="Collect Sources&#10;(reqs, docs, repo, dev)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="40" y="120" width="160" height="55" as="geometry" /></mxCell>
+        <mxCell id="a2" value="Analyze Project" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="290" y="120" width="160" height="55" as="geometry" /></mxCell>
+        <mxCell id="a3" value="Identify Business&#10;Capabilities" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="540" y="120" width="160" height="55" as="geometry" /></mxCell>
+        <mxCell id="a4" value="Generate Plans" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="790" y="120" width="160" height="55" as="geometry" /></mxCell>
+        <mxCell id="a5" value="Generate Phases" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="1040" y="120" width="160" height="55" as="geometry" /></mxCell>
+        <mxCell id="a6" value="Generate Tasks" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="1290" y="120" width="160" height="55" as="geometry" /></mxCell>
+
+        <mxCell id="a7" value="Extract Shared&#10;Knowledge" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="40" y="215" width="160" height="55" as="geometry" /></mxCell>
+        <mxCell id="a8" value="Generate Memory&#10;(reusable index)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="290" y="215" width="160" height="55" as="geometry" /></mxCell>
+        <mxCell id="a9" value="Generate Router&#10;(routes only)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="540" y="215" width="160" height="55" as="geometry" /></mxCell>
+        <mxCell id="a10" value="Generate Roads&#10;(1 Road per Task)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="790" y="215" width="160" height="55" as="geometry" /></mxCell>
+        <mxCell id="a11" value="Validate Workflow&#10;(checklist)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="1040" y="215" width="160" height="55" as="geometry" /></mxCell>
+        <mxCell id="a12" value="Workflow Ready" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="1290" y="215" width="160" height="55" as="geometry" /></mxCell>
+
+        <!-- leader flow edges -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a1" target="a2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a2" target="a3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a3" target="a4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a4" target="a5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a5" target="a6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="a6" target="a7"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a7" target="a8"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a8" target="a9"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a9" target="a10"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a10" target="a11"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a11" target="a12"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- ===================== RUNTIME NAVIGATION ===================== -->
+        <mxCell id="b1" value="Prompt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="40" y="395" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="b2" value="Mode Selection&#10;(Mode 0–4)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="280" y="390" width="180" height="70" as="geometry" /></mxCell>
+        <mxCell id="b3" value="Router&#10;&quot;Where next?&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="540" y="395" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="b4" value="Memory&#10;&quot;Which knowledge?&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="790" y="395" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="b5" value="Road&#10;&quot;Exactly what to read?&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="1040" y="395" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="b6" value="Task&#10;&quot;Exactly what to build?&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="1290" y="395" width="160" height="60" as="geometry" /></mxCell>
+
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="b1" target="b2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="b2" target="b3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="b3" target="b4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="b4" target="b5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e16" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="b5" target="b6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e17" value="Mode 0 fast path&#10;(skip routing)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;strokeColor=#82b366;" edge="1" parent="1" source="b2" target="b4"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- Leader PRODUCES runtime artifacts (dashed blue) -->
+        <mxCell id="p1" value="produces" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;strokeColor=#6c8ebf;endArrow=open;" edge="1" parent="1" source="a8" target="b4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="p2" value="produces" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;strokeColor=#6c8ebf;endArrow=open;" edge="1" parent="1" source="a9" target="b3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="p3" value="produces" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;strokeColor=#6c8ebf;endArrow=open;" edge="1" parent="1" source="a10" target="b5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="p4" value="produces" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;strokeColor=#6c8ebf;endArrow=open;" edge="1" parent="1" source="a6" target="b6"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- ===================== WORKER EXECUTION ===================== -->
+        <mxCell id="c1" value="Blind Assumption Check:&#10;&quot;Can this be done with&#10;ONLY the current Road?&quot;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1"><mxGeometry x="290" y="600" width="200" height="100" as="geometry" /></mxCell>
+        <mxCell id="c2" value="Execute&#10;(atomic, in-scope,&#10;one change at a time)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1"><mxGeometry x="560" y="615" width="170" height="70" as="geometry" /></mxCell>
+        <mxCell id="c3" value="Validate work&#10;(before expanding)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1"><mxGeometry x="800" y="615" width="160" height="70" as="geometry" /></mxCell>
+        <mxCell id="c4" value="Complete&#10;(scope clean,&#10;no open assumptions)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="1030" y="615" width="160" height="70" as="geometry" /></mxCell>
+        <mxCell id="c5" value="Scope Expansion:&#10;Router → Memory → back to Road&#10;(never guess)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1"><mxGeometry x="280" y="740" width="230" height="70" as="geometry" /></mxCell>
+        <mxCell id="c6" value="Ask Developer&#10;(knowledge Unknown)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1"><mxGeometry x="560" y="740" width="170" height="70" as="geometry" /></mxCell>
+
+        <mxCell id="e18" value="hand-off" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b6" target="c1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e19" value="YES" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="c1" target="c2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e20" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="c2" target="c3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e21" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="c3" target="c4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e22" value="NO" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c1" target="c5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e23" value="re-route" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0;exitY=0.5;entryX=0;entryY=1;" edge="1" parent="1" source="c5" target="b3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e24" value="Unknown" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;" edge="1" parent="1" source="c2" target="c6"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- ===================== CODE ===================== -->
+        <mxCell id="code" value="PROJECT CODE / REPOSITORY&#10;(Roads point here · Worker edits here · Worker must NOT scan it freely)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1"><mxGeometry x="980" y="730" width="300" height="90" as="geometry" /></mxCell>
+        <mxCell id="e25" value="reads (only Road's set)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;dashed=1;" edge="1" parent="1" source="b5" target="code"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e26" value="edits" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="c2" target="code"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- ===================== GAP CARDS (red) ===================== -->
+        <mxCell id="gA" value="GAP A — No file FORMAT / SCHEMA&#10;Router, Memory, Road, Task have duties but no defined shape. Breaks the &quot;deterministic generation&quot; the Appendix demands." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;" vertex="1" parent="1"><mxGeometry x="1640" y="110" width="360" height="80" as="geometry" /></mxCell>
+        <mxCell id="gB" value="GAP B — No prompt → MODE algorithm&#10;Modes 0–4 are described by intent; nothing maps a prompt to a mode, yet the mode decides the whole path." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;" vertex="1" parent="1"><mxGeometry x="1640" y="200" width="360" height="80" as="geometry" /></mxCell>
+        <mxCell id="gC" value="GAP C — Router can't hold its own logic&#10;&quot;Routes only, no explanation&quot; — but choosing a route for a novel prompt IS logic. The intelligence is exiled from the layer named for it." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;" vertex="1" parent="1"><mxGeometry x="1640" y="290" width="360" height="80" as="geometry" /></mxCell>
+        <mxCell id="gG" value="GAP G — One-owner / no-duplication&#10;Architectural heart, but &quot;concept&quot; is undefined and semantic dedup is unenforceable without tooling." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;" vertex="1" parent="1"><mxGeometry x="1640" y="380" width="360" height="80" as="geometry" /></mxCell>
+        <mxCell id="gE" value="GAP E — No Memory/Road ↔ CODE sync&#10;Hand-built indexes rot the moment code moves. &quot;Roads become unreliable&quot; is listed as a FAILURE, with no sync mechanism (only &quot;Later&quot;)." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;" vertex="1" parent="1"><mxGeometry x="1640" y="470" width="360" height="90" as="geometry" /></mxCell>
+        <mxCell id="gD" value="GAP D — Check once vs. re-route anytime&#10;Constitution: ask ONCE, no recursion. Execution Contract: re-route WHENEVER the Road is insufficient. Unreconciled — and insufficiency is usually found mid-run." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;" vertex="1" parent="1"><mxGeometry x="1640" y="570" width="360" height="90" as="geometry" /></mxCell>
+        <mxCell id="gH" value="GAP H — Leader ↔ Worker transport&#10;Roles exist; the hand-off, the completion signal, and the escalation channel back to the Leader are undefined." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;" vertex="1" parent="1"><mxGeometry x="1640" y="670" width="360" height="80" as="geometry" /></mxCell>
+        <mxCell id="gF" value="GAP F — &quot;Validate&quot; undefined&#10;Both Leader (Validate Workflow) and Worker (validate work) end in a step with no definition of WHAT or WHO." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;" vertex="1" parent="1"><mxGeometry x="1640" y="760" width="360" height="80" as="geometry" /></mxCell>
+        <mxCell id="gI" value="GAP I — Task size / boundary subjective&#10;&quot;Small&quot;, &quot;executable without redesign&quot; — no metric. Where one Task ends is Leader taste, undermining determinism." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;" vertex="1" parent="1"><mxGeometry x="1640" y="850" width="360" height="80" as="geometry" /></mxCell>
+
+        <!-- gap link edges (dashed red) -->
+        <mxCell id="lgA" style="html=1;dashed=1;strokeColor=#b85450;endArrow=open;exitX=0;exitY=0.5;" edge="1" parent="1" source="gA" target="a9"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="lgB" style="html=1;dashed=1;strokeColor=#b85450;endArrow=open;exitX=0;exitY=0.5;" edge="1" parent="1" source="gB" target="b2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="lgC" style="html=1;dashed=1;strokeColor=#b85450;endArrow=open;exitX=0;exitY=0.5;" edge="1" parent="1" source="gC" target="b3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="lgG" style="html=1;dashed=1;strokeColor=#b85450;endArrow=open;exitX=0;exitY=0.5;" edge="1" parent="1" source="gG" target="b4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="lgE" style="html=1;dashed=1;strokeColor=#b85450;endArrow=open;exitX=0;exitY=0.5;" edge="1" parent="1" source="gE" target="code"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="lgD" style="html=1;dashed=1;strokeColor=#b85450;endArrow=open;exitX=0;exitY=0.5;" edge="1" parent="1" source="gD" target="c1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="lgH" style="html=1;dashed=1;strokeColor=#b85450;endArrow=open;exitX=0;exitY=0.5;" edge="1" parent="1" source="gH" target="c5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="lgF" style="html=1;dashed=1;strokeColor=#b85450;endArrow=open;exitX=0;exitY=0.5;" edge="1" parent="1" source="gF" target="c3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="lgI" style="html=1;dashed=1;strokeColor=#b85450;endArrow=open;exitX=0;exitY=0.5;" edge="1" parent="1" source="gI" target="a6"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- ===================== LEGENDS ===================== -->
+        <mxCell id="L1" value="EXECUTION MODES&#10;0 — Developer Fast Path (skip routing)&#10;1 — Quick small isolated change&#10;2 — Normal: existing Task + Road&#10;3 — Planning: new Tasks + Roads&#10;4 — Architecture: cross-plan, Leader only" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="40" y="1030" width="360" height="160" as="geometry" /></mxCell>
+        <mxCell id="L2" value="KNOWLEDGE PRIORITY (conflict → highest wins)&#10;Customer requirements&#10;› Developer clarification&#10;› Architecture docs&#10;› Existing workflow&#10;› Repository&#10;› Generated assumptions (lowest)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="430" y="1030" width="360" height="160" as="geometry" /></mxCell>
+        <mxCell id="L3" value="EACH LAYER = ONE QUESTION&#10;Router → Where next?&#10;Memory → Which knowledge?&#10;Road → Exactly what to read?&#10;Task → Exactly what to build?" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="820" y="1030" width="360" height="160" as="geometry" /></mxCell>
+        <mxCell id="L4" value="v1 REALITY (Constitution: &quot;Today: Markdown&quot;)&#10;The system is a FILE CONVENTION + PROMPTS.&#10;Every &quot;never&quot; (don't scan, stay in scope, no&#10;duplication, validate) is HONOR-SYSTEM until&#10;the &quot;Later&quot; tooling — CLI → validation → MCP." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="1210" y="1030" width="360" height="160" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

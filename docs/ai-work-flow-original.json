@@ -1,0 +1,465 @@
+{
+  "version": "30.2.5",
+  "pages": [
+    {
+      "id": "js2RKsCbxEL-6pPoeDXL",
+      "name": "Page-1",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Agents.md \nthe key file  for all \nAgents",
+          "html": "<div>Agents.md&nbsp;</div><div>the key file&nbsp; for all&nbsp;</div><div>Agents&nbsp;</div>"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-6",
+          "type": "edge",
+          "parent": "1"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-7",
+          "type": "node",
+          "parent": "1",
+          "label": "Globale memory.md\nAll agents-have access",
+          "html": "<div>Globale memory.md</div><div>All agents-have access</div>"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "X4Qz5CiJPdpqdncE_HxA-1"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-9",
+          "type": "node",
+          "parent": "1",
+          "label": "leader Agent (GPT5.5 or .... )"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-10",
+          "type": "node",
+          "parent": "1",
+          "label": "Key featuer.md\nthis file has micanizem update,add,delete feauter",
+          "html": "<div>Key featuer.md</div><div>this file has micanizem update,add,delete feauter</div>"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-12",
+          "type": "edge",
+          "parent": "1",
+          "source": "X4Qz5CiJPdpqdncE_HxA-1",
+          "target": "X4Qz5CiJPdpqdncE_HxA-10"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-13",
+          "type": "node",
+          "parent": "1",
+          "label": "ignore.md files \nput the folders and files that should not scan",
+          "html": "<div>ignore.md files&nbsp;</div><div>put the folders and files that should not scan&nbsp;</div>"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-14",
+          "type": "edge",
+          "parent": "1",
+          "source": "X4Qz5CiJPdpqdncE_HxA-1",
+          "target": "X4Qz5CiJPdpqdncE_HxA-13"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-15",
+          "type": "edge",
+          "parent": "1",
+          "source": "X4Qz5CiJPdpqdncE_HxA-1",
+          "target": "X4Qz5CiJPdpqdncE_HxA-16"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-16",
+          "type": "node",
+          "parent": "1",
+          "label": "Router.md file \nthis file for all agents ,\nhe respons to dir-> agent-> correct featuer that he has to read and correct memory file and correct md file to scan \n\nthis file route the agents to the phases that must read it , he just redirect him \nuser ask agent ex task -> agent retch this Router file -> directeted him to exact files and phases that he hase to read",
+          "html": "<div>Router.md file&nbsp;</div><div>this file for all agents ,</div><div>he respons to dir-&gt; agent-&gt; correct featuer that he has to read and correct memory file and correct md file to scan&nbsp;</div><div><br></div><div>this file route the agents to the phases that must read it , he just redirect him&nbsp;</div><div>user ask agent ex task -&gt; agent retch this Router file -&gt; directeted him to exact files and phases that he hase to read&nbsp;</div>"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-17",
+          "type": "node",
+          "parent": "1",
+          "label": "doc foleder the files form customer , the sorce of true sorce of the plane of the project should readed just by the planed agent , and developer , and should sacned just when developer ask for&nbsp;"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-19",
+          "type": "edge",
+          "parent": "1",
+          "source": "X4Qz5CiJPdpqdncE_HxA-9",
+          "target": "X4Qz5CiJPdpqdncE_HxA-17"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-20",
+          "type": "node",
+          "parent": "1",
+          "label": "Ui stractuer.md fiel \nexplane the locate and straucter for just the UI of the project , if user need to change just the button shape so Agents scan just this file",
+          "html": "<div>Ui stractuer.md fiel&nbsp;</div><div>explane the locate and straucter for just the UI of the project , if user need to change just the button shape so Agents scan just this file&nbsp;</div>"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-21",
+          "type": "node",
+          "parent": "1",
+          "label": "logic srtrucer file \nthis file scanded whe we need to add new featuer or chnage logic \nmust be brife",
+          "html": "<div>logic srtrucer file&nbsp;</div><div>this file scanded whe we need to add new featuer or chnage logic&nbsp;</div><div>must be brife&nbsp;</div>"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-22",
+          "type": "edge",
+          "parent": "1",
+          "target": "X4Qz5CiJPdpqdncE_HxA-20"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-24",
+          "type": "edge",
+          "parent": "1",
+          "target": "X4Qz5CiJPdpqdncE_HxA-21"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-25",
+          "type": "node",
+          "parent": "1",
+          "label": "memory.json file or md with section named Agnet can access just section that he need this file has explane flow conection between files and a short reusabel compoent explane for exampel&nbsp;"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-26",
+          "type": "edge",
+          "parent": "1",
+          "target": "X4Qz5CiJPdpqdncE_HxA-25"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-27",
+          "type": "node",
+          "parent": "1",
+          "label": "logic.md or jsn file memory \njust for the logic like explan the stracter if Agnet need it . \nfile have sections aganet should not fully read it",
+          "html": "<div>logic.md or jsn file memory&nbsp;</div><div>just for the logic like explan the stracter if Agnet need it .&nbsp;</div><div>file have sections aganet should not fully read it&nbsp;</div><div><br></div>"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-28",
+          "type": "node",
+          "parent": "1",
+          "label": "this bothe files have same&nbsp; perpos for deffrent files&nbsp;"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-30",
+          "type": "edge",
+          "parent": "1",
+          "target": "X4Qz5CiJPdpqdncE_HxA-27"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-31",
+          "type": "node",
+          "parent": "1",
+          "label": "plane folder \nhas all the plans in the project as a folders , and a meory file to descript just if some plane coeect \nwith the other plan \nand has the ERD and other signifecate files if needed",
+          "html": "<div>plane folder&nbsp;</div><div>has all the plans in the project as a folders , and a meory file to descript just if some plane coeect&nbsp;</div><div>with the other plan&nbsp;</div><div>and has the ERD and other signifecate files if needed&nbsp;</div>"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-36",
+          "type": "node",
+          "parent": "1",
+          "label": "plane (N) folder&nbsp;"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-37",
+          "type": "edge",
+          "parent": "1"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-38",
+          "type": "node",
+          "parent": "1",
+          "label": "phases of the plane n"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-39",
+          "type": "edge",
+          "parent": "1"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-40",
+          "type": "node",
+          "parent": "1",
+          "label": "memory of the plane descript just how phases is connected , and allow agent exute tasks in paralle\nwhich phase should read befor ex the current one",
+          "html": "<div>memory of the plane descript just how phases is connected , and allow agent exute tasks in paralle</div><div>which phase should read befor ex the current one&nbsp;</div>"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-41",
+          "type": "edge",
+          "parent": "1"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-42",
+          "type": "node",
+          "parent": "1",
+          "label": "phase description creaded by leader agent , sectioned , can refer to it in the teasks files quick access information incase agnet need information about this phase cause it related to other phase",
+          "html": "<div>phase description creaded by leader agent , sectioned , can refer to it in the teasks files&nbsp;</div>quick access information incase agnet need information about this phase cause it related to other phase&nbsp;"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-43",
+          "type": "node",
+          "parent": "1",
+          "label": "memory.json file more detals about the phase , files that invlover ... \nAgent should scane it just if he need extra information",
+          "html": "<div>memory.json file more detals about the phase , files that invlover ...&nbsp;</div><div>Agent should scane it just if he need extra information&nbsp;</div>"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-44",
+          "type": "edge",
+          "parent": "1",
+          "target": "X4Qz5CiJPdpqdncE_HxA-43"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-45",
+          "type": "edge",
+          "parent": "1",
+          "target": "X4Qz5CiJPdpqdncE_HxA-43"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-46",
+          "type": "node",
+          "parent": "1",
+          "label": "refere the section&nbsp; in the memory&nbsp;"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-47",
+          "type": "node",
+          "parent": "1",
+          "label": "tasks folder : Hold the tasks for the plane (N) every task may fit some anget \nall tasks created by leader Agent \nin the taks he should not repated inforation , just refet the section or where it exist in the other files , \nand the Leader agent should descrip other segnifecat information and nrow the pasoplaies fo agent so they not hlosnate or gass form thier own \n\nin every folder af tasks , has a globle readme.md file for the all tasks leader has to put the incomment instraction in this file , then the task file should be clear to the agnet",
+          "html": "<div>tasks folder : Hold the tasks for the plane (N) every task may fit some anget&nbsp;</div><div>all tasks created by leader Agent&nbsp;</div><div>in the taks he should not repated inforation , just refet the section or where it exist in the other files ,&nbsp;</div><div>and the Leader agent should descrip other segnifecat information and nrow the pasoplaies fo agent so they not hlosnate or gass form thier own&nbsp;</div><div><br></div><div>in every folder af tasks , has a globle readme.md file for the all tasks leader has to put the incomment instraction in this file , then the task file should be clear to the agnet&nbsp;</div>"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-48",
+          "type": "edge",
+          "parent": "1",
+          "source": "X4Qz5CiJPdpqdncE_HxA-36",
+          "target": "X4Qz5CiJPdpqdncE_HxA-47"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-49",
+          "type": "node",
+          "parent": "1",
+          "label": "task file .md , has all agent need in about the task to exute , do duplcated information , refeing to the section in other files ,\ninclude some focused inforation about the task , and serten role for spesifec agent like a role for deepseek so he not get confuse ,\nleader have to wone skills about evert agent in the project so he can relay on it to power up agent weekneess in this file and close to him his gaps .",
+          "html": "<div>task file .md , has all agent need in about the task to exute , do duplcated information , refeing to the section in other files ,</div><div>include some focused inforation about the task , and serten role for spesifec agent like a role for deepseek so he not get confuse ,</div><div>leader have to wone skills about evert agent in the project so he can relay on it to power up agent weekneess in this file and close to him his gaps .</div>"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-50",
+          "type": "edge",
+          "parent": "1",
+          "target": "X4Qz5CiJPdpqdncE_HxA-49"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-62",
+          "type": "edge",
+          "parent": "1",
+          "source": "X4Qz5CiJPdpqdncE_HxA-51",
+          "target": "X4Qz5CiJPdpqdncE_HxA-49"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-51",
+          "type": "node",
+          "parent": "1"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-52",
+          "type": "node",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-51",
+          "label": "the porject&nbsp; files&nbsp; code&nbsp;"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-53",
+          "type": "node",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-51",
+          "label": "server folders&nbsp;"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-54",
+          "type": "node",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-51",
+          "label": "front end section&nbsp;"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-55",
+          "type": "edge",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-51",
+          "target": "X4Qz5CiJPdpqdncE_HxA-56"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-57",
+          "type": "edge",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-51"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-58",
+          "type": "node",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-51",
+          "label": "meddilwer file code"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-59",
+          "type": "node",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-51",
+          "label": "service file code&nbsp;"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-60",
+          "type": "edge",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-51",
+          "target": "X4Qz5CiJPdpqdncE_HxA-59"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-61",
+          "type": "node",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-51",
+          "label": "pages folder code"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-63",
+          "type": "node",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-51",
+          "label": "component folder&nbsp;"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-64",
+          "type": "edge",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-51"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-66",
+          "type": "node",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-51",
+          "label": "home page"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-67",
+          "type": "node",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-51",
+          "label": "buttom component&nbsp;"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-68",
+          "type": "edge",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-51",
+          "target": "X4Qz5CiJPdpqdncE_HxA-67"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-69",
+          "type": "edge",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-51"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-70",
+          "type": "edge",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-51",
+          "target": "X4Qz5CiJPdpqdncE_HxA-63"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-56",
+          "type": "node",
+          "parent": "1",
+          "label": "conftroller file code&nbsp;"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-71",
+          "type": "edge",
+          "parent": "1",
+          "source": "X4Qz5CiJPdpqdncE_HxA-16"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-72",
+          "type": "node",
+          "parent": "1",
+          "label": "desinge.md fle ( for the ui )\nagent should read it just whe they need to create or inhace the pages or component or the system Ui \nthe file must be sectioned , \nso agent grab just needed inforation",
+          "html": "<div>desinge.md fle ( for the ui )</div><div>agent should read it just whe they need to create or inhace the pages or component or the system Ui&nbsp;</div><div>the file must be sectioned ,&nbsp;</div><div>so agent grab just needed inforation&nbsp;</div>"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-74",
+          "type": "node",
+          "parent": "1",
+          "label": "Vertical Container"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-73",
+          "type": "node",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-74",
+          "label": "&gt; read the readme file in this path ..../plans/tasks/readme.md the excute ..../plans/tasks/task1.md"
+        },
+        {
+          "id": "X4Qz5CiJPdpqdncE_HxA-75",
+          "type": "node",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-74",
+          "label": "the agentetic tool like codex cli , claude cli ....&nbsp;"
+        },
+        {
+          "id": "WdrGF3U1CQ9qs7Hm_VtI-35",
+          "type": "edge",
+          "parent": "X4Qz5CiJPdpqdncE_HxA-74",
+          "target": "X4Qz5CiJPdpqdncE_HxA-1"
+        },
+        {
+          "id": "WdrGF3U1CQ9qs7Hm_VtI-24",
+          "type": "edge",
+          "parent": "1"
+        },
+        {
+          "id": "WdrGF3U1CQ9qs7Hm_VtI-25",
+          "type": "edge",
+          "parent": "1"
+        },
+        {
+          "id": "WdrGF3U1CQ9qs7Hm_VtI-26",
+          "type": "node",
+          "parent": "1",
+          "label": "short memory of what we have plans and how they connected or if they not conneced -agnet go here after redirected from Router.md files and thid file redicte agent to correct plane folders that should scane"
+        },
+        {
+          "id": "WdrGF3U1CQ9qs7Hm_VtI-27",
+          "type": "edge",
+          "parent": "1",
+          "target": "WdrGF3U1CQ9qs7Hm_VtI-26"
+        },
+        {
+          "id": "WdrGF3U1CQ9qs7Hm_VtI-28",
+          "type": "edge",
+          "parent": "1",
+          "target": "X4Qz5CiJPdpqdncE_HxA-54"
+        },
+        {
+          "id": "WdrGF3U1CQ9qs7Hm_VtI-29",
+          "type": "edge",
+          "parent": "1",
+          "target": "X4Qz5CiJPdpqdncE_HxA-53"
+        },
+        {
+          "id": "WdrGF3U1CQ9qs7Hm_VtI-30",
+          "type": "edge",
+          "parent": "1",
+          "target": "X4Qz5CiJPdpqdncE_HxA-20"
+        },
+        {
+          "id": "WdrGF3U1CQ9qs7Hm_VtI-32",
+          "type": "node",
+          "parent": "1",
+          "label": "a logical task , same inferstuter for the n task but just demo about how it may connedted&nbsp;"
+        },
+        {
+          "id": "WdrGF3U1CQ9qs7Hm_VtI-33",
+          "type": "edge",
+          "parent": "1",
+          "source": "X4Qz5CiJPdpqdncE_HxA-47",
+          "target": "WdrGF3U1CQ9qs7Hm_VtI-32"
+        },
+        {
+          "id": "WdrGF3U1CQ9qs7Hm_VtI-34",
+          "type": "edge",
+          "parent": "1",
+          "target": "X4Qz5CiJPdpqdncE_HxA-21"
+        }
+      ]
+    }
+  ]
+}
