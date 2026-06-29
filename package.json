@@ -1,0 +1,42 @@
+{
+  "name": "akrs-framework",
+  "version": "1.0.0",
+  "description": "AKRS (Adaptive Knowledge Routing System) — a framework for building AI execution workflows that let inexpensive models execute reliably by delivering the smallest correct knowledge, to the correct agent, at the correct moment.",
+  "keywords": [
+    "ai",
+    "agents",
+    "workflow",
+    "llm",
+    "knowledge-routing",
+    "ai-agents",
+    "prompt-engineering",
+    "framework",
+    "akrs"
+  ],
+  "homepage": "https://github.com/asadeisa/akrs#readme",
+  "bugs": {
+    "url": "https://github.com/asadeisa/akrs/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asadeisa/akrs.git"
+  },
+  "license": "MIT",
+  "author": "AKRS Contributors",
+  "type": "module",
+  "files": [
+    "docs/framework",
+    "docs/guides",
+    "GETTING_STARTED.md",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "VERSIONING.md"
+  ],
+  "engines": {
+    "node": ">=16"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

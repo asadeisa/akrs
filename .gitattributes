@@ -1,0 +1,17 @@
+# Normalize line endings: text files use LF in the repo
+* text=auto eol=lf
+
+# Explicit text types
+*.md     text eol=lf
+*.json   text eol=lf
+*.mjs    text eol=lf
+*.ts     text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+
+# Windows-only scripts keep CRLF
+*.ps1    text eol=crlf
+
+# Binary assets
+*.png    binary
+*.drawio binary

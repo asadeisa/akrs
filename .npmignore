@@ -1,0 +1,24 @@
+# Published package = the framework + human guides only.
+# (package.json "files" is the allow-list; this is defense-in-depth.)
+
+# Research & history — not needed to use AKRS
+docs/research/
+docs/validation/
+
+# Examples & templates (large / evolving; available on GitHub)
+examples/
+templates/
+
+# Repo / maintainer docs
+.github/
+CONTRIBUTING.md
+RELEASE.md
+ROADMAP.md
+PACKAGE-BUILD-PLAN.md
+
+# Dev / tooling
+.claude/
+.vscode/
+.idea/
+*.tgz
+node_modules/
