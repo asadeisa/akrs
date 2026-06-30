@@ -213,7 +213,7 @@ See `docs/validation/` for detailed test results and case studies.
 
 ## Versioning
 
-- **Framework Version:** v1.0.0 (specifications)
+- **Framework Version:** v1.1.0 (specifications)
 - **Generated Workflows:** Versioned independently (v1, v2, etc.)
 - **Kernel Version:** Generated per-project from latest framework
 
@@ -271,4 +271,4 @@ AKRS is free to use, modify, and distribute in personal and commercial projects.
 
 Made with care for developers who want reliable, predictable AI agents.
 
-**AKRS v1.0.0** — June 2026
+**AKRS v1.1.0** — June 2026
