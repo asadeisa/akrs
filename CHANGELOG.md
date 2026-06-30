@@ -14,6 +14,10 @@ version lines relate.
 Adds the `npx akrs init` CLI and a substantial documentation pass. No changes to
 the framework specifications or the routing architecture.
 
+> **Package renamed to `akrs`.** The npm package is now published as **`akrs`**
+> (was `akrs-framework`, which is deprecated and points here) so that the
+> advertised `npx akrs init` works directly.
+
 ### Added
 - **`npx akrs init`** — a CLI command that copies the framework into the
   developer's project under `docs/akrs/` (the doctrine `framework/`, the

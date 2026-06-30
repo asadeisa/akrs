@@ -68,9 +68,9 @@ docs/akrs/
 Nothing is buried in `node_modules`; the files live in your repo where you and
 the Leader can read them. Run `npx akrs init --force` later to refresh them.
 
-> Prefer a managed dependency? `npm install akrs-framework` (or `pnpm add` /
+> Prefer a managed dependency? `npm install akrs` (or `pnpm add` /
 > `yarn add`) works too — it installs the same docs under
-> `node_modules/akrs-framework/`. Or just clone the repo and read `docs/`
+> `node_modules/akrs/`. Or just clone the repo and read `docs/`
 > directly.
 
 ---

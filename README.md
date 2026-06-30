@@ -152,7 +152,7 @@ to hand to your Leader model. Re-run with `npx akrs init --force` to refresh the
 
 ```bash
 # Add as a dependency (installs into node_modules):
-npm install akrs-framework      # or: pnpm add / yarn add akrs-framework
+npm install akrs      # or: pnpm add / yarn add akrs
 
 # Or simply clone the repo and read docs/ directly:
 git clone https://github.com/asadeisa/akrs

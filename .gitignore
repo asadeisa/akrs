@@ -7,7 +7,7 @@ node_modules/
 dist/
 build/
 *.tgz
-akrs-framework-*.tgz
+akrs-*.tgz
 
 # Logs
 *.log
