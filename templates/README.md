@@ -16,11 +16,11 @@ and the canonical templates ship inside the framework specification:
 
 ## Roadmap
 
-The `npx akrs init` CLI already ships today — it copies the framework docs into
-your project's `docs/akrs/`. What's still planned is the *content* that lives
-here: stack-specific scaffolds (Node service, React app, monorepo) and a
+The `npx akrs-framework init` CLI already ships today — it copies the framework
+docs into your project's `docs/akrs/`. What's still planned is the *content* that
+lives here: stack-specific scaffolds (Node service, React app, monorepo) and a
 copy-paste Leader prompt pack, which will feed the interactive
-`npx akrs scaffold` command. See [`../ROADMAP.md`](../ROADMAP.md).
+`npx akrs-framework scaffold` command. See [`../ROADMAP.md`](../ROADMAP.md).
 
 This folder exists now so that future tooling has a stable home — no repository
 restructuring required when those scaffolds land.

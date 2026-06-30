@@ -19,7 +19,7 @@ You need three things:
    everything downstream rides on it, so it's worth the horsepower. (Day-to-day
    execution can later run on a cheaper or faster model if you want — but that's
    an optimization, not a requirement.)
-2. **The framework docs.** Drop them into your project with `npx akrs init`
+2. **The framework docs.** Drop them into your project with `npx akrs-framework init`
    (they land in `docs/akrs/`). This is what the model reads to learn *how* to
    build your workflow. See **Step 2**.
 3. **Your Source of Truth.** The document(s) that actually describe what the
@@ -52,7 +52,7 @@ Put the authoritative document(s) somewhere obvious, e.g. `docs/app-info.md`.
 From inside your project, run:
 
 ```bash
-npx akrs init
+npx akrs-framework init
 ```
 
 This copies the framework into **`docs/akrs/`** — the doctrine the Leader reads
@@ -66,11 +66,11 @@ docs/akrs/
 ```
 
 Nothing is buried in `node_modules`; the files live in your repo where you and
-the Leader can read them. Run `npx akrs init --force` later to refresh them.
+the Leader can read them. Run `npx akrs-framework init --force` later to refresh them.
 
-> Prefer a managed dependency? `npm install akrs` (or `pnpm add` /
+> Prefer a managed dependency? `npm install akrs-framework` (or `pnpm add` /
 > `yarn add`) works too — it installs the same docs under
-> `node_modules/akrs/`. Or just clone the repo and read `docs/`
+> `node_modules/akrs-framework/`. Or just clone the repo and read `docs/`
 > directly.
 
 ---

@@ -9,24 +9,30 @@ version lines relate.
 
 ---
 
+## [1.1.1] — 2026-06-30
+
+### Fixed
+- Corrected the install/CLI command in all docs to **`npx akrs-framework init`**.
+  The package is published as `akrs-framework`, so the command advertised in
+  1.1.0 (`npx akrs init`) did not resolve — npm has no package named `akrs`, and
+  that name is unavailable. Docs-only change; no code or framework changes.
+
+---
+
 ## [1.1.0] — 2026-06-30
 
-Adds the `npx akrs init` CLI and a substantial documentation pass. No changes to
-the framework specifications or the routing architecture.
-
-> **Package renamed to `akrs`.** The npm package is now published as **`akrs`**
-> (was `akrs-framework`, which is deprecated and points here) so that the
-> advertised `npx akrs init` works directly.
+Adds the `npx akrs-framework init` CLI and a substantial documentation pass. No
+changes to the framework specifications or the routing architecture.
 
 ### Added
-- **`npx akrs init`** — a CLI command that copies the framework into the
-  developer's project under `docs/akrs/` (the doctrine `framework/`, the
+- **`npx akrs-framework init`** — a CLI command that copies the framework into
+  the developer's project under `docs/akrs/` (the doctrine `framework/`, the
   `guides/`, and `GETTING_STARTED.md`), instead of leaving it buried in
   `node_modules`. Re-run with `--force` to refresh. Ships as the `akrs` bin
   (`bin/akrs.js`); no dependencies added.
 
 ### Changed
-- README and `GETTING_STARTED.md` now lead with `npx akrs init` (npm install /
+- README and `GETTING_STARTED.md` now lead with `npx akrs-framework init` (npm install /
   clone kept as alternatives), and present the value proposition as narrowing
   the decision space for *any* model — not only inexpensive ones.
 - README: renamed "The London Story" → "The Philosophy Behind AKRS", added a
@@ -36,8 +42,8 @@ the framework specifications or the routing architecture.
   close-out as system-handled, with a verify-and-fix path.
 - `docs/guides/FILE-STRUCTURE.md`: note that the copied framework docs can be
   deleted once the Kernel exists (keep `akrs/` + the Source of Truth).
-- `templates/README.md` and `ROADMAP.md`: `npx akrs init` is current; the still-
-  planned interactive scaffolder is `npx akrs scaffold`.
+- `templates/README.md` and `ROADMAP.md`: `npx akrs-framework init` is current;
+  the still-planned interactive scaffolder is `npx akrs-framework scaffold`.
 
 ### Fixed
 - Dropped the unverified "30–70× / ~$25–50 frontier-cost" estimates from the
@@ -91,5 +97,6 @@ The original AKRS specification: the read-once doctrine, the artifact layers
 (Router / Memory / Road / Task / Plan / Phase), and the first real-project test
 harness. Preserved unchanged under `docs/research/v0/`.
 
+[1.1.1]: https://github.com/asadeisa/akrs/releases/tag/v1.1.1
 [1.1.0]: https://github.com/asadeisa/akrs/releases/tag/v1.1.0
 [1.0.0]: https://github.com/asadeisa/akrs/releases/tag/v1.0.0

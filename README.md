@@ -132,7 +132,7 @@ The fastest way to use AKRS is to copy the framework into your project with a
 single command — no permanent dependency, nothing buried in `node_modules`:
 
 ```bash
-npx akrs init
+npx akrs-framework init
 ```
 
 This drops the framework into **`docs/akrs/`** in your current project:
@@ -145,14 +145,14 @@ docs/akrs/
 ```
 
 That's all most people need — the files now live in your repo, ready to read and
-to hand to your Leader model. Re-run with `npx akrs init --force` to refresh them.
+to hand to your Leader model. Re-run with `npx akrs-framework init --force` to refresh them.
 
 <details>
 <summary>Prefer a managed dependency, or just want to read the docs?</summary>
 
 ```bash
 # Add as a dependency (installs into node_modules):
-npm install akrs      # or: pnpm add / yarn add akrs
+npm install akrs-framework      # or: pnpm add / yarn add akrs-framework
 
 # Or simply clone the repo and read docs/ directly:
 git clone https://github.com/asadeisa/akrs
@@ -163,7 +163,7 @@ git clone https://github.com/asadeisa/akrs
 
 ## Quick Start (2 Minutes)
 
-1. Run `npx akrs init` in your project
+1. Run `npx akrs-framework init` in your project
 2. Read `docs/akrs/GETTING_STARTED.md`
 3. Generate your first workflow with your Leader model
 4. Start your first task
@@ -213,7 +213,7 @@ See `docs/validation/` for detailed test results and case studies.
 
 ## Versioning
 
-- **Framework Version:** v1.1.0 (specifications)
+- **Framework Version:** v1.1.1 (specifications)
 - **Generated Workflows:** Versioned independently (v1, v2, etc.)
 - **Kernel Version:** Generated per-project from latest framework
 
@@ -271,4 +271,4 @@ AKRS is free to use, modify, and distribute in personal and commercial projects.
 
 Made with care for developers who want reliable, predictable AI agents.
 
-**AKRS v1.1.0** — June 2026
+**AKRS v1.1.1** — June 2026

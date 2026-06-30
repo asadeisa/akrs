@@ -120,7 +120,7 @@ What you *do* keep current, every time work lands:
 
 ## After the Kernel exists, you can slim down
 
-The framework docs you copied in with `npx akrs init` (`docs/akrs/framework/`)
+The framework docs you copied in with `npx akrs-framework init` (`docs/akrs/framework/`)
 are input for the **Leader** — they only matter while the workflow and the
 Kernel are being *generated*. Once the Kernel is compiled and the loop is
 running, **nothing scans them anymore**: the Worker boots the Kernel and reads
@@ -136,7 +136,7 @@ your project to keep it clean. Two things you should always **keep**:
   regenerate or extend.
 
 If you ever need the doctrine back (to regenerate the Kernel from scratch, or to
-plan a big change), just re-run `npx akrs init` to pull `docs/akrs/` in again.
+plan a big change), just re-run `npx akrs-framework init` to pull `docs/akrs/` in again.
 
 ---
 
