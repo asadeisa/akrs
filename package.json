@@ -24,7 +24,11 @@
   "license": "MIT",
   "author": "AKRS Contributors",
   "type": "module",
+  "bin": {
+    "akrs": "bin/akrs.js"
+  },
   "files": [
+    "bin",
     "docs/framework",
     "docs/guides",
     "GETTING_STARTED.md",

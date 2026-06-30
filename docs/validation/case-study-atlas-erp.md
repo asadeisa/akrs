@@ -75,7 +75,7 @@ the cheap Worker:
   it),
 - stayed strictly in scope.
 
-**Cost: $0.688.** Estimated frontier-model cost for the same task: ~$25–50.
+**Cost: $0.688** in tokens for the full execution + close-out.
 
 ---
 

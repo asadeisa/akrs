@@ -10,11 +10,13 @@ AKRS is a **framework for building AI execution workflows**.
 
 It's not a memory system. It's not a documentation tool. It's not a planning framework.
 
-AKRS is a **knowledge-routing architecture** that solves one problem:
+AKRS is a **knowledge-routing architecture** built on one idea:
 
-> How do you let inexpensive execution models (like Gemini Flash) execute reliably on large, complex projects?
+> An AI agent is only as good as what you put in front of it. Feed it the whole project and it drowns in noise; feed it the *smallest correct slice* and the right move becomes obvious.
 
-**Answer:** Reduce the decision space before execution begins.
+It's a different way to feed a model. Before the agent reasons, AKRS strips out the noise and narrows the design choices down to the one path that actually fits — so the model spends its effort *solving the problem* instead of *guessing where to look and which of a dozen approaches you meant*.
+
+This is **not** just about saving money on a cheaper model (though it does that too). Even your strongest model writes tighter, more in-scope code when it isn't wading through thousands of irrelevant files and a pile of plausible-but-wrong directions. AKRS gives *any* model a clean, narrow, correct field of view — that's the real win.
 
 ---
 
@@ -32,19 +34,20 @@ AKRS doesn't make agents smarter. **It makes decision spaces smaller.**
 
 ---
 
-## The London Story
+## The Philosophy Behind AKRS
 
-Imagine you're visiting London and need to find your friend's house.
+Imagine you land in London and need to find your friend's house.
 
-**Bad approach:** Pick a random person on the street and ask them to guide you.  
-*Result: Confusion, wrong turns, wasted time.*
+**The way we usually do it:** you stop a random stranger and ask, *"Hey, where's my friend's house?"* The stranger has never met you, doesn't know your friend, and has no idea where you started from — so of course you get a shrug, or worse, a confident wrong turn.
 
-**Good approach:**
-1. Ask about the **city** (neighborhoods, districts)
-2. Learn about the **neighborhood** (streets, landmarks)
-3. Get specific **directions** to the house
+That is almost exactly how we talk to an AI. We drop a whole problem on it and just *describe what we want* — with none of the context that would let it actually know where to go — and then we're surprised when it wanders, guesses, or builds the wrong thing.
 
-The more specific your questions are, the more accurate the guidance.
+**A better way** is to narrow the question down, one step at a time:
+1. First the **city** — which district am I even in?
+2. Then the **neighborhood** — which streets, which landmarks?
+3. Then the **exact directions** to the door.
+
+Each question is smaller and more specific than the last, so each answer gets sharper. By the final step there's really only one place left to go.
 
 **AKRS works the same way:**
 - **Router** knows the city (which Plan?)
@@ -88,6 +91,29 @@ Each layer answers exactly one question:
 
 Nothing is duplicated. Nothing is guessed. Everything is prepared.
 
+### Not every prompt walks the full path
+
+AKRS isn't a cage. The very first thing it does is pick a **Mode** that matches
+what you actually asked — and most prompts never touch the full chain:
+
+| Mode | When you'd use it | What runs |
+|------|-------------------|-----------|
+| **Mode 0** | You already know the exact file/area | Memory + the named files only — no routing |
+| **Mode 1** | A small, isolated change | A single Road, fast path |
+| **Mode 2** | A Task + Road already exist | Just execute the existing Road |
+| **Mode 3** | New work that needs thinking | The Leader **plans**: one Task + one Road |
+| **Mode 4** | Architecture / cross-cutting change | Leader only |
+
+So a quick question, a one-file tweak, a "just try this and see," or a prompt
+that has nothing to do with writing code at all — planning, exploring, asking
+*"what would break if…"* — doesn't get dragged through the whole machine. You
+pay for the full funnel only when the work is big enough to deserve it, and you
+can always step outside the system entirely when you just want to talk to the
+model directly.
+
+> Full mode diagrams are in
+> [`docs/guides/ROUTING-FLOW.md`](docs/guides/ROUTING-FLOW.md).
+
 ---
 
 ## Core Principles
@@ -102,23 +128,44 @@ Nothing is duplicated. Nothing is guessed. Everything is prepared.
 
 ## Installation
 
-Install AKRS v1 framework:
+The fastest way to use AKRS is to copy the framework into your project with a
+single command — no permanent dependency, nothing buried in `node_modules`:
 
 ```bash
-npm install akrs-framework
-# or
-pnpm add akrs-framework
-# or
-yarn add akrs-framework
+npx akrs init
 ```
+
+This drops the framework into **`docs/akrs/`** in your current project:
+
+```
+docs/akrs/
+├── GETTING_STARTED.md   ← the human on-ramp
+├── framework/           ← the doctrine the Leader reads (01..08)
+└── guides/              ← routing flow + file structure (diagrams)
+```
+
+That's all most people need — the files now live in your repo, ready to read and
+to hand to your Leader model. Re-run with `npx akrs init --force` to refresh them.
+
+<details>
+<summary>Prefer a managed dependency, or just want to read the docs?</summary>
+
+```bash
+# Add as a dependency (installs into node_modules):
+npm install akrs-framework      # or: pnpm add / yarn add akrs-framework
+
+# Or simply clone the repo and read docs/ directly:
+git clone https://github.com/asadeisa/akrs
+```
+</details>
 
 ---
 
 ## Quick Start (2 Minutes)
 
-1. Read `GETTING_STARTED.md` in this repository
-2. Follow the step-by-step guide
-3. Generate your first workflow with an AI model
+1. Run `npx akrs init` in your project
+2. Read `docs/akrs/GETTING_STARTED.md`
+3. Generate your first workflow with your Leader model
 4. Start your first task
 
 ---
@@ -160,7 +207,7 @@ AKRS v1 has been tested with multiple AI models:
 
 See `docs/validation/` for detailed test results and case studies.
 
-**Key finding:** Less-capable models execute reliably when given a well-structured workflow. Cost efficiency: 30-70x cheaper execution without sacrificing quality.
+**Key finding:** Less-capable models execute reliably when given a well-structured workflow — in the Atlas ERP run, the execution + close-out cost **$0.688 in tokens**, with no loss in quality or scope discipline.
 
 ---
 
@@ -171,28 +218,6 @@ See `docs/validation/` for detailed test results and case studies.
 - **Kernel Version:** Generated per-project from latest framework
 
 See `VERSIONING.md` for details.
-
----
-
-## Roadmap
-
-### Current (v1)
-✅ Framework specification complete  
-✅ Validation in production  
-✅ Ready for public release  
-
-### Coming (v1.1+)
-🔄 CLI tooling (`npx akrs init`)  
-🔄 Project generator  
-🔄 Automatic Kernel generation  
-🔄 Validation utilities  
-
-### Future (v2+)
-💡 Platform adapters  
-💡 Multi-model orchestration  
-💡 Built-in templates  
-
-See `ROADMAP.md` for detailed plans.
 
 ---
 

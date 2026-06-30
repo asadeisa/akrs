@@ -28,7 +28,7 @@ For maintainers cutting a new AKRS release. Follow top to bottom.
 ## 4. Package Contents
 
 - [ ] `package.json` `files` field includes only what users need
-      (`docs/framework`, `docs/guides`, `GETTING_STARTED.md`, `README.md`,
+      (`bin`, `docs/framework`, `docs/guides`, `GETTING_STARTED.md`, `README.md`,
       `LICENSE`, `CHANGELOG.md`).
 - [ ] `.npmignore` excludes research, validation internals, dev artifacts.
 - [ ] Dry-run the package and inspect contents:

@@ -12,6 +12,7 @@ requires restructuring the repository.
 - ✅ Validation with multiple models (`docs/validation/`)
 - ✅ Human guides and release engineering docs
 - ✅ npm / pnpm / yarn distribution
+- ✅ `npx akrs init` — copies the framework into a project's `docs/akrs/`
 
 Focus: stability, clarity, adoption. Gather real-world feedback.
 
@@ -27,10 +28,13 @@ No architectural change — purely additive content.
 
 ---
 
-## v1.2 — CLI (the big one)
+## v1.2 — CLI scaffolding (the big one)
+
+`npx akrs init` exists today (it vendors the framework into `docs/akrs/`). v1.2
+grows the CLI from *copying docs* into *scaffolding a workflow*:
 
 ```
-npx akrs init
+npx akrs scaffold
 ```
 
 - Scaffolds `akrs/` (Router, Memory, STATE) interactively.

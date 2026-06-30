@@ -9,12 +9,17 @@ version lines relate.
 
 ---
 
-## [1.0.0] — 2026-06-29
+## [1.0.0] — 2026-06-30
 
 First public release. The framework is feature-complete, validated with multiple
-models, and structured for future CLI expansion.
+models, and ships with the `npx akrs init` CLI for one-command setup.
 
 ### Added
+- **`npx akrs init`** — a CLI command that copies the framework into the
+  developer's project under `docs/akrs/` (the doctrine `framework/`, the
+  `guides/`, and `GETTING_STARTED.md`), instead of leaving it buried in
+  `node_modules`. Re-run with `--force` to refresh. Ships as the `akrs` bin
+  (`bin/akrs.js`); no dependencies added.
 - **Kernel** — a minified, per-project operating file compiled by the Leader, so
   heavy doctrine never ships to the target project (`08-Kernel-Specification.md`).
 - **STATE.md + close-out lifecycle** — a portable save-point plus mandatory
@@ -38,8 +43,9 @@ models, and structured for future CLI expansion.
 - Repository reorganized into `docs/framework`, `docs/guides`, `docs/validation`,
   `docs/research`, `examples`, and `templates` to support future tooling without
   restructuring.
-- README rewritten around the framework (philosophy + 30-second model), not the
-  documentation.
+- README rewritten around the framework's philosophy, not the documentation.
+- README and `GETTING_STARTED.md` lead with `npx akrs init`; the plain
+  `npm install` / clone paths are kept as alternatives.
 
 ### Preserved
 - The complete **v0** specification is frozen under `docs/research/v0/`, with its

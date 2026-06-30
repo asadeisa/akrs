@@ -13,7 +13,7 @@ There are two structures to understand:
 
 ```text
 akrs/
-├── README.md                  Entry point + philosophy (the London story)
+├── README.md                  Entry point + the philosophy behind AKRS
 ├── GETTING_STARTED.md         Human on-ramp — read this first
 ├── LICENSE                    MIT
 ├── CHANGELOG.md               What changed, per version
@@ -115,6 +115,28 @@ your-project/
 What you *do* keep current, every time work lands:
 
 - **`STATE.md`** and the active **Road's Status** — via **close-out**.
+
+---
+
+## After the Kernel exists, you can slim down
+
+The framework docs you copied in with `npx akrs init` (`docs/akrs/framework/`)
+are input for the **Leader** — they only matter while the workflow and the
+Kernel are being *generated*. Once the Kernel is compiled and the loop is
+running, **nothing scans them anymore**: the Worker boots the Kernel and reads
+only the Road and Memory it points to.
+
+So once your flow works, it's safe to **delete the copied framework docs** from
+your project to keep it clean. Two things you should always **keep**:
+
+- **`akrs/`** — your generated workflow (Kernel, Router, STATE, Memory, Roads).
+  This *is* the system now.
+- **Your Source of Truth** (`docs/app-info.md`, or wherever it lives) — the
+  workflow points back to it as ground truth, and you'll want it whenever you
+  regenerate or extend.
+
+If you ever need the doctrine back (to regenerate the Kernel from scratch, or to
+plan a big change), just re-run `npx akrs init` to pull `docs/akrs/` in again.
 
 ---
 

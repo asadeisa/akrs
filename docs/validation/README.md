@@ -36,8 +36,8 @@ A run passed if it satisfied the framework's own validation rules:
 
 > A **less-capable** execution model (Gemini Flash), given a one-line prompt and a
 > well-structured workflow, produced production-grade code, stayed in scope, and
-> closed out correctly — at roughly **30–70× lower cost** than running a frontier
-> model for the same work.
+> closed out correctly — for **$0.688 in tokens**, a small fraction of what a
+> frontier model would cost on the same work.
 
 That is the entire thesis of AKRS, observed in practice: let the expensive model
 think once; let the cheap model execute many times.

@@ -71,9 +71,9 @@ Result: Road, Memory, and the actual code all agreed. **No drift created.**
 | Input tokens | ~337k |
 | Output tokens | ~15k |
 | Total cost | **$0.688** |
-| Estimated frontier-model cost for same work | ~$25–50 |
 
-≈ **30–70× cheaper**, with no loss in correctness or scope discipline.
+A real backend task executed **and** closed out for under a dollar in tokens —
+with no loss in correctness or scope discipline.
 
 ---
 

@@ -13,35 +13,20 @@ framework the AI reads. It is the human on-ramp.
 
 You need three things:
 
-1. **A target project** — new or existing, any language.
-2. **A strong "Leader" model** — the powerful model you trust to *think*
-   (e.g. Claude Opus, GPT-5, Gemini Pro, DeepSeek). It plans once.
-3. **A cheap "Worker" model** — the inexpensive model that *executes*
-   (e.g. Gemini Flash, Haiku, a small local model). It runs many times.
+1. **An AI model you can prompt.** Any capable agent will do. For the *planning*
+   steps — generating the workflow and compiling the first Kernel — use your
+   strongest model and turn its reasoning up. That thinking happens once, and
+   everything downstream rides on it, so it's worth the horsepower. (Day-to-day
+   execution can later run on a cheaper or faster model if you want — but that's
+   an optimization, not a requirement.)
+2. **The framework docs.** Drop them into your project with `npx akrs init`
+   (they land in `docs/akrs/`). This is what the model reads to learn *how* to
+   build your workflow. See **Step 2**.
+3. **Your Source of Truth.** The document(s) that actually describe what the
+   project should be — requirements, architecture notes, the existing repo.
+   This is the ground everything is built on. See **Step 1**.
 
-> **The whole point of AKRS:** let the expensive model think **once**, so the
-> cheap model can execute **reliably, many times**. If you only ever use one
-> giant model for everything, you do not need AKRS — you are paying the London
-> taxi to also be your map.
-
----
-
-## The Mental Model (30 seconds)
-
-You are in London looking for a friend's house.
-
-You do **not** grab a random stranger and ask "take me there."
-You narrow down: **city → neighborhood → street → door.**
-
-AKRS gives the AI the same funnel:
-
-```
-Prompt → Mode → Router → Memory → Road → Execute
-          city    area    street   door
-```
-
-Each step removes wrong options *before* the AI starts reasoning.
-By the time the Worker writes code, there is only one obvious path left.
+That's it.
 
 ---
 
@@ -62,21 +47,31 @@ Put the authoritative document(s) somewhere obvious, e.g. `docs/app-info.md`.
 
 ---
 
-## Step 2 — Install the Framework
+## Step 2 — Add the Framework to Your Project
+
+From inside your project, run:
 
 ```bash
-npm install akrs-framework
-# or
-pnpm add akrs-framework
-# or
-yarn add akrs-framework
+npx akrs init
 ```
 
-This gives you the framework specification (`docs/framework/`) — the doctrine
-the Leader reads to learn *how* to build your workflow.
+This copies the framework into **`docs/akrs/`** — the doctrine the Leader reads
+to learn *how* to build your workflow:
 
-You can also simply clone this repository if you prefer to read the docs
-directly.
+```
+docs/akrs/
+├── GETTING_STARTED.md   (this guide)
+├── framework/           (01..08 — the specification)
+└── guides/              (routing flow + file structure)
+```
+
+Nothing is buried in `node_modules`; the files live in your repo where you and
+the Leader can read them. Run `npx akrs init --force` later to refresh them.
+
+> Prefer a managed dependency? `npm install akrs-framework` (or `pnpm add` /
+> `yarn add`) works too — it installs the same docs under
+> `node_modules/akrs-framework/`. Or just clone the repo and read `docs/`
+> directly.
 
 ---
 
@@ -164,16 +159,25 @@ explicit scope boundaries. If it does, you're ready to execute.
 
 ---
 
-## Step 6 — Let the Worker Execute
+## Step 6 — Execute the Road
 
-Switch to your **cheap** Worker model. Give it a *minimal* prompt — do **not**
-re-explain the project. The workflow already contains everything:
+Now hand the active Road to whatever will do the building. This is the part that
+repeats, so it's where you get to choose how:
+
+- **Stay on the same strong model** you planned with — perfectly fine.
+- **Drop to a cheaper/faster model** (Gemini Flash, Haiku, a small local model)
+  to cut cost — the workflow is built to make that safe.
+- **Fan it out to subagents** — keep your main agent as supervisor and let it
+  delegate the actual edits to Sonnet/Haiku workers.
+
+Whichever you pick, give it a *minimal* prompt — do **not** re-explain the
+project. The workflow already contains everything:
 
 ```
 Implement the active Road.
 ```
 
-That's it. A correctly built workflow means the Worker:
+That's it. A correctly built workflow means the executor:
 
 - boots `AGENTS.md → KERNEL.md`,
 - finds the active Road from `STATE.md`,
@@ -181,23 +185,40 @@ That's it. A correctly built workflow means the Worker:
 - writes code inside the Road's scope,
 - and stops at the boundaries.
 
-> If the Worker starts asking "what should I read?" or wanders the repo, that's
-> a **routing failure**, not a model failure. Fix the Road/Kernel, not the prompt.
+> If it starts asking "what should I read?" or wanders the repo, that's a
+> **routing failure**, not a model failure. Fix the Road/Kernel, not the prompt.
 
 ---
 
-## Step 7 — Close-Out (Do Not Skip This)
+## Step 7 — Close-Out (the system handles it — you just confirm)
 
-When work lands, the workflow must be reconciled with reality, or it will
-silently drift. Ask the Worker (or do it yourself):
+When work lands, the workflow has to be reconciled with reality or it slowly
+drifts: the Road says one thing, the code says another. The good news is that
+**a well-built AKRS workflow does its own close-out.** After finishing the Road,
+a correct executor automatically:
 
-1. **Update `STATE.md`** — move the finished item to *Done*, set *Next*.
-2. **Reconcile the Road** — either mark it `DONE + superseded by <memory>`
-   or refresh its *Expected files* to match what actually shipped.
-3. **Update Memory** if a reusable fact moved or changed owner.
+1. **Updates `STATE.md`** — moves the finished item to *Done*, sets *Next*.
+2. **Reconciles the Road** — marks it `DONE + superseded by <memory>`, or
+   refreshes its *Expected files* to match what actually shipped.
+3. **Updates Memory** — only if a reusable fact moved or changed owner.
 
-> Close-out is the single discipline that keeps a Road and a Memory from ever
-> disagreeing about what the code is. It is mandatory.
+So you usually don't *perform* close-out — you just **check that it happened.**
+Open `STATE.md` and the active Road and glance at three things:
+
+- Does *Done* list what was actually built?
+- Does the Road's status / expected-files match the code?
+- Did Memory stay an index (not turn into a dump of code details)?
+
+If something's off, don't patch it by hand — point the AI back at it:
+
+```
+Close-out looks incomplete. Reconcile STATE.md, the active Road's status, and
+Memory against what was actually built, per 07-State-And-Sync-Specification.md.
+```
+
+> Close-out is the one discipline that keeps a Road and a Memory from ever
+> disagreeing about what the code is. Let the workflow do it — your job is just
+> to confirm it did.
 
 ---
 
