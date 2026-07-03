@@ -101,6 +101,7 @@ AKRS is built from a small, fixed set of artifacts, each with a single owner que
 | **STATE** | "Where did we leave off?" | active mode/role/plan/phase/task/road, Done (last 3), Next, Open questions, timestamp+author | knowledge (it points, never teaches) |
 | **LOG** | "What happened, in full?" | append-only close-out narratives + metrics | anything a session needs at boot |
 | **Handoff** | "What must the Tester check?" | what became observable, how to reach it, expected behavior (ephemeral — Worker creates, Tester deletes) | a report, teaching, anything permanent |
+| **FEATURES** | "What has landed, and where does it live?" | one line per landed feature (name · Plan · key Roads/Memories · SoT section) | teaching, implementation, rationale |
 
 Every execution follows exactly one route. Workers never jump randomly between layers:
 
@@ -158,7 +159,7 @@ intent, and any developer override. The Mode determines the allowed navigation p
 | 1 | Quick local | Small, isolated change | minimal: Road or direct file, skip full chain |
 | 2 | Normal | Existing Task + existing Road | full route, no new planning |
 | 3 | Planning | New work requested | generate one Task + one Road on demand (or a per-plan batch — extra Roads `QUEUED`; see `02-Generation-Specification.md §4`) |
-| 4 | Architecture | Cross-plan / structural change | Leader only |
+| 4 | Architecture | Cross-plan / structural change | Leader only; runs the change procedure (`11-Change-Management-Specification.md`) |
 
 The architecture must never force unnecessary navigation. Modes 0–1 are the **fast path**:
 trivial or isolated changes skip the full chain. (Prompt→Mode hints are encoded in the
@@ -249,9 +250,9 @@ documentation; Workers need repository scanning; planning and execution mix. Whe
 appear, **simplify the architecture before expanding it.**
 
 **Overhead budget (the routing-vs-execution line, made concrete):** close-out touches **at
-most LOG + STATE + the Road + one Memory**. If close-out regularly costs more than that, the
-architecture must be simplified. Mechanical checking belongs to tooling, never to the agent —
-the workflow must never become the agent's main job.
+most LOG + STATE + the Road + one Memory + one FEATURES line**. If close-out regularly costs
+more than that, the architecture must be simplified. Mechanical checking belongs to tooling,
+never to the agent — the workflow must never become the agent's main job.
 
 ---
 

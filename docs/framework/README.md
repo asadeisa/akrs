@@ -42,6 +42,7 @@ others. This table grows as each part lands.
 | **Task/Road granularity + no-duplication** | Leader-decided granularity; a Task restates nothing from its Road | `02-Generation-Specification.md` |
 | **SoT Index + read windows + partitioning** | no agent ever reads the whole Source of Truth, however large or pre-existing | `09-Scale-And-Source-Index-Specification.md` |
 | **Tester role + idea-level verification** | Done is proven against the running product — Mirror Check, raw measurement, Test-Handoff, seam ownership, expiring open questions | `10-Verification-Specification.md` |
+| **Change management + FEATURES index** | features change without leaving broken data — FEATURES index, on-demand change file, merge-or-vanish, requirements-delta | `11-Change-Management-Specification.md` |
 
 ---
 
@@ -59,6 +60,7 @@ others. This table grows as each part lands.
 | `08-Kernel-Specification.md` | The Kernel concept + minified kernel template | — (new capability) |
 | `09-Scale-And-Source-Index-Specification.md` | Staying minimal-read at scale: SoT Index, read windows, progressive analysis, domain partitioning | — (new v1.2 capability) |
 | `10-Verification-Specification.md` | Proving Done against the running product: Tester role, Mirror Check, idea-level `Verify:`, handoff, raw measurement, seam ownership | — (new v1.2 capability) |
+| `11-Change-Management-Specification.md` | Changing requirements without broken data: FEATURES index, on-demand change file, merge-or-vanish, requirements-delta | — (new v1.2 capability) |
 
 Origin assets (`ai-work-flow-original.png/.json`, `akrs-system-graph.drawio`) remain in
 `docs/research/v0/`. Regenerating the system graph to show the v1 kernel + state lanes is an

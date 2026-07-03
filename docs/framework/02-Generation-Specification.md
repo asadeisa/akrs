@@ -203,6 +203,10 @@ close-out: `07-State-And-Sync-Specification.md`.)
 - **Assumption aging.** An `Assumption` consumed by **≥ 3 landed Roads** must be escalated:
   confirmed by the Developer, or explicitly promoted to `Decided`-by-default with the
   promotion recorded in the owning Memory. Assumptions must not harden silently by attrition.
+- **Mid-project SoT change.** When the confirmed Source of Truth changes after generation has
+  begun, do not edit in place and hope — run the **requirements-delta procedure**, whose sole
+  owner is `11-Change-Management-Specification.md §5` (diff the SoT → list affected
+  Plans/Memories/QUEUED Roads → re-validate or regenerate → record the delta in STATE + LOG).
 
 ---
 

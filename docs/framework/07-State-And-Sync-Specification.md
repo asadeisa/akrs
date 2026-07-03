@@ -149,16 +149,18 @@ Update Memory if a reusable fact changed owner or location
 Done
 ```
 
-**Overhead budget (D12).** Close-out touches **at most LOG + STATE + the Road + one Memory**.
-If close-out regularly costs more than that, the architecture must be simplified before it is
-expanded (`01-Constitution.md §14`). Mechanical checking belongs to tooling, never to the
-agent.
+**Overhead budget (D12).** Close-out touches **at most LOG + STATE + the Road + one Memory +
+one FEATURES line**. If close-out regularly costs more than that, the architecture must be
+simplified before it is expanded (`01-Constitution.md §14`). Mechanical checking belongs to
+tooling, never to the agent.
 
 **Plan completion is more than Road close-out.** When the last Road of a Plan lands, the
 Plan-level verification pass runs against the running product before the Plan may close —
 Mirror Check, raw measurement, seam ownership, and open-question resolution
 (`10-Verification-Specification.md §1, §4–7`). Road-level close-out keeps the paper in sync;
-the Plan-level pass proves the product is actually right.
+the Plan-level pass proves the product is actually right. The Plan then appends **one line to
+`akrs/FEATURES.md`** (name · Plan · key Roads/Memories · SoT section —
+`11-Change-Management-Specification.md §2`).
 
 Close-out is the step that makes the drift case above impossible: the moment `WorkCard.vue` was
 replaced by `WorkList.vue`, close-out would have refreshed the Road's *Expected files* (or

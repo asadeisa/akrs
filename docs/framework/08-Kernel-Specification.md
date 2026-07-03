@@ -68,7 +68,8 @@ The whole Kernel, minified, contains exactly these:
 9. **Close-out rule** — on landing work: append narrative+metrics to `LOG.md` → rewrite
    `STATE.md` ≤1 page → retire the Road (`DONE + superseded by <memory>`) or refresh it →
    update Memory. One Road = one commit. At Plan close-out: Mirror Check + raw measurement,
-   no unowned seam, no open question owned by a closing Plan, delete the handoff on pass.
+   no unowned seam, no open question owned by a closing Plan, delete the handoff on pass,
+   append one FEATURES line.
 10. **Applicability** — one line: AKRS Lite vs Full; when to skip.
 11. **Pointers** — locations of Router, `STATE.md`, `LOG.md`, `SOT-INDEX.md` (if present),
     Source-of-Truth (project-specific).
@@ -101,7 +102,7 @@ Read the SoT/repo only via the active Road's windows — through SOT-INDEX if pr
 | 1 | small, isolated change | single Road or file; skip full chain |
 | 2 | continue existing task | full route, no new planning |
 | 3 | new work / "add/build/plan X" | generate 1 Task + 1 Road on demand (or batch a plan → extra Roads QUEUED) |
-| 4 | cross-cutting / structural | Leader only |
+| 4 | cross-cutting / structural / change a feature | Leader only; change procedure: FEATURES → impact → flag conflicts → merge-or-vanish |
 Fast path = 0/1: skip Router→Memory→Road for trivial work.
 Activate a QUEUED Road only after re-checking it against Memory/STATE.
 
@@ -132,7 +133,7 @@ Append narrative+metrics to LOG.md → rewrite STATE.md ≤1 page → retire the
 One Road = one commit (`<ROAD-ID>: <summary>`). Keep Road and Memory in agreement.
 Plan close-out: run the Mirror Check (every SoT bullet reachable at runtime) + ≥1 raw
 measurement vs a SoT budget; no unowned seam; no open question owned by a closing Plan;
-Tester deletes the handoff on pass.
+Tester deletes the handoff on pass; append one line to FEATURES.md.
 
 ## Applicability
 Lite = Kernel+Router+Roads. Full = +Plans/Phases/Memory for high-blast-radius work.
@@ -143,6 +144,7 @@ Tiny/throwaway = skip.
 - STATE:           akrs/STATE.md
 - LOG:             akrs/LOG.md   (append-only, never read at boot)
 - SoT Index:       akrs/SOT-INDEX.md   (if present — read the SoT only through it)
+- FEATURES:        akrs/FEATURES.md   (landed-features index; first read of the change path)
 - Source of Truth: <path(s) confirmed by developer>
 ```
 
