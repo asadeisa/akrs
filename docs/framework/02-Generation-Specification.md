@@ -69,6 +69,8 @@ Collect Sources
   ↓
 Confirm Source of Truth          (mandatory — §1)
   ↓
+Confirm acceptance + harness     (structured Phase-A question — 10 §8; never parked)
+  ↓
 Generate SoT Index               (if the SoT is large or the project pre-exists — 09)
   ↓
 Analyze Project                  (progressively, one domain at a time — 09 §4)
@@ -91,6 +93,11 @@ Skeleton Complete
 ```
 
 Phase A **never** generates Tasks and **never** generates Roads. The order is fixed.
+
+**Confirm acceptance + harness** is a mandatory Phase-A structured question: every SoT section
+must carry ≥ 1 measurable acceptance line, and the verification harness (minimum: a committed
+assert-script convention) is decided now — never parked to the last plan
+(`10-Verification-Specification.md §8–9`).
 
 `STATE.md` is initialized at the end of Phase A so the very first session has a resume
 point (active mode, no active Road yet, Next = "generate first Task on request"). See
@@ -156,10 +163,11 @@ only when requested.
 > scope. Never split for symmetry or folder structure.
 
 > **Separation of concerns (kills Task/Road duplication).** A **Task** holds only: objective,
-> constraints, acceptance, an optional `Ticket:` (external tracker id), and a `Road:` pointer.
-> Everything navigational — read order, expected files, boundaries, `Status`, `Deps` — lives
-> **only** in the **Road**. A fact restated in both a Task and its Road is a validation
-> failure.
+> constraints, acceptance, an optional `Ticket:` (external tracker id), an optional `Verify:`
+> field (`none` | `idea` | `measured` — absent means `idea`;
+> `10-Verification-Specification.md §2`), and a `Road:` pointer. Everything navigational —
+> read order, expected files, boundaries, `Status`, `Deps` — lives **only** in the **Road**.
+> A fact restated in both a Task and its Road is a validation failure.
 
 **Memory** exists only for **reusable** knowledge — knowledge multiple Tasks may need.
 Single-use knowledge stays inside its Task or Road. Memory is an index, never a wiki. Every

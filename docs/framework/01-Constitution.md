@@ -77,8 +77,12 @@ insufficient → expand through the Router, load the required Memory, return to 
 continue. The Worker never redesigns the Road. (Full guarantees: `03-Execution-Contract.md`.)
 
 ### Tester
-Verifies landed *ideas* against the running product; never modifies product code; reports
-findings and escalates. (One-line stub — the full Tester role lands later in v1.2.)
+Verifies landed *ideas* against the **running product**, not the paperwork. Consumes the
+Worker's Test-Handoff, runs the Mirror Check, takes at least one raw measurement against a SoT
+budget, and answers *"as a user, is this acceptable?"* The Tester **never modifies product
+code**; it reports findings, escalates, and — on a repeated failure pattern — may open a
+tester-memory topic and inform the Developer. On pass it deletes the handoff. (Full role:
+`10-Verification-Specification.md`.)
 
 ---
 
@@ -96,6 +100,7 @@ AKRS is built from a small, fixed set of artifacts, each with a single owner que
 | **Plan** | "Which business capability?" | capability scope | implementation teaching |
 | **STATE** | "Where did we leave off?" | active mode/role/plan/phase/task/road, Done (last 3), Next, Open questions, timestamp+author | knowledge (it points, never teaches) |
 | **LOG** | "What happened, in full?" | append-only close-out narratives + metrics | anything a session needs at boot |
+| **Handoff** | "What must the Tester check?" | what became observable, how to reach it, expected behavior (ephemeral — Worker creates, Tester deletes) | a report, teaching, anything permanent |
 
 Every execution follows exactly one route. Workers never jump randomly between layers:
 
@@ -225,6 +230,8 @@ A workflow is complete only if every answer is YES:
 - Workers can execute without scanning the repository.
 - `STATE.md` exists and reflects the current save-point.
 - No unresolved Unknown knowledge remains; every assumption is justified.
+- Every Plan close-out ran the Mirror Check; no seam is unowned; no open question is owned by
+  a closing Plan (`10-Verification-Specification.md`).
 
 If any answer is NO, the workflow is incomplete.
 

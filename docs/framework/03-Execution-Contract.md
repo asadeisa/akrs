@@ -72,7 +72,13 @@ Execution is complete only when:
 - the assigned objective is complete,
 - all changes remain inside scope,
 - the modified work has been validated,
-- no unresolved assumptions remain.
+- no unresolved assumptions remain,
+- verification asserts written along the way are **committed** to `tests/` (or the confirmed
+  harness), never discarded (`10-Verification-Specification.md §9`).
+
+**Handoff duty.** While executing, the Worker keeps the Plan's Test-Handoff file current — what
+became observable, how to reach it, expected behavior — and flags it "ready" when the idea is
+runnable (`10-Verification-Specification.md §3`).
 
 ---
 
@@ -93,6 +99,10 @@ hand-off) performs close-out so the workflow does not drift, in this order:
 
 **Git protocol:** one Road = one commit (or branch/PR); message `<ROAD-ID>: <summary>`.
 Commit hygiene lives inside the workflow, not beside it.
+
+**Plan-level verification.** A Task closes on the checks above, but a **Plan** does not close
+until its verification pass runs against the running product — Mirror Check, raw measurement,
+seam ownership, and open-question resolution (`10-Verification-Specification.md §1, §4–7`).
 
 Close-out touches **at most LOG + STATE + the Road + one Memory** — the overhead budget of
 `01-Constitution.md §14`. A Road whose `Status` is still `ACTIVE` after its work has landed,

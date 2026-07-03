@@ -52,7 +52,9 @@ several large sources exist, one index file per source lives under `akrs/sot/`, 
 `SOT-INDEX.md` is the **root** that lists them.
 
 The index is a **Memory-class artifact**: it points, never teaches. It carries no
-requirements text, no implementation, no design rationale — only *where each thing lives*.
+requirements text, no implementation, no design rationale — only *where each thing lives*. An
+index entry **may flag a SoT section that is missing a measurable acceptance line**
+(`10-Verification-Specification.md §8`) — the index owns this signal; doc 10 only cites it.
 
 ---
 

@@ -34,7 +34,8 @@ the **last 3** landed items, one line each; older history lives only in `LOG.md`
   **table** (one row per active Road).
 - **Done** — the last 3 landed items only, one line each.
 - **Next** — the single most obvious next step.
-- **Open questions** — unresolved Unknowns / decisions awaiting the Developer.
+- **Open questions** — unresolved Unknowns / decisions awaiting the Developer; each owned by a
+  Plan and expiring at that Plan's close-out (`10-Verification-Specification.md §7`).
 - **Last updated** — timestamp + which tool/session wrote it.
 
 **Template:**
@@ -153,6 +154,12 @@ If close-out regularly costs more than that, the architecture must be simplified
 expanded (`01-Constitution.md §14`). Mechanical checking belongs to tooling, never to the
 agent.
 
+**Plan completion is more than Road close-out.** When the last Road of a Plan lands, the
+Plan-level verification pass runs against the running product before the Plan may close —
+Mirror Check, raw measurement, seam ownership, and open-question resolution
+(`10-Verification-Specification.md §1, §4–7`). Road-level close-out keeps the paper in sync;
+the Plan-level pass proves the product is actually right.
+
 Close-out is the step that makes the drift case above impossible: the moment `WorkCard.vue` was
 replaced by `WorkList.vue`, close-out would have refreshed the Road's *Expected files* (or
 retired it) and updated Memory — so Road and Memory could never disagree.
@@ -203,4 +210,6 @@ This is an optional hardening step, not required for the framework to be usable.
 - The Execution Contract makes close-out a Worker obligation (`03-Execution-Contract.md §6`).
 - The Kernel carries the one-line close-out rule and the `STATE.md` / `LOG.md` pointers
   (`08-Kernel-Specification.md`).
-- Assumption aging at plan completion is owned by `02-Generation-Specification.md §6`.
+- Assumption aging is owned by `02-Generation-Specification.md §6`; open-question expiry at
+  Plan close-out and the whole Plan-level verification pass are owned by
+  `10-Verification-Specification.md`.

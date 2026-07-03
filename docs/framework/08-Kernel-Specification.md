@@ -47,8 +47,9 @@ because the heavy sources are then removed from the target's footprint.
 
 The whole Kernel, minified, contains exactly these:
 
-1. **Roles** — Leader plans/owns architecture; Worker executes only the active Road; role at
-   boot from the prompt convention (`as leader|worker|tester:`) → STATE `Role:` → ask.
+1. **Roles** — Leader plans/owns architecture; Worker executes only the active Road; Tester
+   verifies the idea against the running product; role at boot from the prompt convention
+   (`as leader|worker|tester:`) → STATE `Role:` → ask.
 2. **Runtime priority** — `Road → Memory → Router → Repository`.
 3. **Modes 0–4** — compact table, each row with a prompt→Mode hint (closes the
    "no prompt→Mode algorithm" gap). Fast path (0/1) explicitly wired. Mode 3 may batch a
@@ -66,7 +67,8 @@ The whole Kernel, minified, contains exactly these:
    end every turn with a guided next step, confirm Source of Truth first.
 9. **Close-out rule** — on landing work: append narrative+metrics to `LOG.md` → rewrite
    `STATE.md` ≤1 page → retire the Road (`DONE + superseded by <memory>`) or refresh it →
-   update Memory. One Road = one commit.
+   update Memory. One Road = one commit. At Plan close-out: Mirror Check + raw measurement,
+   no unowned seam, no open question owned by a closing Plan, delete the handoff on pass.
 10. **Applicability** — one line: AKRS Lite vs Full; when to skip.
 11. **Pointers** — locations of Router, `STATE.md`, `LOG.md`, `SOT-INDEX.md` (if present),
     Source-of-Truth (project-specific).
@@ -84,7 +86,8 @@ The framework emits this template, filled with project-specific values at genera
 
 ## Roles
 - Leader: plans, owns architecture, generates Roads, owns close-out.
-- Worker: executes ONLY the active Road. Never redesigns. Never leaves scope.
+- Worker: executes ONLY the active Road. Never redesigns. Never leaves scope. Keeps the handoff current.
+- Tester: verifies the idea against the RUNNING product (Mirror Check + raw measurement); never edits product code; deletes the handoff on pass.
 - Role at boot: prompt `as leader|worker|tester:` → STATE Role: → ask.
 
 ## Runtime priority
@@ -113,7 +116,7 @@ NO → Router → required Memory → back to Road → continue. Never guess.
 - Router: routes+refs / no explanations.
 - Memory: index+refs+ownership, each fact labeled Decided/Assumption(H/M/L)/Unknown / no implementation.
 - Road: read-order+expected-files+scope+Status+Deps / no docs.
-- Task: objective+constraints+acceptance+road-pointer / restates nothing from its Road.
+- Task: objective+constraints+acceptance+Verify(none|idea|measured)+road-pointer / restates nothing from its Road.
 
 ## Validation
 One owner per concept · every Task has one Road, restating nothing from it ·
@@ -127,6 +130,9 @@ End every turn with a guided next step.
 Append narrative+metrics to LOG.md → rewrite STATE.md ≤1 page → retire the Road
 (DONE + superseded by <memory>) OR refresh its Expected files → update Memory.
 One Road = one commit (`<ROAD-ID>: <summary>`). Keep Road and Memory in agreement.
+Plan close-out: run the Mirror Check (every SoT bullet reachable at runtime) + ≥1 raw
+measurement vs a SoT budget; no unowned seam; no open question owned by a closing Plan;
+Tester deletes the handoff on pass.
 
 ## Applicability
 Lite = Kernel+Router+Roads. Full = +Plans/Phases/Memory for high-blast-radius work.

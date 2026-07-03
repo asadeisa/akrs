@@ -41,6 +41,7 @@ others. This table grows as each part lands.
 | **QUEUED status + batch generation** | legal status for generated-not-yet-active Roads; per-plan batching with staleness re-validation | `07` + `02-Generation-Specification.md` |
 | **Task/Road granularity + no-duplication** | Leader-decided granularity; a Task restates nothing from its Road | `02-Generation-Specification.md` |
 | **SoT Index + read windows + partitioning** | no agent ever reads the whole Source of Truth, however large or pre-existing | `09-Scale-And-Source-Index-Specification.md` |
+| **Tester role + idea-level verification** | Done is proven against the running product — Mirror Check, raw measurement, Test-Handoff, seam ownership, expiring open questions | `10-Verification-Specification.md` |
 
 ---
 
@@ -57,6 +58,7 @@ others. This table grows as each part lands.
 | `07-State-And-Sync-Specification.md` | `STATE.md` save-point + `LOG.md` journal + Road close-out/sync lifecycle | — (new capability) |
 | `08-Kernel-Specification.md` | The Kernel concept + minified kernel template | — (new capability) |
 | `09-Scale-And-Source-Index-Specification.md` | Staying minimal-read at scale: SoT Index, read windows, progressive analysis, domain partitioning | — (new v1.2 capability) |
+| `10-Verification-Specification.md` | Proving Done against the running product: Tester role, Mirror Check, idea-level `Verify:`, handoff, raw measurement, seam ownership | — (new v1.2 capability) |
 
 Origin assets (`ai-work-flow-original.png/.json`, `akrs-system-graph.drawio`) remain in
 `docs/research/v0/`. Regenerating the system graph to show the v1 kernel + state lanes is an
