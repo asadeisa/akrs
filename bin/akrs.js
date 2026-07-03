@@ -310,6 +310,10 @@ function runValidate() {
   const blocked = join(akrs, 'BLOCKED.md');
   if (existsSync(blocked)) warn(blocked, 'BLOCKED.md exists — work is stalled; resolve it, log one line, then delete it');
 
+  // 10b. tester-memory topic files are ephemeral (D14) -> surface so they don't persist
+  for (const tm of listFiles(join(akrs, 'memory', 'tester'), isMd))
+    warn(tm, 'tester-memory topic present — ephemeral; delete it once the pattern is fixed');
+
   // 11. stale handoff (its Plan has landed)
   const staleHandoffs = [];
   for (const h of listFiles(join(akrs, 'verify'), (p) => /-handoff\.md$/i.test(p))) {
