@@ -9,6 +9,65 @@ version lines relate.
 
 ---
 
+## [1.2.0] — 2026-07-03
+
+A large, **backward-compatible** growth of the framework (D4/D8: nothing removed or weakened;
+existing generated workflows keep working). Adds three new spec docs (09/10/11), the kernel
+folder + Gate, and the `validate` CLI.
+
+### Added
+- **`LOG.md` — the append-only close-out journal.** `STATE.md` is now a ≤ ~1-page save-point
+  (rewritten fresh, last-3 Done, `Role:` field, parallel table); full narratives + a
+  `Metrics:` line move to `LOG.md`, which is never read at boot
+  (`07-State-And-Sync-Specification.md`).
+- **`QUEUED` Road status + sanctioned per-plan batch generation**, with a staleness
+  re-validation before any `QUEUED` Road activates (`07`, `02-Generation-Specification.md`).
+- **Leader-decided Task/Road granularity** + a hard Task/Road no-duplication rule (`02`).
+- **`Deps:` dependency gating** (an `ACTIVE` Road's deps must be `DONE` or STATE-overridden),
+  **role-at-boot** (`leader | worker | tester`), and **one Road = one commit** (`03`, `06`).
+- **Epistemic labels** (`Decided` / `Assumption H-M-L` / `Unknown`) and **assumption aging**
+  (`02 §6`).
+- **Overhead budget (D12)** — close-out touches at most LOG + STATE + Road + one Memory + one
+  FEATURES line; the workflow never becomes the agent's main job (`01 §14`).
+- **`09-Scale-And-Source-Index-Specification.md`** — the SoT Index, read windows, progressive
+  per-domain analysis, domain partitioning + `GLOBAL.md`: no agent ever reads the whole
+  Source of Truth.
+- **`10-Verification-Specification.md`** — the **Tester** role, the **Mirror Check**,
+  idea-level `Verify:` (`none|idea|measured`), the **Test-Handoff** baton, raw measurement
+  against a SoT budget, seam ownership, expiring open questions, SoT acceptance lines,
+  persistent verification (`tests/`), and tester memory.
+- **`11-Change-Management-Specification.md`** — the **`FEATURES.md`** landed-features index,
+  the on-demand **change file**, **merge-or-vanish** completion, and the requirements-delta
+  procedure.
+- **The kernel folder + the Gate** — the compiled artifact is now `akrs/kernel/` (`CORE.md`
+  + `worker/leader/tester/changer.md`); the Gate boots `CORE.md` + exactly one role file
+  (`08-Kernel-Specification.md`, `06`).
+- **`BLOCKED.md`** — an on-demand flag a stuck non-leader agent raises (`03`, `06`).
+- **`Skills:` field** on Tasks — optional skill / MCP-tool names (`02 §5`).
+- **`npx akrs-framework validate`** — a zero-dependency CLI with **14 checks**, plus `--fix`
+  (sync mirrored Road statuses) and `--clean` (delete stale ephemerals). CI green = workflow
+  valid (`bin/akrs.js`, `07 §6`).
+- **`docs/guides/TEAM-ADOPTION.md`** — vocabulary translation, ticket/PR/CI mapping,
+  parallel-work story, and the LOG-metrics ROI slide.
+
+### Changed
+- The Kernel is a **folder** booted via the **Gate**, not a single `KERNEL.md`; all
+  non-frozen docs, guides, `GETTING_STARTED.md`, and `VERSIONING.md` updated accordingly.
+- Boot sequence (`06 §2`) adds the Gate + role declaration + a `BLOCKED.md` first-action check.
+- Close-out order is **LOG → STATE → Road → Memory**, then `validate`; Plan close-out adds the
+  Mirror Check, raw measurement, seam/open-question gates, and one `FEATURES.md` line.
+- `07 §6` rewritten from "Optional lint (later)" to **Mechanical validation** (the CLI ships);
+  `ROADMAP.md` updated to reflect it.
+- Human guides (`FILE-STRUCTURE.md`, `ROUTING-FLOW.md`) refreshed for the kernel folder, the
+  Gate, the Tester lane, the change lane, and the ephemeral artifacts.
+
+### Preserved
+- **v0** (`docs/research/v0/`) and the **validation** results (`docs/validation/`) are
+  untouched. Doc identity headers keep their "(v1)" lineage (D8); only the package version and
+  the new v1.2 specs carry the v1.2 label.
+
+---
+
 ## [1.1.1] — 2026-06-30
 
 ### Fixed
@@ -97,6 +156,7 @@ The original AKRS specification: the read-once doctrine, the artifact layers
 (Router / Memory / Road / Task / Plan / Phase), and the first real-project test
 harness. Preserved unchanged under `docs/research/v0/`.
 
+[1.2.0]: https://github.com/asadeisa/akrs/releases/tag/v1.2.0
 [1.1.1]: https://github.com/asadeisa/akrs/releases/tag/v1.1.1
 [1.1.0]: https://github.com/asadeisa/akrs/releases/tag/v1.1.0
 [1.0.0]: https://github.com/asadeisa/akrs/releases/tag/v1.0.0
