@@ -63,6 +63,15 @@ Continue execution
 
 The Worker must never expand scope by guessing.
 
+**Escalation — `akrs/BLOCKED.md` (when there is no way forward).** A **non-leader** agent that
+is genuinely stuck raises a flag rather than guessing: a **Worker** *after* the scope-expansion
+loop above has failed; a **Tester** when the handoff is insufficient or the product will not
+run. It creates `akrs/BLOCKED.md` — **which Road, what blocked, what was tried, what is
+needed** — and tells the Developer. The Leader (or Developer) resolves it, the resolution gets
+one `LOG.md` line, and the file is **deleted** (named deleter: the Leader — an ephemeral
+artifact, D14). While `BLOCKED.md` exists, surfacing it is the first action of any session
+(`06-Runtime-Boot-Protocol.md §2`).
+
 ---
 
 ## 5. Execution completion

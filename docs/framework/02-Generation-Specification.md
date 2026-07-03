@@ -165,9 +165,11 @@ only when requested.
 > **Separation of concerns (kills Task/Road duplication).** A **Task** holds only: objective,
 > constraints, acceptance, an optional `Ticket:` (external tracker id), an optional `Verify:`
 > field (`none` | `idea` | `measured` — absent means `idea`;
-> `10-Verification-Specification.md §2`), and a `Road:` pointer. Everything navigational —
-> read order, expected files, boundaries, `Status`, `Deps` — lives **only** in the **Road**.
-> A fact restated in both a Task and its Road is a validation failure.
+> `10-Verification-Specification.md §2`), an optional `Skills:` list (skill / MCP-tool names
+> the executor should use — zero, one, or many are all legal), and a `Road:` pointer.
+> Everything navigational — read order, expected files, boundaries, `Status`, `Deps` — lives
+> **only** in the **Road**. A fact restated in both a Task and its Road is a validation
+> failure.
 
 **Memory** exists only for **reusable** knowledge — knowledge multiple Tasks may need.
 Single-use knowledge stays inside its Task or Road. Memory is an index, never a wiki. Every
@@ -212,25 +214,26 @@ close-out: `07-State-And-Sync-Specification.md`.)
 
 ## 7. Kernel generation (v1 — end of generation)
 
-After the workflow exists and validates, the Leader compiles the project's `KERNEL.md` from
-`08-Kernel-Specification.md`, embedding this project's Router / STATE / Source-of-Truth
-paths and prompt→Mode hints. This is a **one-time, strong-model** step.
+After the workflow exists and validates, the Leader compiles the project's **kernel folder**
+(`akrs/kernel/` — `CORE.md` + one file per role) from `08-Kernel-Specification.md`, embedding
+this project's Router / STATE / Source-of-Truth paths and prompt→Mode hints. This is a
+**one-time, strong-model** step.
 
 ```
 Workflow validated
   ↓
-Generate KERNEL.md            (from 08-Kernel-Specification.md template)
+Generate akrs/kernel/         (CORE.md + worker/leader/tester/changer.md — 08 templates)
   ↓
 Generate Platform Adapters    (AGENTS.md canonical + thin pointers — 05-...)
   ↓
-Remove framework source docs from the target project   (only the Kernel ships)
+Remove framework source docs from the target project   (only the kernel folder ships)
   ↓
 Project ready to execute
 ```
 
-> Generating an actual `KERNEL.md` is part of applying the framework to a real project. It
+> Generating an actual kernel folder is part of applying the framework to a real project. It
 > is **not** part of building this framework. The framework provides the specification and
-> template only.
+> templates only.
 
 ---
 

@@ -31,12 +31,14 @@ minimally and nothing more:
 # AGENTS.md
 This project uses AKRS.
 
-Boot: read `akrs/KERNEL.md`, then obey it. Do not execute before boot.
+Boot: read `akrs/kernel/CORE.md`, then declare your role and load `akrs/kernel/<role>.md`
+(the Gate). Obey both. Do not execute before boot.
 Fast path: trivial or isolated change → Mode 0/1 (skip the full chain).
 ```
 
 No project knowledge lives here — adapters are disposable and never a Source of Truth. The
-Kernel (`akrs/KERNEL.md`) holds the project's operating rules and pointers.
+kernel folder (`akrs/kernel/` — `CORE.md` + one file per role) holds the project's operating
+rules and pointers.
 
 ---
 
@@ -61,8 +63,8 @@ instruction. Additional adapters may be added without changing AKRS architecture
 ## 4. Adapter responsibilities
 
 Every adapter is responsible only for: activating AKRS, pointing the agent at the boot
-sequence (`akrs/KERNEL.md`), identifying the runtime environment, and preventing the agent
-from bypassing AKRS initialization. Nothing more.
+sequence (`akrs/kernel/CORE.md` → role file), identifying the runtime environment, and
+preventing the agent from bypassing AKRS initialization. Nothing more.
 
 ---
 
@@ -76,7 +78,7 @@ Generate Workflow
   ↓
 Validate Workflow
   ↓
-Generate KERNEL.md            (08-Kernel-Specification.md)
+Generate akrs/kernel/         (CORE + role files — 08-Kernel-Specification.md)
   ↓
 Generate AGENTS.md (canonical) + thin pointer adapters
   ↓
@@ -104,4 +106,4 @@ If an adapter already exists:
 
 An adapter's responsibility ends the moment it activates AKRS. From there, behavior is
 governed by the Runtime Boot Protocol and the active workflow. Because every tool boots the
-same `AGENTS.md → KERNEL.md`, behavior is identical regardless of CLI.
+same `AGENTS.md → kernel/CORE.md + role file`, behavior is identical regardless of CLI.

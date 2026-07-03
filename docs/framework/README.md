@@ -43,6 +43,7 @@ others. This table grows as each part lands.
 | **SoT Index + read windows + partitioning** | no agent ever reads the whole Source of Truth, however large or pre-existing | `09-Scale-And-Source-Index-Specification.md` |
 | **Tester role + idea-level verification** | Done is proven against the running product — Mirror Check, raw measurement, Test-Handoff, seam ownership, expiring open questions | `10-Verification-Specification.md` |
 | **Change management + FEATURES index** | features change without leaving broken data — FEATURES index, on-demand change file, merge-or-vanish, requirements-delta | `11-Change-Management-Specification.md` |
+| **Kernel folder + Gate + BLOCKED + Skills** | the Gate loads `CORE.md` + one role file per session; a non-leader stuck agent raises `BLOCKED.md`; Tasks may name `Skills:` | `08-Kernel-Specification.md` + `06` + `03` |
 
 ---
 
@@ -89,9 +90,11 @@ When a developer starts a real project with AKRS v1:
 3. Generate the workflow skeleton — Router, Memory, Plans, Phases (Phase A).
 4. Generate `STATE.md`.
 5. Generate Tasks + Roads on demand (Phase B).
-6. Generate a fresh project-specific `KERNEL.md` from `08-Kernel-Specification.md`.
-7. Remove the framework source documents from the generated project (only the Kernel ships).
-8. Execute using the Kernel; reconcile via close-out as work lands.
+6. Generate a fresh project-specific kernel folder (`akrs/kernel/` — `CORE.md` + one file per
+   role) from `08-Kernel-Specification.md`.
+7. Remove the framework source documents from the generated project (only the kernel folder
+   ships).
+8. Execute using the kernel folder; reconcile via close-out as work lands.
 
-The Kernel is regenerated for every project, never versioned, never stored in this repo,
-never reused across projects. Only the framework belongs in version control.
+The kernel folder is regenerated for every project, never versioned, never stored in this
+repo, never reused across projects. Only the framework belongs in version control.

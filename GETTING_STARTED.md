@@ -89,7 +89,8 @@ Do this:
 1. Confirm with me which documents are authoritative (Source of Truth).
 2. Run Phase A: generate the workflow skeleton only —
    Router, Memory, Plans, Phases, and STATE.md.
-3. Then generate the project KERNEL.md from 08-Kernel-Specification.md.
+3. Then generate the project kernel folder (akrs/kernel/ — CORE.md + role files)
+   from 08-Kernel-Specification.md.
 
 Do NOT generate Tasks or Roads yet. Do NOT write application code yet.
 ```
@@ -98,7 +99,9 @@ What you should get back (the **Phase A skeleton**):
 
 ```
 akrs/
-├── KERNEL.md         ← the compiled ~1-page operating file
+├── kernel/           ← the compiled operating files (Gate boots CORE + one role file)
+│   ├── CORE.md       ← shared ~1-page operating rules
+│   └── <role>.md     ← worker / leader / tester / changer
 ├── router.md         ← "where do I go next?"
 ├── STATE.md          ← the portable save-point
 └── memory/           ← one file per reusable knowledge area
@@ -121,15 +124,16 @@ file such as `CLAUDE.md`), ask the Leader:
 ```
 There is no AGENTS.md at the project root. Create the canonical AGENTS.md
 entry file per 05-Platform-Adapter-Specification.md. It must boot into
-akrs/KERNEL.md.
+akrs/kernel/CORE.md and then the role file (the Gate).
 ```
 
-A correct `AGENTS.md` is tiny — it just points the AI at the Kernel:
+A correct `AGENTS.md` is tiny — it just points the AI at the kernel folder:
 
 ```markdown
 # AGENTS.md
 This project uses AKRS.
-Boot: read `akrs/KERNEL.md`, then obey it. Do not execute before boot.
+Boot: read `akrs/kernel/CORE.md`, then declare your role and load `akrs/kernel/<role>.md`.
+Obey both. Do not execute before boot.
 ```
 
 > This is a known, easy-to-miss step. If your first Worker run seems "lost,"
@@ -179,7 +183,7 @@ Implement the active Road.
 
 That's it. A correctly built workflow means the executor:
 
-- boots `AGENTS.md → KERNEL.md`,
+- boots `AGENTS.md → kernel/CORE.md → its role file`,
 - finds the active Road from `STATE.md`,
 - reads only what the Road tells it to,
 - writes code inside the Road's scope,
@@ -258,7 +262,8 @@ constantly.
 The Road's boundaries are too loose. Tighten *Out of scope* / *Boundaries*.
 
 **"The Worker asks what file to read."**
-The Kernel or Road isn't being booted. Check `AGENTS.md` → `KERNEL.md` chain.
+The Kernel or Road isn't being booted. Check the `AGENTS.md` → `kernel/CORE.md` → role-file
+chain.
 
 **"Two files disagree about the code."**
 A close-out was skipped. Reconcile via `STATE.md` + Road status now.

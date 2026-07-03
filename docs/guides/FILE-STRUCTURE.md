@@ -73,9 +73,15 @@ your-project/
 ├── CLAUDE.md                  Thin pointer → @AGENTS.md (optional, per-tool)
 │
 ├── akrs/
-│   ├── KERNEL.md              ~1-page compiled operating file (the Worker boots this)
+│   ├── kernel/                Compiled operating files — the Gate boots CORE + one role file
+│   │   ├── CORE.md            Shared: route, modes, close-out, pointers (~1 page)
+│   │   ├── worker.md          Worker rules only
+│   │   ├── leader.md          Leader rules only
+│   │   ├── tester.md          Tester rules only
+│   │   └── changer.md         Change-management (Mode 4) rules only
 │   ├── router.md              Routes only — "where next?"
 │   ├── STATE.md               Portable save-point — "where did we leave off?"
+│   ├── LOG.md                 Append-only close-out journal — never read at boot
 │   │
 │   ├── memory/                Reusable knowledge, one owner per concept
 │   │   ├── domain-model.md
@@ -96,7 +102,7 @@ your-project/
 
 | File | Answers only | Must never contain |
 |------|--------------|--------------------|
-| `KERNEL.md` | How do I operate here? | Project knowledge / docs |
+| `kernel/CORE.md` + `kernel/<role>.md` | How do I operate here? | Project knowledge / docs |
 | `router.md` | Where do I go next? | Explanations, implementation |
 | `memory/*.md` | Which knowledge? (index) | Tutorials, duplicated docs |
 | `roads/*.md` | Exactly what to read/change? | Architecture essays |
@@ -107,8 +113,8 @@ your-project/
 
 ## What You Must Never Edit by Hand (carelessly)
 
-- **`KERNEL.md`** — it is *compiled* by the Leader. Regenerate it; don't patch it
-  ad hoc, or it drifts from the framework.
+- **`kernel/`** — it is *compiled* by the Leader (CORE + role files). Regenerate it; don't
+  patch it ad hoc, or it drifts from the framework.
 - **`router.md` / `memory/`** — only the **Leader** changes architecture. Workers
   reference these; they never redesign them.
 
@@ -144,7 +150,7 @@ plan a big change), just re-run `npx akrs-framework init` to pull `docs/akrs/` i
 
 ```
 docs/framework/   =  source code   (versioned, teaches the Leader, ~6,000 words)
-akrs/KERNEL.md    =  compiled output (per-project, teaches the Worker, ~1 page)
+akrs/kernel/      =  compiled output (per-project, CORE + role files, ~1 page per session)
 ```
 
 Only the framework is versioned and shared. The Kernel is regenerated for every

@@ -6,8 +6,10 @@ This protocol ensures every supported platform enters the workflow through the s
 deterministic process before any planning or execution begins. It governs **session
 initialization only**.
 
-v1 changes two things from v0: the boot loads the **Kernel** (one page) instead of the full
-doctrine chain, and it **reads `STATE.md` to resume** so a workflow survives across tools.
+v1 changes two things from v0: the boot loads the **Kernel** instead of the full doctrine
+chain, and it **reads `STATE.md` to resume** so a workflow survives across tools. v1.2 adds
+the **Gate**: the Kernel is a folder, and the boot loads `kernel/CORE.md` + exactly one role
+file (one page per session).
 
 ---
 
@@ -20,8 +22,9 @@ doctrine chain, and it **reads `STATE.md` to resume** so a workflow survives acr
    default behaviors must not replace AKRS navigation.
 3. **Deterministic startup.** Every session follows the same sequence regardless of platform.
    The runtime never skips initialization steps.
-4. **Boot the Kernel, not the doctrine.** The target project carries only `akrs/KERNEL.md`.
-   The framework doctrine is not present in the project and is never loaded at runtime.
+4. **Boot the Kernel, not the doctrine.** The target project carries only `akrs/kernel/`
+   (`CORE.md` + one file per role). The framework doctrine is not present in the project and
+   is never loaded at runtime.
 
 ---
 
@@ -30,11 +33,13 @@ doctrine chain, and it **reads `STATE.md` to resume** so a workflow survives acr
 ```
 Platform Entry            (AGENTS.md / thin pointer)
   ↓
-Load akrs/KERNEL.md       (the compiled operating rules — replaces the v0 doctrine chain)
+Load akrs/kernel/CORE.md  (the shared operating rules — replaces the v0 doctrine chain)
   ↓
 Read akrs/STATE.md        (resume point: active mode/role/plan/phase/task/road, Next)
   ↓
-Declare role              (prompt convention `as leader|worker|tester: …` → STATE Role: → ask)
+Gate: declare role        (prompt convention `as leader|worker|tester: …` → STATE Role: → ask)
+  ↓
+Load kernel/<role>.md     (exactly ONE role file — never another role's)
   ↓
 Detect Environment
   ↓
@@ -47,13 +52,19 @@ Load Required Workflow Files   (only what the Mode needs)
 Start Execution
 ```
 
-**Declare role** resolves in a fixed order: the prompt convention
-(`as leader: …` / `as worker: …` / `as tester: …`) wins; otherwise the `Role:` line in
-`STATE.md`; otherwise the session asks. STATE is read *before* this step so its `Role:` line
-is available as the fallback.
+**The Gate** filters every session. `STATE.md` is read **before** the Gate so its `Role:` line
+is available as the fallback: the prompt convention (`as leader: …` / `as worker: …` /
+`as tester: …`) wins; otherwise STATE's `Role:`; otherwise the session asks. The Gate then
+loads **`kernel/CORE.md` + exactly one `kernel/<role>.md`** and never another role's file, so
+each session carries only what its role needs (`08-Kernel-Specification.md §1`).
 
-The Kernel encodes the prompt→Mode hints, the one route, the file shapes, and the pointers,
-so this sequence is fully determined by the Kernel + STATE — no doctrine read required.
+**BLOCKED check.** If `akrs/BLOCKED.md` exists, **surfacing it is the first action of the
+session** — a non-leader agent is stuck and the Leader/developer must resolve it before new
+work proceeds (`03-Execution-Contract.md §4`).
+
+`CORE.md` encodes the prompt→Mode hints, the one route, and the pointers; the role file
+encodes that role's shapes and duties — so this sequence is fully determined by the kernel
+folder + STATE, with no doctrine read required.
 
 ---
 
@@ -62,8 +73,12 @@ so this sequence is fully determined by the Kernel + STATE — no doctrine read 
 The architecture must never force unnecessary navigation. For a trivial or isolated change
 the runtime takes the fast path: select Mode 0/1 and skip the full Router→Memory→Road chain,
 loading only project Memory and the named source files (Mode 0) or the single relevant Road
-or file (Mode 1). The Kernel wires this explicitly so trivial work does not pay full boot
+or file (Mode 1). `CORE.md` wires this explicitly so trivial work does not pay full boot
 cost. (Mode table: `01-Constitution.md §9`.)
+
+**Mode 0 is the escape hatch** — "read no workflow": the developer names the sources and the
+session works from Memory + those files only. It already exists as the Developer Fast Path;
+the Gate simply honors it, adding nothing new.
 
 ---
 
@@ -107,6 +122,6 @@ Execution must never continue under uncertainty.
 
 ## 8. Completion
 
-This protocol ends once the Kernel is loaded, `STATE.md` is read, and the required workflow
-files for the Mode are loaded. From there, behavior is governed by the selected Mode and the
-Execution Contract.
+This protocol ends once `kernel/CORE.md` + the role file are loaded, `STATE.md` is read, and
+the required workflow files for the Mode are loaded. From there, behavior is governed by the
+selected Mode and the Execution Contract.

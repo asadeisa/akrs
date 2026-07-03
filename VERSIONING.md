@@ -7,7 +7,7 @@ the framework evolve without forcing migrations on existing projects.
 |--------------|------------------|----------------|--------------|
 | **Framework Version** | The specification in `docs/framework/` | This repo / npm package | Maintainers |
 | **Workflow Version** | A generated workflow inside a target project | The target project | The Leader, per project |
-| **Kernel Version** | The compiled `KERNEL.md` for one project | The target project | Regenerated per project |
+| **Kernel Version** | The compiled `akrs/kernel/` folder for one project | The target project | Regenerated per project |
 
 ---
 
@@ -32,7 +32,7 @@ top entry of [`CHANGELOG.md`](CHANGELOG.md).
 ## Workflow Version (per project)
 
 Each generated project may record which framework version produced it, e.g. in
-`akrs/STATE.md` or a header in `KERNEL.md`:
+`akrs/STATE.md` or a header in `kernel/CORE.md`:
 
 ```
 Generated with AKRS framework v1.0.0

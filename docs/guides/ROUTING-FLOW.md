@@ -110,7 +110,7 @@ always.
 
 ```mermaid
 flowchart TD
-    A[Phase A<br/>Generate skeleton once] --> K[Generate KERNEL.md]
+    A[Phase A<br/>Generate skeleton once] --> K[Generate kernel/ folder<br/>CORE + role files]
     K --> Entry[Create AGENTS.md entry]
     Entry --> B[Phase B<br/>Generate 1 Task + 1 Road on demand]
     B --> X[Worker executes the Road]

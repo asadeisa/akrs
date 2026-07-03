@@ -114,17 +114,19 @@ Repository exploration happens only when the active Road explicitly requires it.
 
 ---
 
-## 7. The Kernel (v1)
+## 7. The Kernel (v1.2 — a folder)
 
 The doctrine in this framework is heavy on purpose — it teaches the Leader. A target
-project must **not** carry it. Instead the Leader compiles a single, minified,
-prompt-engineered **`KERNEL.md`** that every session and every tool boots into. It
-replaces the read-once doctrine with ~one page of operating rules, generated per project.
+project must **not** carry it. Instead the Leader compiles a minified, prompt-engineered
+**kernel folder** (`akrs/kernel/` — a shared `CORE.md` plus one file per role) that every
+session boots into through the **Gate**, which loads `CORE.md` + exactly one role file. It
+replaces the read-once doctrine with ~one page of operating rules per session, generated per
+project.
 
 > The **framework is the source code; the Kernel is the compiled artifact.** Only the
-> framework is versioned. The Kernel lives only inside the generated project and is
+> framework is versioned. The kernel folder lives only inside the generated project and is
 > regenerated for every project using the latest framework and the strongest available
-> model. Specification and template: `08-Kernel-Specification.md`.
+> model. Specification and templates: `08-Kernel-Specification.md`.
 
 ---
 
