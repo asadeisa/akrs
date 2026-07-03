@@ -79,19 +79,26 @@ Execution is complete only when:
 ## 6. Close-out (v1 — mandatory when work lands)
 
 Reaching §5 is not the end. Before the work is considered done, the Worker (or the Leader on
-hand-off) performs close-out so the workflow does not drift:
+hand-off) performs close-out so the workflow does not drift, in this order:
 
-1. **Update `STATE.md`** — move the landed objective to *Done*, set the next obvious *Next*,
-   record any new *Open questions*, refresh the timestamp + author.
-2. **Reconcile the Road** — either:
+1. **Append to `LOG.md`** — one close-out entry (what/why/how) ending in the metrics line,
+   newest at the bottom. `LOG.md` is append-only and never read at boot.
+2. **Rewrite `STATE.md` ≤ ~1 page** — move the landed objective to *Done* (last 3 only), set
+   the next obvious *Next*, record any new *Open questions*, refresh the timestamp + author.
+   STATE is rewritten fresh, never appended.
+3. **Reconcile the Road** — either:
    - mark it `DONE + superseded by <memory>` (retire it), **or**
    - refresh its *Expected files* / scope to match what actually shipped.
-3. **Update Memory** if a reusable fact changed owner or location.
+4. **Update Memory** if a reusable fact changed owner or location.
 
-A Road whose `Status` is still `ACTIVE` after its work has landed, or whose *Expected files*
-no longer match reality, is a **drift defect**. Close-out exists to prevent the case where a
-Road and a Memory disagree about what the code is. Full lifecycle and the canonical
-case study: `07-State-And-Sync-Specification.md`.
+**Git protocol:** one Road = one commit (or branch/PR); message `<ROAD-ID>: <summary>`.
+Commit hygiene lives inside the workflow, not beside it.
+
+Close-out touches **at most LOG + STATE + the Road + one Memory** — the overhead budget of
+`01-Constitution.md §14`. A Road whose `Status` is still `ACTIVE` after its work has landed,
+or whose *Expected files* no longer match reality, is a **drift defect**. Close-out exists to
+prevent the case where a Road and a Memory disagree about what the code is. Full lifecycle and
+the canonical case study: `07-State-And-Sync-Specification.md`.
 
 ---
 

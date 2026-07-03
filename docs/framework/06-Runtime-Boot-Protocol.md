@@ -32,7 +32,9 @@ Platform Entry            (AGENTS.md / thin pointer)
   ↓
 Load akrs/KERNEL.md       (the compiled operating rules — replaces the v0 doctrine chain)
   ↓
-Read akrs/STATE.md        (resume point: active mode/plan/phase/task/road, Next)
+Read akrs/STATE.md        (resume point: active mode/role/plan/phase/task/road, Next)
+  ↓
+Declare role              (prompt convention `as leader|worker|tester: …` → STATE Role: → ask)
   ↓
 Detect Environment
   ↓
@@ -44,6 +46,11 @@ Load Required Workflow Files   (only what the Mode needs)
   ↓
 Start Execution
 ```
+
+**Declare role** resolves in a fixed order: the prompt convention
+(`as leader: …` / `as worker: …` / `as tester: …`) wins; otherwise the `Role:` line in
+`STATE.md`; otherwise the session asks. STATE is read *before* this step so its `Role:` line
+is available as the fallback.
 
 The Kernel encodes the prompt→Mode hints, the one route, the file shapes, and the pointers,
 so this sequence is fully determined by the Kernel + STATE — no doctrine read required.

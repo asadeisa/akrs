@@ -48,7 +48,7 @@ framework docs, it does not replace them.
 
 ## v1.3 — Validation Utilities
 
-The optional lint described in `07-State-And-Sync-Specification.md` §5:
+The optional lint described in `07-State-And-Sync-Specification.md` §6:
 
 - Every Road references files that exist.
 - Every Road has a `Status`.

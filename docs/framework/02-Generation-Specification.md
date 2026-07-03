@@ -51,7 +51,10 @@ Assumptions never override authoritative knowledge.
   work is requested** (Mode 3).
 
 Pre-generated Tasks/Roads become stale the moment requirements change. On-demand generation
-is what keeps the workflow able to absorb change.
+is what keeps the workflow able to absorb change — so it is the **default**. The one
+sanctioned batch exception (§4) generates a whole plan's Roads at once but marks all but the
+first `QUEUED` and re-validates each against reality before activation, which is exactly what
+keeps batching safe.
 
 ---
 
@@ -110,7 +113,21 @@ Hand to Worker
 ```
 
 Exactly one Road per Task. The Leader chooses the Road; Workers never choose a Road. Only
-the requested work is generated — never in advance.
+the requested work is generated — on-demand is the default.
+
+### Sanctioned exception — Phase B-batch
+
+The Leader **MAY** generate all Task+Road pairs for **ONE plan** in a single pass, to
+amortize the expensive Leader session. When it does:
+
+- The first Road is `Status: ACTIVE`; **every Road beyond the first is `Status: QUEUED`**.
+- **Activation of each `QUEUED` Road requires the staleness re-validation** of
+  `07-State-And-Sync-Specification.md §3`: before a `QUEUED` Road becomes `ACTIVE`, the
+  Leader re-checks it against Memory + STATE and refreshes it if reality has moved.
+
+This legalizes what best practice already does (batching a plan's Roads while the Leader has
+the whole plan in context); the staleness check is exactly what makes it safe. Batching is
+still **per-plan** — never generate Roads for work that has not been scoped into a plan.
 
 ---
 
@@ -127,15 +144,28 @@ implementation order unless explicitly required.
 redesigning architecture. They reference knowledge, never duplicate it, and are created
 only when requested.
 
+> **Granularity is a Leader decision made at request time.** If the requested work fits one
+> reliable Worker session, generate **ONE Task + ONE Road** — even if that covers an entire
+> small plan. Split into multiple pairs **only** when the work exceeds one session's reliable
+> scope. Never split for symmetry or folder structure.
+
+> **Separation of concerns (kills Task/Road duplication).** A **Task** holds only: objective,
+> constraints, acceptance, an optional `Ticket:` (external tracker id), and a `Road:` pointer.
+> Everything navigational — read order, expected files, boundaries, `Status`, `Deps` — lives
+> **only** in the **Road**. A fact restated in both a Task and its Road is a validation
+> failure.
+
 **Memory** exists only for **reusable** knowledge — knowledge multiple Tasks may need.
-Single-use knowledge stays inside its Task or Road. Memory is an index, never a wiki.
+Single-use knowledge stays inside its Task or Road. Memory is an index, never a wiki. Every
+fact a Memory records carries one epistemic label (§6).
 
 **Router** answers only *"Where should execution continue?"* It points; it never explains
 implementation, architecture, business logic, or design decisions.
 
 **Roads** are execution contracts: required knowledge, required reading order, execution
-boundaries, expected change scope, and a `Status` field. (Road shape and close-out:
-`07-State-And-Sync-Specification.md`.)
+boundaries, expected change scope, an optional `Deps:` field (Road IDs that must be `DONE`
+before this Road may activate), and a `Status` field. (Road shape, `Deps` gating, and
+close-out: `07-State-And-Sync-Specification.md`.)
 
 ---
 
@@ -153,6 +183,12 @@ boundaries, expected change scope, and a `Status` field. (Road shape and close-o
   guessing.
 - **Confidence:** internally track confidence (High / Medium / Low / Unknown). Low triggers
   additional verification; Unknown triggers Developer clarification.
+- **Epistemic labels (standardized).** Every fact a Memory records carries exactly one label:
+  `Decided (by <plan/phase or developer>)` · `Assumption (High/Med/Low)` · `Unknown`. Unknowns
+  never silently harden into facts; the label is the record of how a fact is known.
+- **Assumption aging.** An `Assumption` consumed by **≥ 3 landed Roads** must be escalated:
+  confirmed by the Developer, or explicitly promoted to `Decided`-by-default with the
+  promotion recorded in the owning Memory. Assumptions must not harden silently by attrition.
 
 ---
 

@@ -76,6 +76,10 @@ executes only the provided scope. If the active Road is sufficient → execute. 
 insufficient → expand through the Router, load the required Memory, return to the Road,
 continue. The Worker never redesigns the Road. (Full guarantees: `03-Execution-Contract.md`.)
 
+### Tester
+Verifies landed *ideas* against the running product; never modifies product code; reports
+findings and escalates. (One-line stub — the full Tester role lands later in v1.2.)
+
 ---
 
 ## 6. The artifacts and the one route
@@ -85,12 +89,13 @@ AKRS is built from a small, fixed set of artifacts, each with a single owner que
 | Layer | Answers only | Must contain | Must never contain |
 |---|---|---|---|
 | **Router** | "Where do I go next?" | routes, references | explanations, implementation, docs |
-| **Memory** | "Which knowledge?" | summaries, references, ownership, relationships | tutorials, implementation, duplicated docs |
-| **Road** | "Exactly what should I read / change?" | context scope, read order, expected files, change scope, boundaries, `Status` | architecture explanations, project docs, tutorials |
-| **Task** | "Exactly what should I build?" | objective, constraints, references, expected output | duplicated knowledge |
+| **Memory** | "Which knowledge?" | summaries, references, ownership, relationships, one epistemic label per fact (Decided / Assumption H-M-L / Unknown) | tutorials, implementation, duplicated docs |
+| **Road** | "Exactly what should I read / change?" | context scope, read order, expected files, change scope, boundaries, `Status`, `Deps` (when relevant) | architecture explanations, project docs, tutorials |
+| **Task** | "Exactly what should I build?" | objective, constraints, acceptance, Road pointer | duplicated knowledge (nothing its Road already holds) |
 | **Phase** | "Which milestone?" | objectives, outputs, dependencies | implementation detail |
 | **Plan** | "Which business capability?" | capability scope | implementation teaching |
-| **STATE** | "Where did we leave off?" | active mode/plan/phase/task/road, Done, Next, Open questions, timestamp+author | knowledge (it points, never teaches) |
+| **STATE** | "Where did we leave off?" | active mode/role/plan/phase/task/road, Done (last 3), Next, Open questions, timestamp+author | knowledge (it points, never teaches) |
+| **LOG** | "What happened, in full?" | append-only close-out narratives + metrics | anything a session needs at boot |
 
 Every execution follows exactly one route. Workers never jump randomly between layers:
 
@@ -123,11 +128,15 @@ A workflow that cannot record where it stopped will drift: Roads silently rot un
 and a Memory disagree about reality. v1 makes the save-point and the reconciliation
 first-class:
 
-- **`STATE.md`** is a tool-neutral save-point any CLI can resume from (portability across
-  Claude / Codex / Gemini).
-- **Every Road carries a `Status`** (`ACTIVE` | `DONE + superseded by <memory>`).
-- **Close-out is mandatory when work lands:** update `STATE.md`, then retire the Road
-  (`DONE + superseded`) or refresh its *Expected files* to match reality.
+- **`STATE.md`** is a tool-neutral **save-point** (≤ ~1 page) any CLI can resume from
+  (portability across Claude / Codex / Gemini). **`LOG.md`** is the append-only **history**
+  (full close-out narratives + metrics) that STATE no longer carries and boot never reads.
+- **Every Road carries a `Status`** (`QUEUED` | `ACTIVE` | `DONE + superseded by <memory>`);
+  a `QUEUED` Road is re-validated against Memory + STATE before activation, and a Road whose
+  `Deps` are unfinished cannot become `ACTIVE` without a recorded developer override.
+- **Close-out is mandatory when work lands:** append narrative + metrics to `LOG.md`, rewrite
+  `STATE.md` ≤ 1 page, then retire the Road (`DONE + superseded`) or refresh its *Expected
+  files* to match reality.
 
 Full lifecycle: `07-State-And-Sync-Specification.md`.
 
@@ -143,7 +152,7 @@ intent, and any developer override. The Mode determines the allowed navigation p
 | 0 | Developer Fast Path | Dev already knows the project | project Memory + named source files only — skip secondary routing |
 | 1 | Quick local | Small, isolated change | minimal: Road or direct file, skip full chain |
 | 2 | Normal | Existing Task + existing Road | full route, no new planning |
-| 3 | Planning | New work requested | generate **one** Task + **one** Road on demand (never in advance) |
+| 3 | Planning | New work requested | generate one Task + one Road on demand (or a per-plan batch — extra Roads `QUEUED`; see `02-Generation-Specification.md §4`) |
 | 4 | Architecture | Cross-plan / structural change | Leader only |
 
 The architecture must never force unnecessary navigation. Modes 0–1 are the **fast path**:
@@ -206,6 +215,7 @@ A workflow is complete only if every answer is YES:
 - Every file has one purpose.
 - Every Task belongs to one Phase; every Phase belongs to one Plan.
 - Every Task has exactly one Road; every Road has explicit scope and a `Status`.
+- No Task restates its Road's content; granularity was decided, not defaulted.
 - Memory files are indexes; the Router contains only routing.
 - Workers can execute without scanning the repository.
 - `STATE.md` exists and reflects the current save-point.
@@ -225,6 +235,11 @@ with reality; small execution models perform reliable engineering work.
 knowledge duplicates; Roads become unreliable or stale; Memory or Router becomes
 documentation; Workers need repository scanning; planning and execution mix. When these
 appear, **simplify the architecture before expanding it.**
+
+**Overhead budget (the routing-vs-execution line, made concrete):** close-out touches **at
+most LOG + STATE + the Road + one Memory**. If close-out regularly costs more than that, the
+architecture must be simplified. Mechanical checking belongs to tooling, never to the agent —
+the workflow must never become the agent's main job.
 
 ---
 

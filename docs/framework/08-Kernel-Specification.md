@@ -47,23 +47,29 @@ because the heavy sources are then removed from the target's footprint.
 
 The whole Kernel, minified, contains exactly these:
 
-1. **Roles** — Leader plans/owns architecture; Worker executes only the active Road. (2 lines)
+1. **Roles** — Leader plans/owns architecture; Worker executes only the active Road; role at
+   boot from the prompt convention (`as leader|worker|tester:`) → STATE `Role:` → ask.
 2. **Runtime priority** — `Road → Memory → Router → Repository`.
 3. **Modes 0–4** — compact table, each row with a prompt→Mode hint (closes the
-   "no prompt→Mode algorithm" gap). Fast path (0/1) explicitly wired.
+   "no prompt→Mode algorithm" gap). Fast path (0/1) explicitly wired. Mode 3 may batch a
+   plan's Roads (`QUEUED`); activate a `QUEUED` Road only after re-checking Memory/STATE.
 4. **The one route** — `Prompt → Mode → Router → Memory → Road → Execute`.
 5. **Blind-assumption check** (one line) + scope-expansion loop
    (`Router → Memory → back to Road`, never guess).
 6. **File shapes** — Router / Memory / Road / Task: one line each of *must contain* /
-   *never contain*.
-7. **Validation checklist** — compressed (one owner per concept; every Task has one Road;
-   Memory = index; Router = routes; every Road has a `Status`).
+   *never contain* (Memory facts labeled; Road carries `Status` + `Deps`; Task restates
+   nothing from its Road).
+7. **Validation checklist** — compressed (one owner per concept; every Task has one Road and
+   restates nothing from it; Memory = index; Router = routes; every Road has a legal
+   `Status`).
 8. **Interaction rules** — one paragraph: options recommended-first, one decision at a time,
    end every turn with a guided next step, confirm Source of Truth first.
-9. **Close-out rule** — on landing work: update `STATE.md`; mark the Road
-   `DONE + superseded by <memory>` or refresh it.
+9. **Close-out rule** — on landing work: append narrative+metrics to `LOG.md` → rewrite
+   `STATE.md` ≤1 page → retire the Road (`DONE + superseded by <memory>`) or refresh it →
+   update Memory. One Road = one commit.
 10. **Applicability** — one line: AKRS Lite vs Full; when to skip.
-11. **Pointers** — locations of Router, `STATE.md`, Source-of-Truth (project-specific).
+11. **Pointers** — locations of Router, `STATE.md`, `LOG.md`, Source-of-Truth
+    (project-specific).
 
 ---
 
@@ -79,6 +85,7 @@ The framework emits this template, filled with project-specific values at genera
 ## Roles
 - Leader: plans, owns architecture, generates Roads, owns close-out.
 - Worker: executes ONLY the active Road. Never redesigns. Never leaves scope.
+- Role at boot: prompt `as leader|worker|tester:` → STATE Role: → ask.
 
 ## Runtime priority
 Road → Memory → Router → Repository   (repo only if the active Road says so)
@@ -89,9 +96,10 @@ Road → Memory → Router → Repository   (repo only if the active Road says s
 | 0 | "I know the file/area" / dev names sources | Memory + named files only |
 | 1 | small, isolated change | single Road or file; skip full chain |
 | 2 | continue existing task | full route, no new planning |
-| 3 | new work / "add/build/plan X" | generate 1 Task + 1 Road on demand |
+| 3 | new work / "add/build/plan X" | generate 1 Task + 1 Road on demand (or batch a plan → extra Roads QUEUED) |
 | 4 | cross-cutting / structural | Leader only |
 Fast path = 0/1: skip Router→Memory→Road for trivial work.
+Activate a QUEUED Road only after re-checking it against Memory/STATE.
 
 ## The one route
 Prompt → Mode → Router → Memory → Road → Execute
@@ -102,21 +110,22 @@ NO → Router → required Memory → back to Road → continue. Never guess.
 
 ## File shapes (must / never)
 - Router: routes+refs / no explanations.
-- Memory: index+refs+ownership / no implementation.
-- Road: read-order+expected-files+scope+Status / no docs.
-- Task: objective+constraints+refs+output / no duplicated knowledge.
+- Memory: index+refs+ownership, each fact labeled Decided/Assumption(H/M/L)/Unknown / no implementation.
+- Road: read-order+expected-files+scope+Status+Deps / no docs.
+- Task: objective+constraints+acceptance+road-pointer / restates nothing from its Road.
 
 ## Validation
-One owner per concept · every Task has one Road · Memory = index · Router = routes ·
-every Road has a Status.
+One owner per concept · every Task has one Road, restating nothing from it ·
+Memory = index · Router = routes · every Road has a Status (QUEUED/ACTIVE/DONE+superseded).
 
 ## Interaction
 Offer 2–4 options, recommended first. One decision per turn. Confirm Source of Truth first.
 End every turn with a guided next step.
 
 ## Close-out (when work lands)
-Update STATE.md → then retire the Road (DONE + superseded by <memory>) OR refresh its
-Expected files to match reality. Keep Road and Memory in agreement.
+Append narrative+metrics to LOG.md → rewrite STATE.md ≤1 page → retire the Road
+(DONE + superseded by <memory>) OR refresh its Expected files → update Memory.
+One Road = one commit (`<ROAD-ID>: <summary>`). Keep Road and Memory in agreement.
 
 ## Applicability
 Lite = Kernel+Router+Roads. Full = +Plans/Phases/Memory for high-blast-radius work.
@@ -125,6 +134,7 @@ Tiny/throwaway = skip.
 ## Pointers
 - Router:          <path/to/router>
 - STATE:           akrs/STATE.md
+- LOG:             akrs/LOG.md   (append-only, never read at boot)
 - Source of Truth: <path(s) confirmed by developer>
 ```
 

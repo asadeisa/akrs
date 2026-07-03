@@ -81,6 +81,11 @@ Execute Mode
 The Leader explains its Mode choice whenever the selected Mode significantly changes the
 workflow.
 
+**Role convention.** A session's role can be declared in the prompt with
+`as leader: …` / `as worker: …` / `as tester: …`. When present it wins over STATE's `Role:`
+line at boot (`06-Runtime-Boot-Protocol.md §2`); when absent, STATE decides, else the session
+asks.
+
 ---
 
 ## 4. Project & state detection
