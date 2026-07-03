@@ -193,6 +193,7 @@ every close-out and in CI — **CI green = workflow valid.** Zero dependencies.
 | [GETTING_STARTED.md](GETTING_STARTED.md) | Complete beginner guide (step-by-step) |
 | [docs/guides/ROUTING-FLOW.md](docs/guides/ROUTING-FLOW.md) | Visual explanation of the execution path |
 | [docs/guides/FILE-STRUCTURE.md](docs/guides/FILE-STRUCTURE.md) | Folder organization and file ownership |
+| [docs/guides/TEAM-ADOPTION.md](docs/guides/TEAM-ADOPTION.md) | Mapping AKRS onto tickets, PRs, CI, and parallel work |
 | [docs/framework/](docs/framework/) | Complete framework specifications |
 | [examples/](examples/) | Real project examples |
 | [docs/validation/](docs/validation/) | Test results and case studies |
@@ -229,9 +230,9 @@ See `docs/validation/` for detailed test results and case studies.
 
 ## Versioning
 
-- **Framework Version:** v1.1.1 (specifications)
+- **Framework Version:** v1.2.0 (specifications)
 - **Generated Workflows:** Versioned independently (v1, v2, etc.)
-- **Kernel Version:** Generated per-project from latest framework
+- **Kernel Version:** Generated per-project from latest framework (now a `kernel/` folder)
 
 See `VERSIONING.md` for details.
 
@@ -287,4 +288,4 @@ AKRS is free to use, modify, and distribute in personal and commercial projects.
 
 Made with care for developers who want reliable, predictable AI agents.
 
-**AKRS v1.1.1** — June 2026
+**AKRS v1.2.0** — July 2026

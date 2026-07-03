@@ -32,11 +32,15 @@ akrs/
 │   │   ├── 05-Platform-Adapter-Specification.md
 │   │   ├── 06-Runtime-Boot-Protocol.md
 │   │   ├── 07-State-And-Sync-Specification.md
-│   │   └── 08-Kernel-Specification.md
+│   │   ├── 08-Kernel-Specification.md
+│   │   ├── 09-Scale-And-Source-Index-Specification.md
+│   │   ├── 10-Verification-Specification.md
+│   │   └── 11-Change-Management-Specification.md
 │   │
 │   ├── guides/                ← Human guides
 │   │   ├── ROUTING-FLOW.md
-│   │   └── FILE-STRUCTURE.md  (this file)
+│   │   ├── FILE-STRUCTURE.md  (this file)
+│   │   └── TEAM-ADOPTION.md
 │   │
 │   ├── validation/            ← Proof it works (per-model + case study)
 │   │
@@ -82,21 +86,35 @@ your-project/
 │   ├── router.md              Routes only — "where next?"
 │   ├── STATE.md               Portable save-point — "where did we leave off?"
 │   ├── LOG.md                 Append-only close-out journal — never read at boot
+│   ├── FEATURES.md            Landed-features index (one line per feature)
+│   ├── SOT-INDEX.md           SoT navigation index (only if the SoT is large / pre-exists)
+│   ├── BLOCKED.md             On-demand flag — a stuck non-leader agent (deleted on resolve)
 │   │
 │   ├── memory/                Reusable knowledge, one owner per concept
 │   │   ├── domain-model.md
 │   │   ├── technical-stack.md
-│   │   └── …
+│   │   ├── <domain>/          Optional: per-domain memory for large projects
+│   │   └── tester/            Ephemeral: tester topic files (deleted after a fix)
 │   │
 │   ├── tasks/                 "What to build" — generated on demand
 │   │   └── <task>.md
 │   │
-│   └── roads/                 "What to read & change" — one per Task, has a Status
-│       └── <task>.md
+│   ├── roads/                 "What to read & change" — one per Task, has a Status
+│   │   └── <task>.md
+│   │
+│   ├── plans/                 Optional: <domain>/ subfolders for large projects
+│   │
+│   ├── verify/                Ephemeral: <plan>-handoff.md batons (deleted on pass)
+│   └── changes/               Ephemeral: <id>.md change files (deleted on merge-or-vanish)
 │
+├── tests/                     Committed verification asserts (never discarded)
 └── docs/
     └── app-info.md            Your Source of Truth (you provide this)
 ```
+
+> **Ephemeral artifacts** (`verify/*`, `changes/*`, `BLOCKED.md`, `memory/tester/*`) each
+> have a **named creator and a named deleter**, and `npx akrs-framework validate` flags any
+> left behind. No broken or orphan data may persist.
 
 ### What each generated file owns
 
@@ -108,6 +126,8 @@ your-project/
 | `roads/*.md` | Exactly what to read/change? | Architecture essays |
 | `tasks/*.md` | Exactly what to build? | Duplicated knowledge |
 | `STATE.md` | Where did we leave off? | Knowledge (it points, never teaches) |
+| `LOG.md` | What happened, in full? | Anything a session needs at boot |
+| `FEATURES.md` | What has landed, and where? | Teaching, implementation, rationale |
 
 ---
 

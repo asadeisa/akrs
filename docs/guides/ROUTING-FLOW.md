@@ -63,9 +63,12 @@ flowchart TD
 ```
 
 - **Modes 0–1 are the fast path** — trivial/isolated work skips the full chain.
+  Mode 0 is the escape hatch: name the sources, read no workflow.
 - **Mode 2** executes an existing Road.
-- **Mode 3** is planning: the Leader generates exactly one Task + one Road.
-- **Mode 4** is architecture: Leader only.
+- **Mode 3** is planning: the Leader generates one Task + one Road — or **batches** a plan's
+  Roads at once, the first `ACTIVE` and the rest `QUEUED` (each re-validated before it
+  activates). Road status is `QUEUED → ACTIVE → DONE + superseded`.
+- **Mode 4** is architecture / **change management**: Leader only (the change lane above).
 
 ---
 
@@ -103,6 +106,52 @@ This is what stops a cheap model from drowning in a large codebase.
 
 ---
 
+## The Gate (v1.2 — every session is filtered)
+
+Boot no longer loads one big Kernel. The **Gate** loads the shared `CORE.md` plus **exactly
+one role file**, so a session carries only its own role's rules:
+
+```mermaid
+flowchart LR
+    E[AGENTS.md] --> Core[kernel/CORE.md]
+    Core --> S[read STATE.md]
+    S --> G{Gate: role?}
+    G -->|as leader| L[kernel/leader.md]
+    G -->|as worker| W[kernel/worker.md]
+    G -->|as tester| T[kernel/tester.md]
+    L & W & T --> M[Select Mode → execute]
+
+    classDef k fill:#1f6feb,stroke:#0b3d91,color:#fff;
+    class E,Core,S,G,L,W,T k;
+```
+
+Role comes from the prompt convention (`as leader|worker|tester:`), else STATE's `Role:`, else
+the session asks. A stuck non-leader agent drops an `akrs/BLOCKED.md` flag, which the next
+session surfaces first.
+
+## The Tester lane (v1.2 — Done is proven, not asserted)
+
+Verification attaches to the **idea/Plan**, not every Task. The Worker leaves a **handoff**
+baton; the Tester verifies the running product and deletes it on pass:
+
+```mermaid
+flowchart LR
+    Idea[Idea complete + runnable] --> H[Worker writes the handoff baton]
+    H --> V[Tester: Mirror Check + raw measurement<br/>+ 'as a user, acceptable?']
+    V -->|pass| D[delete the handoff]
+    V -->|bug| F[write findings → Leader routes fix → re-test]
+```
+
+## The change lane (v1.2 — Mode 4, features change safely)
+
+```mermaid
+flowchart LR
+    Req[Requirement change] --> Ch[Leader/Changer writes a change file]
+    Ch --> Imp[Impact list from FEATURES + SOT-INDEX]
+    Imp --> Flag[Flag conflicts to the developer]
+    Flag --> Merge[Update SoT + FEATURES → delete the change file]
+```
+
 ## The Lifecycle (zoomed out)
 
 Routing happens inside a larger loop. Plan rarely; execute often; reconcile
@@ -114,7 +163,7 @@ flowchart TD
     K --> Entry[Create AGENTS.md entry]
     Entry --> B[Phase B<br/>Generate 1 Task + 1 Road on demand]
     B --> X[Worker executes the Road]
-    X --> C[Close-out:<br/>update STATE + reconcile Road + Memory]
+    X --> C[Close-out:<br/>append LOG + metrics → rewrite STATE → reconcile Road + Memory → validate]
     C -->|next request| B
 
     classDef lead fill:#1f6feb,stroke:#0b3d91,color:#fff;
