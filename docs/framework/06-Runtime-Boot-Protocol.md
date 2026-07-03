@@ -92,6 +92,9 @@ explicitly required. Navigation is performed through the Router; knowledge is di
 through Memory; execution is constrained by the active Road. Runtime priority is always
 **Road → Memory → Router → Repository**.
 
+When `SOT-INDEX.md` exists, **all Source-of-Truth reads go through it — windows only, never
+the whole source** (`09-Scale-And-Source-Index-Specification.md §2–3`).
+
 ---
 
 ## 7. Failure handling

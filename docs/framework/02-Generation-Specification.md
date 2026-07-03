@@ -27,6 +27,10 @@ authoritative and which files are canonical. Until confirmed, analysis must not 
 > A confirmed Source of Truth is a fact. An unconfirmed one is an assumption. Assumptions
 > never start a workflow.
 
+**If the confirmed SoT is large (> ~2 pages) or the project pre-exists**, build
+`akrs/SOT-INDEX.md` **before** analysis, and read the SoT only through it thereafter — never
+whole (`09-Scale-And-Source-Index-Specification.md §2, §4`).
+
 (Interaction mechanics for this question: `04-Developer-Interaction-Protocol.md`.)
 
 ### Knowledge priority (conflict resolution)
@@ -65,7 +69,9 @@ Collect Sources
   ↓
 Confirm Source of Truth          (mandatory — §1)
   ↓
-Analyze Project
+Generate SoT Index               (if the SoT is large or the project pre-exists — 09)
+  ↓
+Analyze Project                  (progressively, one domain at a time — 09 §4)
   ↓
 Identify Business Capabilities → Generate Plans
   ↓

@@ -68,8 +68,8 @@ The whole Kernel, minified, contains exactly these:
    `STATE.md` ≤1 page → retire the Road (`DONE + superseded by <memory>`) or refresh it →
    update Memory. One Road = one commit.
 10. **Applicability** — one line: AKRS Lite vs Full; when to skip.
-11. **Pointers** — locations of Router, `STATE.md`, `LOG.md`, Source-of-Truth
-    (project-specific).
+11. **Pointers** — locations of Router, `STATE.md`, `LOG.md`, `SOT-INDEX.md` (if present),
+    Source-of-Truth (project-specific).
 
 ---
 
@@ -89,6 +89,7 @@ The framework emits this template, filled with project-specific values at genera
 
 ## Runtime priority
 Road → Memory → Router → Repository   (repo only if the active Road says so)
+Read the SoT/repo only via the active Road's windows — through SOT-INDEX if present.
 
 ## Modes (pick from the prompt)
 | Mode | When (prompt hint) | Path |
@@ -135,6 +136,7 @@ Tiny/throwaway = skip.
 - Router:          <path/to/router>
 - STATE:           akrs/STATE.md
 - LOG:             akrs/LOG.md   (append-only, never read at boot)
+- SoT Index:       akrs/SOT-INDEX.md   (if present — read the SoT only through it)
 - Source of Truth: <path(s) confirmed by developer>
 ```
 

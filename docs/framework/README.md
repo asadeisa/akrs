@@ -30,6 +30,20 @@ real implementation:
 
 ---
 
+## What v1.2 adds (grows the framework — nothing removed)
+
+v1.2 is additive over v1: every fix grows an existing artifact or adds a new spec beside the
+others. This table grows as each part lands.
+
+| v1.2 addition | What it does | Owner file(s) |
+|---|---|---|
+| **STATE / LOG split** | STATE ≤ 1-page save-point; append-only `LOG.md` history with a metrics line | `07-State-And-Sync-Specification.md` |
+| **QUEUED status + batch generation** | legal status for generated-not-yet-active Roads; per-plan batching with staleness re-validation | `07` + `02-Generation-Specification.md` |
+| **Task/Road granularity + no-duplication** | Leader-decided granularity; a Task restates nothing from its Road | `02-Generation-Specification.md` |
+| **SoT Index + read windows + partitioning** | no agent ever reads the whole Source of Truth, however large or pre-existing | `09-Scale-And-Source-Index-Specification.md` |
+
+---
+
 ## File map
 
 | File | Purpose | Redesigns (v0) |
@@ -40,8 +54,9 @@ real implementation:
 | `04-Developer-Interaction-Protocol.md` | Operational Leader↔Developer interaction | `v-0-Developer Interaction Protocol.md` |
 | `05-Platform-Adapter-Specification.md` | Canonical `AGENTS.md` + thin pointer adapters + include-syntax table | `v-0-Platform Adapter Specification.md` |
 | `06-Runtime-Boot-Protocol.md` | Deterministic session boot, fast path, STATE resume | `v-0-Runtime Boot Protocol.md` |
-| `07-State-And-Sync-Specification.md` | `STATE.md` save-point + Road close-out/sync lifecycle | — (new capability) |
+| `07-State-And-Sync-Specification.md` | `STATE.md` save-point + `LOG.md` journal + Road close-out/sync lifecycle | — (new capability) |
 | `08-Kernel-Specification.md` | The Kernel concept + minified kernel template | — (new capability) |
+| `09-Scale-And-Source-Index-Specification.md` | Staying minimal-read at scale: SoT Index, read windows, progressive analysis, domain partitioning | — (new v1.2 capability) |
 
 Origin assets (`ai-work-flow-original.png/.json`, `akrs-system-graph.drawio`) remain in
 `docs/research/v0/`. Regenerating the system graph to show the v1 kernel + state lanes is an

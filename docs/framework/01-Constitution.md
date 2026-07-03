@@ -205,6 +205,11 @@ count. This is guidance, not a hard runtime gate.
 Do not force Full structure on small projects, and do not strip structure from
 high-blast-radius work.
 
+**Large SoT or existing project** → add the SoT Index, and (if the SoT serves multiple
+unrelated capabilities) domain partitioning, so no agent ever reads the whole source. This is
+orthogonal to the tier above: a Lite project with a big spec still indexes.
+(`09-Scale-And-Source-Index-Specification.md`.)
+
 ---
 
 ## 13. Workflow validation
