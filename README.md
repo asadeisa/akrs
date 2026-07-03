@@ -140,7 +140,7 @@ This drops the framework into **`docs/akrs/`** in your current project:
 ```
 docs/akrs/
 ├── GETTING_STARTED.md   ← the human on-ramp
-├── framework/           ← the doctrine the Leader reads (01..08)
+├── framework/           ← the doctrine the Leader reads (01..11)
 └── guides/              ← routing flow + file structure (diagrams)
 ```
 
@@ -167,6 +167,22 @@ git clone https://github.com/asadeisa/akrs
 2. Read `docs/akrs/GETTING_STARTED.md`
 3. Generate your first workflow with your Leader model
 4. Start your first task
+
+---
+
+## Validate Your Workflow
+
+Once you have a generated `akrs/` workflow, keep it honest with the built-in linter:
+
+```bash
+npx akrs-framework validate          # 14 mechanical checks; exits non-zero on any failure
+npx akrs-framework validate --fix    # also sync mirrored Road statuses to canonical
+npx akrs-framework validate --clean  # also delete stale ephemeral artifacts
+```
+
+It checks Road status / expected files / dependency gating, `STATE.md`, the kernel folder,
+and the ephemeral-artifact lifecycle (handoff / change / BLOCKED / tester memory). Run it at
+every close-out and in CI — **CI green = workflow valid.** Zero dependencies.
 
 ---
 

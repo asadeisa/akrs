@@ -190,17 +190,22 @@ Result: one owner, no contradiction.
 
 ---
 
-## 6. Optional lint (later)
+## 6. Mechanical validation
 
-A tiny validator can later check, mechanically:
+The lint now exists as a shipped command: **`npx akrs-framework validate`** (zero-dependency,
+in `bin/akrs.js`). It checks, mechanically, what the agent should never have to:
 
-- Does every Road have a legal `Status` (`QUEUED` / `ACTIVE` / `DONE + superseded`) and
-  reference files that **exist**?
-- Is any `ACTIVE` Road gated by an unfinished `Deps` entry (without a recorded override)?
-- Is `STATE.md` within its size budget and carrying its required fields?
-- Is any fact **duplicated** across a Memory and a Road?
+- every Road has a legal `Status` and its *Expected files* exist on disk (DONE Roads exempt);
+- no `ACTIVE` Road is gated by an unfinished `Deps` entry (without a STATE override);
+- parallel-`ACTIVE` Roads have disjoint Expected files;
+- `STATE.md` exists, carries its required fields, and is within its word budget;
+- the kernel folder is present and within budget; mirrored Road statuses agree with the
+  canonical `Status:`; `SOT-INDEX`/`FEATURES` references resolve; ephemeral artifacts
+  (handoff / change / BLOCKED / tester memory) are not stale.
 
-This is an optional hardening step, not required for the framework to be usable.
+Run it at **every close-out** and, recommended, as a **pre-commit hook / CI job**. `--fix`
+syncs mirrored statuses; `--clean` deletes stale ephemerals. The audit statement for teams:
+**CI green = workflow valid.** Mechanical checking is the CLI's job, not the agent's (D12).
 
 ---
 

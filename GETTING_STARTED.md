@@ -61,7 +61,7 @@ to learn *how* to build your workflow:
 ```
 docs/akrs/
 ├── GETTING_STARTED.md   (this guide)
-├── framework/           (01..08 — the specification)
+├── framework/           (01..11 — the specification)
 └── guides/              (routing flow + file structure)
 ```
 
@@ -219,6 +219,15 @@ If something's off, don't patch it by hand — point the AI back at it:
 Close-out looks incomplete. Reconcile STATE.md, the active Road's status, and
 Memory against what was actually built, per 07-State-And-Sync-Specification.md.
 ```
+
+You don't have to eyeball all of this. Run the mechanical check:
+
+```bash
+npx akrs-framework validate      # add --fix to sync status mirrors, --clean to remove stale files
+```
+
+It flags illegal Road statuses, missing expected files, dependency-gating violations, an
+over-budget `STATE.md`, and stale ephemeral artifacts — so **CI green = workflow valid.**
 
 > Close-out is the one discipline that keeps a Road and a Memory from ever
 > disagreeing about what the code is. Let the workflow do it — your job is just

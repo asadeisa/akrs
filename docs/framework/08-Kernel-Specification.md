@@ -90,14 +90,14 @@ The framework emits these templates, filled with project-specific values at gene
 
 ## Roles · role at boot
 Leader plans/owns architecture · Worker executes the active Road · Tester verifies the idea on
-the running product · Changer (=Leader, Mode 4) changes features.
+the running product · Changer (=Leader, Mode 4).
 Role: prompt `as leader|worker|tester:` → STATE Role: → ask. Load only kernel/<role>.md.
 
 ## Runtime priority
 Road → Memory → Router → Repository (repo only if the Road says so). Read the SoT only via the
 Road's windows — through SOT-INDEX if present.
 
-## Modes (from the prompt)
+## Modes
 | M | When | Path |
 |---|------|------|
 | 0 | dev names sources | Memory + named files — escape hatch |
@@ -114,6 +114,7 @@ Prompt → Mode → Router → Memory → Road → Execute.
 
 ## Close-out (Road lands)
 LOG+metrics → rewrite STATE ≤1 page → retire/refresh Road → update Memory. One Road = one commit.
+Then run `npx akrs-framework validate`.
 
 ## Pointers
 Router <path> · STATE akrs/STATE.md · LOG akrs/LOG.md · SOT-INDEX akrs/SOT-INDEX.md ·

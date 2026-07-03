@@ -44,6 +44,7 @@ others. This table grows as each part lands.
 | **Tester role + idea-level verification** | Done is proven against the running product — Mirror Check, raw measurement, Test-Handoff, seam ownership, expiring open questions | `10-Verification-Specification.md` |
 | **Change management + FEATURES index** | features change without leaving broken data — FEATURES index, on-demand change file, merge-or-vanish, requirements-delta | `11-Change-Management-Specification.md` |
 | **Kernel folder + Gate + BLOCKED + Skills** | the Gate loads `CORE.md` + one role file per session; a non-leader stuck agent raises `BLOCKED.md`; Tasks may name `Skills:` | `08-Kernel-Specification.md` + `06` + `03` |
+| **`validate` CLI (14 checks, `--fix`, `--clean`)** | mechanical enforcement — CI green = workflow valid; the tool fixes/cleans without bothering the agent | `bin/akrs.js` + `07 §6` |
 
 ---
 

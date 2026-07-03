@@ -46,16 +46,12 @@ framework docs, it does not replace them.
 
 ---
 
-## v1.3 — Validation Utilities
+## Validation Utilities — shipped in v1.2
 
-The optional lint described in `07-State-And-Sync-Specification.md` §6:
-
-- Every Road references files that exist.
-- Every Road has a `Status`.
-- No fact is duplicated across a Memory and a Road.
-- Every Task has exactly one Road.
-
-Shipped as `akrs lint`.
+The mechanical lint is no longer a roadmap item — it ships in **v1.2** as
+**`npx akrs-framework validate`** (14 checks, `--fix`, `--clean`; see
+`07-State-And-Sync-Specification.md` §6). Future work here is deeper, project-specific
+verification (e.g. the ~50-line import-lint the Mirror Check recommends).
 
 ---
 
