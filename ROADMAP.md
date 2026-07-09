@@ -13,6 +13,9 @@ requires restructuring the repository.
 - ✅ Human guides and release engineering docs
 - ✅ npm / pnpm / yarn distribution
 - ✅ `npx akrs-framework init` — copies the framework into a project's `docs/akrs/`
+- ✅ **v1.3** — the subtraction release: LOG → one-line ledger, the skills seam filled
+  (`akrs-close-out` / `akrs-live-verify`), the verification diet, and `validate` grown to
+  **17 checks** (LOG rotation + ledger lint + parked-owner warn). Details in `CHANGELOG.md`.
 
 Focus: stability, clarity, adoption. Gather real-world feedback.
 
@@ -48,10 +51,12 @@ framework docs, it does not replace them.
 
 ## Validation Utilities — shipped in v1.2
 
-The mechanical lint is no longer a roadmap item — it ships in **v1.2** as
-**`npx akrs-framework validate`** (14 checks, `--fix`, `--clean`; see
-`07-State-And-Sync-Specification.md` §6). Future work here is deeper, project-specific
-verification (e.g. the ~50-line import-lint the Mirror Check recommends).
+The mechanical lint is no longer a roadmap item — it shipped in **v1.2** as
+**`npx akrs-framework validate`** and grew in **v1.3** to **17 checks** (`--fix` now also
+rotates an over-size `LOG.md` ledger; `--clean` unchanged; see
+`07-State-And-Sync-Specification.md` §6). Generated projects also ship a `package.json` wiring
+`npm run validate`. Future work here is deeper, project-specific verification (e.g. the
+~50-line import-lint the Mirror Check recommends).
 
 ---
 
