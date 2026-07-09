@@ -99,7 +99,7 @@ AKRS is built from a small, fixed set of artifacts, each with a single owner que
 | **Phase** | "Which milestone?" | objectives, outputs, dependencies | implementation detail |
 | **Plan** | "Which business capability?" | capability scope | implementation teaching |
 | **STATE** | "Where did we leave off?" | active mode/role/plan/phase/task/road, Done (last 3), Next, Open questions, timestamp+author | knowledge (it points, never teaches) |
-| **LOG** | "What happened, in full?" | append-only close-out narratives + metrics | anything a session needs at boot |
+| **LOG** | "Which Roads closed, in what order?" | append-only one-line ledger (`date · Road · DONE\|BLOCKED`) | narrative, telemetry, anything a session needs at boot |
 | **Handoff** | "What must the Tester check?" | what became observable, how to reach it, expected behavior (ephemeral — Worker creates, Tester deletes) | a report, teaching, anything permanent |
 | **FEATURES** | "What has landed, and where does it live?" | one line per landed feature (name · Plan · key Roads/Memories · SoT section) | teaching, implementation, rationale |
 
@@ -137,12 +137,13 @@ and a Memory disagree about reality. v1 makes the save-point and the reconciliat
 first-class:
 
 - **`STATE.md`** is a tool-neutral **save-point** (≤ ~1 page) any CLI can resume from
-  (portability across Claude / Codex / Gemini). **`LOG.md`** is the append-only **history**
-  (full close-out narratives + metrics) that STATE no longer carries and boot never reads.
+  (portability across Claude / Codex / Gemini). **`LOG.md`** is the append-only **ledger** —
+  one line per close-out (`date · Road · DONE|BLOCKED`, no telemetry) — that STATE no longer
+  carries and boot never reads.
 - **Every Road carries a `Status`** (`QUEUED` | `ACTIVE` | `DONE + superseded by <memory>`);
   a `QUEUED` Road is re-validated against Memory + STATE before activation, and a Road whose
   `Deps` are unfinished cannot become `ACTIVE` without a recorded developer override.
-- **Close-out is mandatory when work lands:** append narrative + metrics to `LOG.md`, rewrite
+- **Close-out is mandatory when work lands:** append one ledger line to `LOG.md`, rewrite
   `STATE.md` ≤ 1 page, then retire the Road (`DONE + superseded`) or refresh its *Expected
   files* to match reality.
 

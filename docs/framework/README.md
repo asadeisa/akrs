@@ -61,9 +61,24 @@ them with far less agent writing. Nothing new is asked of the Worker or Leader; 
 | **Skills seam filled** | `akrs-close-out` + `akrs-live-verify` — procedures move out of the kernel/specs into single-owner skill bodies; kernel + specs keep only the invariants + a pointer | `skills/` + `02` + `05` + `08` |
 | **Verification diet** | handoff ≤ 1 page; asserts per Road, Mirror Check per Plan, a live Tester pass only for DOM/CSS plans + one final end-to-end pass — not per Road | `10` + `08` |
 | **Ask-the-developer trigger** | owner/developer decisions are asked in-chat the same turn; STATE stores only the answer (a parked decision warns) | `04` + `08` + `bin/akrs.js` |
-| **CLI grows to 17 checks** | ledger-entry lint, automatic LOG rotation (`--fix`), parked-owner-decision warn, `wall=` metrics; plus false-positive fixes (roads/tasks `README`, SOT-INDEX legend) | `bin/akrs.js` + `07 §6` |
+| **CLI grows to 17 checks** | ledger-entry lint, automatic LOG rotation (`--fix`), parked-owner-decision warn; plus false-positive fixes (roads/tasks `README`, SOT-INDEX legend) | `bin/akrs.js` + `07 §6` |
 | **Generated projects ship the tool** | Phase A emits a `package.json` with `npm run validate` / `:fix` / `:clean`; the CLI points you at a nested `akrs/` when `./akrs` is missing | `02` + `bin/akrs.js` |
 | **Packaging** | `init` copies just the framework (+ `skills/`); `docs/guides` leaves the npm tarball (web-readable on GitHub); maintainer contact ships in the package | `bin/akrs.js` + `package.json` |
+
+---
+
+## What v1.3.1 changes (field-feedback patch — a live low-capability-model run)
+
+v1.3.1 fixes five things a live run (Sonnet 5 Leader + Gemini Flash Worker) surfaced. Each
+removes a way a weaker model was pushed into fabricating, failing, or diverging. No scope growth.
+
+| v1.3.1 fix | What it does | Owner file(s) |
+|---|---|---|
+| **Install syncs doctrine locally** | `npm install akrs-framework` now runs a `postinstall` that copies `docs/framework/` into the project's `docs/akrs/` — the workflow reads local files, not `node_modules` | `bin/akrs.js` + `package.json` |
+| **`validate` rule 2 gated by status** | Expected-files check is `QUEUED` skip · `ACTIVE` warn · `DONE` error — a freshly generated Road never hard-fails CI; real post-completion drift is caught | `bin/akrs.js` + `07 §6` |
+| **Telemetry dropped from the ledger** | close-out records only `date · ROAD-ID · DONE\|BLOCKED` (+ optional `deviations:`); no `model`/`effort`/`tokens`/`tools`/`wall` for an agent to invent | `skills/akrs-close-out.md` + `07` + `03` + `01` + `bin/akrs.js` |
+| **Handoff is per Plan, made explicit** | both role files name the identical `<plan>-handoff.md`; no-Plan tiers emit no handoff at all — stops weak Leaders emitting a `<road>-handoff.md` | `08` + `10` |
+| **SoT Index is a mandatory Phase-A step** | generate `akrs/SOT-INDEX.md`, or record a justified `SOT-INDEX: none — <reason>`; a silent skip on a large/pre-existing SoT is a generation failure | `02 §3.1, §9` |
 
 ---
 

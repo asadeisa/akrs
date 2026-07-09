@@ -5,6 +5,7 @@
 // Usage:
 //   npx akrs-framework init                 Copy the AKRS framework into ./docs/akrs/
 //   npx akrs-framework init --force         Overwrite ./docs/akrs/ if it already exists
+//   (installing as a dependency also auto-syncs docs/framework/ → ./docs/akrs/ via postinstall)
 //   npx akrs-framework validate             Validate the workflow in ./akrs
 //   npx akrs-framework validate --dir path  Validate a workflow in a custom directory
 //   npx akrs-framework validate --fix        Also apply safe mechanical fixes (status mirrors)
@@ -31,6 +32,7 @@ AKRS — Adaptive Knowledge Routing System
 Usage
   npx akrs-framework init            Copy the AKRS framework docs into ./docs/akrs/
   npx akrs-framework init --force    Overwrite ./docs/akrs/ if it already exists
+  (adding akrs-framework as a dependency also auto-syncs the docs into ./docs/akrs/)
   npx akrs-framework validate        Validate the generated workflow in ./akrs
     --dir <path>   validate a workflow directory other than ./akrs
     --fix          apply safe mechanical fixes (sync mirrored Road statuses; rotate an over-threshold LOG ledger)
@@ -81,6 +83,50 @@ function runInit() {
       `  2. Point your Leader model at ${join(rel, 'framework')}\n` +
       `  3. Generate your workflow (Phase A), then your first Task + Road.\n\n`,
   );
+}
+
+// ---------------------------------------------------------------------------
+// postinstall (FIX-1, v1.3.1)
+// ---------------------------------------------------------------------------
+// When AKRS is added as a dependency (`npm install akrs-framework`), the framework doctrine
+// would otherwise sit buried in node_modules and the generated workflow could not read it.
+// This lifecycle hook copies docs/framework/ (incl. skills/ + every spec) into the consuming
+// project's docs/akrs/, so the workflow always uses local copies — the same target `init`
+// writes to. It must NEVER fail an install and must NEVER run when developing akrs-framework
+// itself.
+function runPostinstall() {
+  try {
+    // npm/pnpm/yarn set INIT_CWD to the directory where the install was invoked (the project
+    // root). Lifecycle scripts run with cwd = the package dir, so we cannot rely on cwd here.
+    const projectRoot = process.env.INIT_CWD;
+    if (process.env.AKRS_SKIP_POSTINSTALL) return;                 // explicit CI/opt-out escape hatch
+    if (!projectRoot) return;                                       // not run by an installer
+    // Only act when we were installed INTO someone's node_modules — never in our own repo.
+    const installedAsDep = pkgRoot.replace(/\\/g, '/').includes('/node_modules/');
+    if (!installedAsDep) return;
+    if (resolve(projectRoot) === resolve(pkgRoot)) return;          // belt-and-braces self-guard
+
+    const target = join(projectRoot, 'docs', 'akrs');
+    const copies = [
+      ['docs/framework', join(target, 'framework')],
+      ['GETTING_STARTED.md', join(target, 'GETTING_STARTED.md')],
+    ];
+    mkdirSync(target, { recursive: true });
+    let copied = 0;
+    for (const [src, dest] of copies) {
+      const from = join(pkgRoot, src);
+      if (!existsSync(from)) continue;
+      cpSync(from, dest, { recursive: true, force: true });
+      copied++;
+    }
+    if (copied)
+      process.stdout.write(
+        `\nAKRS: framework docs synced to ${relative(projectRoot, target) || target} ` +
+          `(local copies — the workflow reads these, not node_modules).\n`,
+      );
+  } catch {
+    // A postinstall must never break the host install. Swallow everything.
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -220,11 +266,20 @@ function runValidate() {
       err(r.file, `illegal Status "${r.status.raw}" (want QUEUED / ACTIVE / DONE + superseded by <memory>)`);
   }
 
-  // 2. every Expected file exists on disk (DONE Roads exempt)
+  // 2. Expected files vs. disk, gated by Road status (FIX-2, v1.3.1):
+  //    QUEUED  → skip   (generated, not yet an execution contract — files legitimately absent)
+  //    ACTIVE  → warn   (the Worker may not have created them yet — a freshly generated Road
+  //                      must never hard-fail CI just for existing)
+  //    DONE    → error  (a retired Road whose Expected file is gone is real drift)
   for (const r of roads) {
-    if (r.status && r.status.word === 'DONE') continue;
+    const word = r.status && r.status.word;
+    if (word === 'QUEUED') continue;
     for (const f of r.expected) {
-      if (!existsSync(resolve(cwd, f))) err(r.file, `Expected file missing on disk: ${f}`);
+      if (existsSync(resolve(cwd, f))) continue;
+      if (word === 'DONE')
+        err(r.file, `DONE Road's Expected file missing on disk: ${f} (drift — refresh or retire the Road)`);
+      else
+        warn(r.file, `Expected file not yet on disk: ${f} (ACTIVE — Worker may not have created it yet)`);
     }
   }
 
@@ -396,13 +451,16 @@ function runValidate() {
   if (existsSync(logPath)) {
     const logText = read(logPath);
     const logLines = logText.split(/\r?\n/);
-    // 16. a one-line ledger entry over ~40 words (only the post-doctrine bare-date format;
-    // the optional `deviations:` line is a separate line and is exempt).
+    // 16. ledger entry length (FIX-3, v1.3.1): the entry is now a bare `date · ROAD-ID ·
+    // DONE|BLOCKED` — exactly three alphanumeric tokens, no telemetry
+    // (model/effort/tokens/tools/wall). More than ~6 tokens means metrics or narrative crept
+    // back in (each `key=value` counts as one token). The optional `deviations:` line is a
+    // separate line and is exempt.
     logLines.forEach((line, i) => {
       if (!/^\s*\d{4}-\d{2}-\d{2}\s*·/.test(line)) return;
       const n = wordCount(line);
-      if (n > 40)
-        warn(logPath, `line ${i + 1}: ledger entry is ${n} words (~40 max) — one line per close-out, no narrative`);
+      if (n > 6)
+        warn(logPath, `line ${i + 1}: ledger entry is ${n} tokens — expected \`date · ROAD-ID · DONE|BLOCKED\` only; no narrative or metrics`);
     });
     // 17. rotation threshold — 200 entries or 16 KB. Count both old (## date) and ledger entries.
     const entries = logLines.filter((l) => /^\s*(##\s|\d{4}-\d{2}-\d{2})/.test(l)).length;
@@ -486,6 +544,8 @@ if (command === 'validate') {
   process.exit(runValidate());
 } else if (command === 'init') {
   runInit();
+} else if (command === 'postinstall') {
+  runPostinstall();                  // npm lifecycle hook (FIX-1) — always exits 0
 } else {
   process.stdout.write(HELP);
   process.exit(command ? 1 : 0);

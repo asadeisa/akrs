@@ -69,9 +69,10 @@ the Leader can read them. Run `npx akrs-framework init --force` later to refresh
 (The human guides aren't copied — they're web-readable on GitHub; links are at the bottom.)
 
 > Prefer a managed dependency? `npm install akrs-framework` (or `pnpm add` /
-> `yarn add`) works too — it installs the same docs under
-> `node_modules/akrs-framework/`. Or just clone the repo and read `docs/`
-> directly.
+> `yarn add`) works too — and since v1.3.1 a postinstall hook auto-copies the
+> framework out of `node_modules/` into `docs/akrs/` for you, so the workflow
+> reads local files just like `init` produces. (Opt out with
+> `AKRS_SKIP_POSTINSTALL=1`.) Or just clone the repo and read `docs/` directly.
 
 ---
 

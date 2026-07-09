@@ -1,4 +1,4 @@
-# AKRS Verification Specification (v1.2, revised v1.3)
+# AKRS Verification Specification (v1.2, revised v1.3.1)
 
 ### When is landed work actually right?
 
@@ -65,6 +65,19 @@ v1.3 diet: the v1.2 run's verification bill came from running a live pass on eve
   Tester **deletes it** (the named deleter is the Tester — D14).
 - On **bug**: the Tester writes findings (the file stays), the Leader routes the fix, then
   the idea is re-tested.
+
+**The handoff is per Plan, never per Road (v1.3.1).** Its filename is keyed to the Plan —
+`akrs/verify/<plan>-handoff.md` — and one baton serves the whole Plan's idea; a Road never gets
+its own handoff. A generated kernel in which `worker.md` writes `<plan>-handoff.md` while
+`tester.md` reads `<road>-handoff.md` (or vice-versa) is **malformed** — the two roles must name
+the *identical* per-Plan file (`08-Kernel-Specification.md §3`).
+
+**When the selected AKRS tier generates no Plans, there is no handoff at all.** AKRS Lite and
+tiny/Skip tiers (`01-Constitution.md §12`) produce Roads without Plans, so the per-Plan baton has
+nothing to key on: the Worker does **not** create `akrs/verify/`, and verification attaches to
+the **Road's own acceptance** — a live pass, when one is warranted at all, runs directly against
+the running product from the Road. A missing `akrs/verify/` in a no-Plan tier is therefore
+**correct**, not a defect; inventing a `<road>-handoff.md` to fill the gap is the defect.
 
 The **handoff template and the live-verification rig are owned by the `akrs-live-verify`
 skill** (`skills/akrs-live-verify.md`, instantiated per project at

@@ -1,6 +1,6 @@
 {
   "name": "akrs-framework",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "AKRS (Adaptive Knowledge Routing System) — a framework for building AI execution workflows that let inexpensive models execute reliably by delivering the smallest correct knowledge, to the correct agent, at the correct moment.",
   "keywords": [
     "ai",
@@ -27,6 +27,9 @@
   "type": "module",
   "bin": {
     "akrs": "bin/akrs.js"
+  },
+  "scripts": {
+    "postinstall": "node bin/akrs.js postinstall"
   },
   "files": [
     "bin",

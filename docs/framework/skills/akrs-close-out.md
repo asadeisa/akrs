@@ -23,14 +23,18 @@ contracts; the handoff carries how-to-verify. Do not re-tell any of them here.
    exact format:
 
    ```
-   <YYYY-MM-DD> · <ROAD-ID> · <DONE|BLOCKED> · model=<name> effort=<low|med|high> tokens=<n>k tools=<n> wall=~<n>min
+   <YYYY-MM-DD> · <ROAD-ID> · <DONE|BLOCKED>
    ```
 
    Example:
 
    ```
-   2026-07-05 · R07c · DONE · model=sonnet-5 effort=med tokens=135k tools=58 wall=~20min
+   2026-07-05 · R07c · DONE
    ```
+
+   **No telemetry.** AKRS does **not** record model, effort, tokens, tools, or wall-clock time
+   — an executing agent cannot know those values reliably and must never fabricate them. The
+   ledger records only *when* a Road closed and *how it ended*.
 
    Add a **second `deviations:` line ONLY when reality diverged from the Road** — the one
    piece of knowledge with no other home (what the Road assumed → what actually shipped, one
@@ -40,7 +44,7 @@ contracts; the handoff carries how-to-verify. Do not re-tell any of them here.
    deviations: Road named Camera.setFov → the real owner was Controls.setFov
    ```
 
-   No narrative. Keep the ledger line at or under ~40 words (the `deviations:` line is
+   No narrative. The ledger line is three fields, nothing more (the `deviations:` line is
    exempt). Never rewrite an existing ledger line; never read `LOG.md` at boot.
 3. **Rewrite `STATE.md` ≤ 1 page.** Move the landed objective into *Done* (keep only the last
    3), set the single most-obvious *Next*, refresh the timestamp + author. STATE is rewritten
@@ -63,7 +67,7 @@ Mirror Check: PASS · <n>/<n> asserts · <one metric>
 ## Invariants this procedure must never break
 
 - Close-out touches **at most** LOG + STATE + the Road + one Memory + one FEATURES line.
-- The Road is the record of *what was built*; the ledger is the record of *cost + chronology*;
-  neither re-tells the other.
+- The Road is the record of *what was built*; the ledger is the record of *chronology* (when a
+  Road closed, and whether it landed or blocked); neither re-tells the other.
 - A Road still `ACTIVE` after its work landed, or whose Expected files no longer match
   reality, is a drift defect this close-out exists to prevent.

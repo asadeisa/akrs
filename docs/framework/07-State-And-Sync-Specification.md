@@ -1,4 +1,4 @@
-# AKRS State & Sync Specification (v1, revised v1.3)
+# AKRS State & Sync Specification (v1, revised v1.3.1)
 
 ### The portable save-point, the append-only journal, and the Road close-out lifecycle
 
@@ -14,7 +14,8 @@ mechanism:
 
 The fix is **`STATE.md`** (the save-point) plus a mandatory **Road close-out** (the
 reconciliation). v1.2 splits the historical record out into an append-only **`LOG.md`**; v1.3
-demotes that journal to a **one-line ledger** so close-out costs ~20 words instead of ~450.
+demotes that journal to a **one-line ledger**, and v1.3.1 strips it to three fields, so
+close-out costs a handful of words instead of ~450.
 
 ---
 
@@ -90,19 +91,22 @@ concurrent close-outs are safe.
 The **exact ledger-line format is owned by the `akrs-close-out` skill**
 (`skills/akrs-close-out.md`); this spec owns only the invariants:
 
-- **One line per close-out**, plus an optional `deviations:` line **only when reality diverged
-  from the Road** — the one piece of knowledge with no other home.
-- Each line carries the metrics the ROI table reads: **model, effort, tokens, tools, and
-  wall-clock minutes** (`wall=`). These are the ROI evidence the whole system exists to produce
-  (the ledger is the instrumentation the `TEAM-ADOPTION.md` cost story reads).
+- **One line per close-out** — exactly three fields, `<YYYY-MM-DD> · <ROAD-ID> ·
+  <DONE|BLOCKED>` — plus an optional `deviations:` line **only when reality diverged from the
+  Road** (the one piece of knowledge with no other home).
+- **No telemetry (v1.3.1).** The ledger records neither model, effort, tokens, tools, nor
+  wall-clock time. An executing agent cannot know those values reliably; requiring them only
+  invited fabrication. AKRS does not measure its own execution cost — cost lives in the
+  provider's usage data and the PR, not in a number the agent invents.
 - **Append-only, newest at the bottom; never rewritten; never read at boot.**
 - **Rotation is mechanical, never manual.** When the ledger crosses the CLI's threshold
   (200 entries or 16 KB), `validate --fix` rotates it into a read-only `LOG-<NNN>.md` archive
   and starts a fresh `LOG.md` — so no agent ever counts entries (§6, `bin/akrs.js`).
 
-Why keep the ledger at all: the metrics series (the ROI number the framework exists to prove)
-and the cross-road chronology live nowhere else — Roads are archived per-file, and git history
-can't be read by an agent in one pass. A one-line ledger keeps both at a fraction of the words.
+Why keep the ledger at all: the cross-road chronology — which Roads closed, in what order, and
+whether each landed or blocked — lives nowhere else. Roads are archived per-file, and git
+history can't be read by an agent in one pass. A three-field line keeps that chronology at a
+fraction of the words, with nothing an agent has to guess.
 
 ---
 
@@ -190,7 +194,9 @@ Result: one owner, no contradiction.
 The lint now exists as a shipped command: **`npx akrs-framework validate`** (zero-dependency,
 in `bin/akrs.js`). It checks, mechanically, what the agent should never have to:
 
-- every Road has a legal `Status` and its *Expected files* exist on disk (DONE Roads exempt);
+- every Road has a legal `Status`, and its *Expected files* are checked on disk **by status**:
+  `QUEUED` skipped, `ACTIVE` warns (the Worker may not have created them yet), `DONE` errors (a
+  retired Road whose file is gone is drift) — FIX-2;
 - no `ACTIVE` Road is gated by an unfinished `Deps` entry (without a STATE override);
 - parallel-`ACTIVE` Roads have disjoint Expected files;
 - `STATE.md` exists, carries its required fields, is within its word budget, and **parks no

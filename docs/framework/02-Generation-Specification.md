@@ -1,4 +1,4 @@
-# AKRS Generation Specification (v1, revised v1.3)
+# AKRS Generation Specification (v1, revised v1.3.1)
 
 ### How a Leader generates an AKRS workflow
 
@@ -71,7 +71,8 @@ Confirm Source of Truth          (mandatory — §1)
   ↓
 Confirm acceptance + harness     (structured Phase-A question — 10 §8; never parked)
   ↓
-Generate SoT Index               (if the SoT is large or the project pre-exists — 09)
+Generate SoT Index               (MANDATORY checklist step — generate, or record a justified
+                                  omission; never silently skipped — §3.1, 09)
   ↓
 Analyze Project                  (progressively, one domain at a time — 09 §4)
   ↓
@@ -110,6 +111,28 @@ entries) the project's `package.json` with `"devDependencies": {"akrs-framework"
 and scripts `validate` (`akrs validate`), `validate:fix` (`akrs validate --fix`), and
 `validate:clean` (`akrs validate --clean`). A developer who has never seen the `npx` commands
 then just runs `npm run validate`. The workflow ships the tool; the workflow validates itself.
+
+### 3.1 The SoT Index is a mandatory Phase-A checklist item (v1.3.1)
+
+Generating the **Source-of-Truth Index** is a **verifiable Phase-A step, not optional prose a
+weaker Leader can silently skip.** Before analysis begins, the Leader takes **exactly one** of
+two *recorded* actions:
+
+1. **Generate `akrs/SOT-INDEX.md`.** This is **required** whenever the confirmed SoT exceeds
+   ~2 pages **or** the project pre-exists (`09-Scale-And-Source-Index-Specification.md §2, §6`).
+   Once it exists, Router / Memory / Roads cite index entries and never say "read `<file>`".
+2. **Record an explicit justification for omitting it** — legal **only** for a genuinely small,
+   single-source, single-page SoT. Write it as a full line in `CORE.md` (mirrored in STATE's
+   Phase-A record):
+
+   ```
+   SOT-INDEX: none — <one-line reason, e.g. "single 1-page spec, read whole per 09 §6">
+   ```
+
+A bare `SOT-INDEX none` with **no reason**, an omission on a **large or pre-existing** SoT, or a
+Road that instructs the Worker to "skip / don't read the SoT" **in place of** indexing it, is a
+**generation failure** (§9) — regenerate before proceeding. The choice, and its justification
+when omitted, is auditable in `CORE.md`; "I forgot" is not a legal Phase-A outcome.
 
 ---
 
@@ -273,12 +296,14 @@ ambiguity, blind assumptions.
 one Phase; every Phase belongs to one Plan; every Task has one Road; every Road has clear
 boundaries and a `Status`; every Memory holds reusable knowledge only; every Router holds
 routing only; no duplicated knowledge; no unresolved Unknowns; every assumption justified;
-`STATE.md` exists and is current.
+`STATE.md` exists and is current; **the SoT Index exists, or its omission is explicitly
+justified for a small single-page SoT (§3.1).**
 
 **Generation has failed if:** the Leader invents architecture; assumptions replace facts;
 duplicate ownership appears; routing becomes ambiguous; multiple Roads exist for one Task;
-Memory or Router becomes documentation; an unresolved Unknown is silently ignored. On
-failure, generation stops until corrected.
+Memory or Router becomes documentation; an unresolved Unknown is silently ignored; **a large or
+pre-existing SoT ships without a `SOT-INDEX.md`, or the index is silently omitted (a bare
+`none` with no justification — §3.1).** On failure, generation stops until corrected.
 
 ---
 

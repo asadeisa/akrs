@@ -151,12 +151,17 @@ The human guides live on GitHub (linked below); the README's links to them keep 
 <summary>Prefer a managed dependency, or just want to read the docs?</summary>
 
 ```bash
-# Add as a dependency (installs into node_modules):
+# Add as a dependency — a postinstall hook auto-syncs the framework
+# out of node_modules into your project's docs/akrs/:
 npm install akrs-framework      # or: pnpm add / yarn add akrs-framework
 
 # Or simply clone the repo and read docs/ directly:
 git clone https://github.com/asadeisa/akrs
 ```
+
+Since v1.3.1, installing the package as a dependency runs the same copy `init` does — the
+framework doctrine lands in `docs/akrs/framework/` so your workflow reads local files, never
+`node_modules`. (Set `AKRS_SKIP_POSTINSTALL=1` to opt out.)
 </details>
 
 ---

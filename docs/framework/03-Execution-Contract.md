@@ -1,4 +1,4 @@
-# AKRS Execution Contract (v1, revised v1.3)
+# AKRS Execution Contract (v1, revised v1.3.1)
 
 ### Execution guarantees for Worker agents
 
@@ -101,9 +101,9 @@ one pass:
 
 - **flip the Road** — retire it (`DONE + superseded by <memory>`) or refresh its *Expected
   files* / scope to match what actually shipped;
-- **append ONE ledger line** to `LOG.md` (+ an optional `deviations:` line only when reality
-  diverged from the Road) — append-only, never read at boot
-  (`07-State-And-Sync-Specification.md §2`);
+- **append ONE ledger line** to `LOG.md` — three fields, `date · ROAD-ID · DONE|BLOCKED`, no
+  telemetry to invent (+ an optional `deviations:` line only when reality diverged from the
+  Road) — append-only, never read at boot (`07-State-And-Sync-Specification.md §2`);
 - **rewrite `STATE.md` ≤ ~1 page** — landed objective → *Done* (last 3), set *Next*, record any
   new *Open questions*, refresh the timestamp + author (rewritten fresh, never appended);
 - **update Memory** only if a reusable fact changed owner or location.

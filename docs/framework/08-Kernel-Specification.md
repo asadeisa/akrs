@@ -1,4 +1,4 @@
-# AKRS Kernel Specification (v1.2, revised v1.3)
+# AKRS Kernel Specification (v1.2, revised v1.3.1)
 
 ### What the Kernel is, and the templates the framework emits
 
@@ -72,6 +72,16 @@ findings + delete-on-pass · tester-memory rules · BLOCKED escalation.
 
 **`changer.md`**: Leader-only, Mode 4 · FEATURES → impact → flag conflicts → merge-or-vanish
 · the requirements-delta procedure.
+
+**Handoff naming — one token, per Plan (v1.3.1).** Both `worker.md` and `tester.md` refer to
+the **same** baton, spelled the **same** way: `akrs/verify/<plan>-handoff.md` — keyed to the
+**Plan**, never the Road. When compiling the kernel the Leader must copy this token verbatim into
+both role files; a kernel where one role writes `<plan>-handoff.md` and the other reads
+`<road>-handoff.md` is malformed and fails the acceptance test (§5). **If the selected tier
+generates no Plans** (AKRS Lite / tiny — `01-Constitution.md §12`), omit the handoff line from
+both role files entirely: there is no `akrs/verify/`, and the Tester (if any) verifies the Road
+against the running product directly (`10-Verification-Specification.md §3`). Never emit a
+per-Road handoff to compensate.
 
 Every rule of the pre-v1.2 single template survives — redistributed into exactly one of these
 files.
@@ -206,7 +216,9 @@ scanning the repo, and without loading another role's file.
 This is the guardrail against over-trimming and against leakage: if a session would need a
 rule its CORE + role file omitted, the kernel failed and must be regenerated, not patched ad
 hoc; if a role file carries a rule another role owns, single-owner across the folder is
-broken.
+broken. It is also the guardrail against cross-role drift: if `worker.md` and `tester.md`
+disagree on the handoff token (`<plan>-handoff.md` vs `<road>-handoff.md`), or a no-Plan tier
+still names a handoff, the kernel is malformed and must be regenerated (§3).
 
 ---
 

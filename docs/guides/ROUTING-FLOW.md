@@ -163,7 +163,7 @@ flowchart TD
     K --> Entry[Create AGENTS.md entry]
     Entry --> B[Phase B<br/>Generate 1 Task + 1 Road on demand]
     B --> X[Worker executes the Road]
-    X --> C[Close-out:<br/>append LOG + metrics → rewrite STATE → reconcile Road + Memory → validate]
+    X --> C[Close-out:<br/>append LOG ledger line → rewrite STATE → reconcile Road + Memory → validate]
     C -->|next request| B
 
     classDef lead fill:#1f6feb,stroke:#0b3d91,color:#fff;

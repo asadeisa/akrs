@@ -63,16 +63,20 @@ Roads with non-overlapping file sets and run them side by side.
 
 ## 4. ROI — the cost conversation
 
-Every close-out appends a metrics line to `LOG.md`:
+AKRS deliberately does **not** fabricate cost telemetry. Earlier ledgers asked the executing
+agent to record `model=`, `effort=`, `tokens=`, and `wall=` — values an agent cannot know
+reliably and, in practice, made up. As of v1.3.1 the `LOG.md` ledger is a bare chronology:
 
 ```
-Metrics: road=<ID> model=<name> effort=<level> result=<landed|blocked> usage=<x%>
+<YYYY-MM-DD> · <ROAD-ID> · <DONE|BLOCKED>
 ```
 
-That line is the **instrumentation**. Twenty entries are the cost slide: which model ran each
-Road, at what effort, landed or blocked, at what token cost. The framework's whole thesis —
-*let a strong model think once so cheap models execute many times* — becomes a number a team
-can put in front of finance, straight out of the journal it was already keeping.
+The cost slide comes from sources that actually measure cost — **the provider's usage
+dashboard, CI wall-clock, and PR metadata** — correlated with the ledger's Road-by-Road
+chronology (which Roads landed, in what order, on which model you chose to run them). The
+framework's thesis — *let a strong model think once so cheap models execute many times* — is
+still a number a team can put in front of finance; it just comes from the meter, not from a
+figure the agent invented.
 
 ---
 
@@ -81,7 +85,7 @@ can put in front of finance, straight out of the journal it was already keeping.
 1. `npx akrs-framework init` in the repo; confirm the Source of Truth with the Leader.
 2. Generate the Phase A skeleton + the kernel folder; add `AGENTS.md`.
 3. Wire `npx akrs-framework validate` into CI (and, optionally, a pre-commit hook).
-4. Run one Road end-to-end (branch → PR → close-out → `LOG.md` metrics line); show the team
+4. Run one Road end-to-end (branch → PR → close-out → `LOG.md` ledger line); show the team
    the PR that generated itself from the Road.
 
 See [`FILE-STRUCTURE.md`](FILE-STRUCTURE.md) for the file layout and

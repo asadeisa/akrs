@@ -16,6 +16,10 @@ requires restructuring the repository.
 - ✅ **v1.3** — the subtraction release: LOG → one-line ledger, the skills seam filled
   (`akrs-close-out` / `akrs-live-verify`), the verification diet, and `validate` grown to
   **17 checks** (LOG rotation + ledger lint + parked-owner warn). Details in `CHANGELOG.md`.
+- ✅ **v1.3.1** — field-feedback patch from a low-capability-model run: install auto-syncs
+  doctrine out of `node_modules`, `validate` rule 2 gated by status (`QUEUED`/`ACTIVE`/`DONE`),
+  telemetry dropped from the ledger, per-Plan handoff made explicit, and mandatory SoT-Index
+  Phase-A checklist. Details in `CHANGELOG.md`.
 
 Focus: stability, clarity, adoption. Gather real-world feedback.
 

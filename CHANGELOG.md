@@ -9,6 +9,47 @@ version lines relate.
 
 ---
 
+## [1.3.1] — 2026-07-09
+
+A **field-feedback patch** from a live low-capability-model run (Sonnet 5 as Leader, Gemini
+Flash as Worker). Five fixes, no scope growth — each removes a way a weaker model was pushed
+into fabricating, failing, or diverging. **Backward-compatible.**
+
+### Fixed
+- **FIX-1 · Install no longer buries doctrine in `node_modules`.** Adding `akrs-framework` as a
+  dependency now runs a `postinstall` hook (`akrs postinstall`) that copies `docs/framework/`
+  (incl. `skills/`) into the project's `docs/akrs/` — the same target `init` uses — so the
+  generated workflow reads local files, not `node_modules`. The hook never runs during the
+  framework's own dev, never fails an install, and is opt-out via `AKRS_SKIP_POSTINSTALL=1`
+  (`bin/akrs.js`, `package.json`, `README.md`, `GETTING_STARTED.md`).
+- **FIX-2 · `validate` rule 2 exemption was inverted.** A freshly generated `ACTIVE`/`QUEUED`
+  Road failed validation because its Expected files did not exist yet, while `DONE` Roads were
+  fully exempt (so files deleted after completion went undetected). Now gated by status:
+  **`QUEUED` skip · `ACTIVE` warn · `DONE` error** — a newly generated Road never hard-fails CI,
+  and real post-completion drift is caught (`bin/akrs.js`, `07 §6`).
+- **FIX-4 · Handoff is per Plan, not per Road — made explicit.** A weaker Leader generated a
+  kernel where `worker.md` wrote `<plan>-handoff.md` while `tester.md` read `<road>-handoff.md`.
+  `08` and `10` now state the token is keyed to the **Plan**, both role files must spell it
+  identically, and **no-Plan tiers (AKRS Lite / tiny) emit no handoff at all** — a missing
+  `akrs/verify/` there is correct, not a bug (`08 §3, §5`, `10 §3`).
+- **FIX-5 · SoT Index generation is now a mandatory, verifiable Phase-A step.** A weaker Leader
+  silently declared `SOT-INDEX none` and told Roads not to read the SoT. `02 §3.1` makes it a
+  recorded checklist item: **generate `akrs/SOT-INDEX.md`, or write a justified
+  `SOT-INDEX: none — <reason>`** (legal only for a small single-page SoT); a bare `none`, or an
+  omission on a large/pre-existing SoT, is a generation failure (`02 §3.1, §9`).
+
+### Changed
+- **FIX-3 · Telemetry removed from close-out; the ledger is three fields.** The close-out no
+  longer records `model=` / `effort=` / `tokens=` / `tools=` / `wall=` — values an executing
+  agent cannot know and, in the live run, fabricated. `LOG.md` entries are now
+  `<YYYY-MM-DD> · <ROAD-ID> · <DONE|BLOCKED>` (+ the optional `deviations:` line). The
+  ledger-entry lint drops from ~40 words to ~12, and the ROI story now reads real cost from the
+  provider meter, not an invented number (`skills/akrs-close-out.md`, `07 §2`, `03 §6`,
+  `01 §6/§8`, `bin/akrs.js`, `docs/guides/TEAM-ADOPTION.md`, `docs/guides/ROUTING-FLOW.md`).
+- Spec headers bumped to *revised v1.3.1* on the touched docs (`02`, `03`, `07`, `08`, `10`).
+
+---
+
 ## [1.3.0] — 2026-07-09
 
 The **subtraction release**: same guarantees as v1.2 (Mirror Check, honest instruments, the
@@ -218,6 +259,7 @@ The original AKRS specification: the read-once doctrine, the artifact layers
 (Router / Memory / Road / Task / Plan / Phase), and the first real-project test
 harness. Preserved unchanged under `docs/research/v0/`.
 
+[1.3.1]: https://github.com/asadeisa/akrs/releases/tag/v1.3.1
 [1.3.0]: https://github.com/asadeisa/akrs/releases/tag/v1.3.0
 [1.2.0]: https://github.com/asadeisa/akrs/releases/tag/v1.2.0
 [1.1.1]: https://github.com/asadeisa/akrs/releases/tag/v1.1.1
