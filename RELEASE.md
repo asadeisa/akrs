@@ -28,9 +28,10 @@ For maintainers cutting a new AKRS release. Follow top to bottom.
 ## 4. Package Contents
 
 - [ ] `package.json` `files` field includes only what users need
-      (`bin`, `docs/framework`, `docs/guides`, `GETTING_STARTED.md`, `README.md`,
-      `LICENSE`, `CHANGELOG.md`).
-- [ ] `.npmignore` excludes research, validation internals, dev artifacts.
+      (`bin`, `docs/framework` — incl. `skills/`, `GETTING_STARTED.md`, `README.md`,
+      `LICENSE`, `CHANGELOG.md`, `VERSIONING.md`). **No `docs/guides`** (web-readable on
+      GitHub only; npm rewrites the README's links).
+- [ ] `.npmignore` excludes research, validation internals, `docs/guides`, dev artifacts.
 - [ ] Dry-run the package and inspect contents:
   ```bash
   npm pack --dry-run
@@ -48,9 +49,10 @@ yarn add     <path-or-tarball>
 ```
 
 - [ ] Package installs with all three.
-- [ ] `docs/framework/` is present after install.
+- [ ] `docs/framework/` is present after install (including `docs/framework/skills/`).
+- [ ] `docs/guides/` is **absent** after install.
 - [ ] `GETTING_STARTED.md`, `README.md`, `LICENSE` are present.
-- [ ] Metadata (name, version, license, repository) is correct.
+- [ ] Metadata (name, version, license, repository, author) is correct.
 
 ## 6. Git & GitHub
 

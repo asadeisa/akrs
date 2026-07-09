@@ -1,4 +1,4 @@
-# AKRS Verification Specification (v1.2)
+# AKRS Verification Specification (v1.2, revised v1.3)
 
 ### When is landed work actually right?
 
@@ -45,6 +45,12 @@ typed is exactly the overhead the framework forbids (D12). Task front-matter gai
 
 The Leader sets `Verify:` at generation time. Absence means `idea`.
 
+**Cadence (the verification diet).** Verification attaches to the right level and no finer:
+**asserts per Road** (committed to `tests/`, §9); the **Mirror Check per Plan** (the Leader,
+§4); and a **live-browser Tester pass only for Plans that touched DOM/CSS, plus one final
+end-to-end pass — never once per Road** (§3; run via the `akrs-live-verify` skill). This is the
+v1.3 diet: the v1.2 run's verification bill came from running a live pass on every Road.
+
 ---
 
 ## 3. The Test-Handoff file
@@ -52,23 +58,19 @@ The Leader sets `Verify:` at generation time. Absence means `idea`.
 `akrs/verify/<plan>-handoff.md` is the baton between execution and verification.
 
 - **Created by the Worker during execution** — short, append-only notes: *what became
-  observable, how to reach it, what should happen*. It is a baton, not a report; keep it
-  small.
+  observable, how to reach it, what should happen*. A baton, not a report. **Hard cap: one
+  page (~350 words).**
 - Flagged **"ready"** when the Plan's idea is complete and runnable.
 - **Consumed by the Tester**, who verifies against the running product. On **pass**, the
   Tester **deletes it** (the named deleter is the Tester — D14).
 - On **bug**: the Tester writes findings (the file stays), the Leader routes the fix, then
   the idea is re-tested.
 
-```markdown
-# handoff: rendering-perf   (ready)
-- Observable: open index.html, toggle Settings → Quality: High.
-- Reach it: default level, 480×270.
-- Expected: interactive frame rate; win banner visible on completion.
-```
-
-Every ephemeral artifact has a named creator and a named deleter (D14); the validate CLI
-flags a handoff left behind after its Plan has landed.
+The **handoff template and the live-verification rig are owned by the `akrs-live-verify`
+skill** (`skills/akrs-live-verify.md`, instantiated per project at
+`akrs/skills/akrs-live-verify.md`); this spec owns only the invariants above. Every ephemeral
+artifact has a named creator and a named deleter (D14); the validate CLI flags a handoff left
+behind after its Plan has landed.
 
 ---
 
@@ -101,7 +103,9 @@ Instruments shipped by the product under test are **evidence, never verdicts**. 
 mirror-test the loop clamped `dt` at 0.1 s so the FPS counter could never read below 10; the
 Worker's live-verify reported "FPS: 10" while its own overlay showed `render: 2600 ms` one
 line lower. Models satisfy the criteria they are given; they do not volunteer "this is a
-slideshow" unless the policy asks. This section is the policy asking.
+slideshow" unless the policy asks. This section is the policy asking. The runnable rig — launch,
+drive the page in a real browser, take the external measurement — is owned by the
+`akrs-live-verify` skill.
 
 ---
 
@@ -183,5 +187,8 @@ and the tester file removed.
   §5–6`.
 - Plan-completion close-out points here from `07-State-And-Sync-Specification.md §4`.
 - SoT acceptance-line indexing is owned by `09-Scale-And-Source-Index-Specification.md §2`.
-- The Kernel carries the compressed Tester role, `Verify:` shape, and Mirror-Check +
-  handoff-delete close-out lines (`08-Kernel-Specification.md`).
+- The Kernel carries the compressed Tester role, `Verify:` shape, the live-verify cadence, and
+  a pointer to the live-verify skill (`08-Kernel-Specification.md`).
+- The live-verification **rig** and the **Test-Handoff template** are owned by the
+  `akrs-live-verify` skill (`skills/akrs-live-verify.md`); this spec and the kernel point to it,
+  never restate it.

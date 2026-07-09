@@ -1,4 +1,4 @@
-# AKRS Generation Specification (v1)
+# AKRS Generation Specification (v1, revised v1.3)
 
 ### How a Leader generates an AKRS workflow
 
@@ -87,6 +87,8 @@ Generate Dependency Memory
   ↓
 Generate STATE.md              (v1 — initial save-point)
   ↓
+Generate package.json          (v1.3 — devDependency akrs-framework + validate scripts)
+  ↓
 Validate Skeleton
   ↓
 Skeleton Complete
@@ -102,6 +104,12 @@ assert-script convention) is decided now — never parked to the last plan
 `STATE.md` is initialized at the end of Phase A so the very first session has a resume
 point (active mode, no active Road yet, Next = "generate first Task on request"). See
 `07-State-And-Sync-Specification.md`.
+
+**Generated `package.json` (v1.3).** Phase A emits (or updates in place, preserving existing
+entries) the project's `package.json` with `"devDependencies": {"akrs-framework": "^<version>"}`
+and scripts `validate` (`akrs validate`), `validate:fix` (`akrs validate --fix`), and
+`validate:clean` (`akrs validate --clean`). A developer who has never seen the `npx` commands
+then just runs `npm run validate`. The workflow ships the tool; the workflow validates itself.
 
 ---
 
@@ -224,12 +232,21 @@ Workflow validated
   ↓
 Generate akrs/kernel/         (CORE.md + worker/leader/tester/changer.md — 08 templates)
   ↓
-Generate Platform Adapters    (AGENTS.md canonical + thin pointers — 05-...)
+Instantiate akrs/skills/      (akrs-close-out.md + akrs-live-verify.md from docs/framework/skills/ — fill live-verify's slots)
   ↓
-Remove framework source docs from the target project   (only the kernel folder ships)
+Generate Platform Adapters    (AGENTS.md canonical + thin pointers, incl. .claude/skills/<name>/SKILL.md — 05-...)
+  ↓
+Remove framework source docs from the target project   (only akrs/kernel/ + akrs/skills/ ship)
   ↓
 Project ready to execute
 ```
+
+**Skill instantiation (v1.3).** Alongside the kernel, the Leader instantiates each framework
+skill (`docs/framework/skills/<name>.md`) as the project's canonical body at
+`akrs/skills/<name>.md` — the single owner of that procedure — completing any `<…>` slots
+(`akrs-live-verify` needs launch command, URL/port, evidence location, SoT budgets). The kernel
+and specs point to these bodies; the procedure never exists twice
+(`08-Kernel-Specification.md`, `05-Platform-Adapter-Specification.md`).
 
 > Generating an actual kernel folder is part of applying the framework to a real project. It
 > is **not** part of building this framework. The framework provides the specification and
@@ -240,7 +257,8 @@ Project ready to execute
 ## 8. Workflow output contract
 
 A generated workflow must contain: routing, memory, plans, phases, tasks, roads, **state**,
-and validation. Concrete filenames may differ; responsibilities may not.
+the **kernel folder**, the **skill bodies** (`akrs/skills/`), a **`package.json`** wiring
+`npm run validate`, and validation. Concrete filenames may differ; responsibilities may not.
 
 **Maximize:** execution predictability, routing precision, ownership uniqueness, navigation
 consistency, reusable knowledge.

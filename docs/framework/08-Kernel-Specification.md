@@ -1,4 +1,4 @@
-# AKRS Kernel Specification (v1.2)
+# AKRS Kernel Specification (v1.2, revised v1.3)
 
 ### What the Kernel is, and the templates the framework emits
 
@@ -56,18 +56,19 @@ STATE's word budget). Compress to fit; never drop a rule.
 **`CORE.md`** (shared): Roles + role-at-boot line · Runtime priority (`Road → Memory → Router
 → Repository`; SoT only via windows / SOT-INDEX) · Modes 0–4 table with prompt→Mode hints
 (Mode 0 = escape hatch) · the one route · the blind-assumption check + scope-expansion loop ·
-the close-out one-liner (append LOG → rewrite STATE ≤1 page → reconcile Road → update Memory)
-· Pointers (Router / STATE / LOG / SOT-INDEX / FEATURES / Source of Truth).
+the close-out pointer line (→ the `akrs-close-out` skill) · Pointers (Router / STATE / LOG /
+SOT-INDEX / FEATURES / Source of Truth).
 
 **`worker.md`**: execution guarantees · Road + Task file shapes (Task carries `Verify:` and
-`Skills:`) · handoff-file duty · the close-out steps a Worker performs · BLOCKED escalation.
+`Skills:`) · handoff-file duty (≤1 page) · the close-out skill pointer · BLOCKED escalation.
 
 **`leader.md`**: generation + granularity rules · Router + Memory file shapes · batch +
 staleness · dep-gating · Plan close-out ownership (Mirror-Check trigger + FEATURES append) ·
 interaction + applicability.
 
-**`tester.md`**: consume the handoff · Mirror Check · raw measurement + user-acceptability
-sentence · findings + delete-on-pass · tester-memory rules · BLOCKED escalation.
+**`tester.md`**: consume the handoff · Mirror Check · the live-verify cadence + the
+`akrs-live-verify` skill pointer · instruments-are-evidence + user-acceptability sentence ·
+findings + delete-on-pass · tester-memory rules · BLOCKED escalation.
 
 **`changer.md`**: Leader-only, Mode 4 · FEATURES → impact → flag conflicts → merge-or-vanish
 · the requirements-delta procedure.
@@ -113,8 +114,7 @@ Prompt → Mode → Router → Memory → Road → Execute.
 "Finish with ONLY the active Road?" YES → execute. NO → Router → Memory → back to Road. Never guess.
 
 ## Close-out (Road lands)
-LOG+metrics → rewrite STATE ≤1 page → retire/refresh Road → update Memory. One Road = one commit.
-Then run `npx akrs-framework validate`.
+Execute `akrs/skills/akrs-close-out.md` (flip Road · ledger line · STATE ≤1 page · Memory · commit · validate).
 
 ## Pointers
 Router <path> · STATE akrs/STATE.md · LOG akrs/LOG.md · SOT-INDEX akrs/SOT-INDEX.md ·
@@ -132,9 +132,9 @@ FEATURES akrs/FEATURES.md · SoT <path(s)>
   Skills(names, optional) + road-pointer / restates nothing from its Road.
 - Skills: use the skill / MCP-tool names the Task lists (zero, one, or many).
 - Handoff: keep akrs/verify/<plan>-handoff.md current (what became observable, how to reach
-  it, expected); flag "ready" when runnable.
-- Close-out: when my Road lands I perform the CORE close-out sequence (LOG → STATE → Road →
-  Memory → one commit). I do not run the Plan-level pass — that is the Leader's/Tester's.
+  it, expected); ≤1 page; flag "ready" when runnable.
+- Close-out: when my Road lands, execute akrs/skills/akrs-close-out.md. I do not run the
+  Plan-level pass — that is the Leader's/Tester's.
 - Stuck: after the scope-expansion loop fails, write akrs/BLOCKED.md (which Road, what
   blocked, what I tried, what I need) and tell the developer. Do not guess forward.
 ```
@@ -152,13 +152,13 @@ FEATURES akrs/FEATURES.md · SoT <path(s)>
   only after re-checking Memory/STATE.
 - Gating: a Road whose Deps aren't all DONE can't go ACTIVE without a recorded override.
 - Plan close-out — the Plan closes only when: Mirror Check passes (every SoT bullet reachable
-  at runtime, not just exported — an exported symbol nothing imports fails the Plan); the
-  Tester's verification passed; no unowned seam; no open question owned by this Plan. Then
-  append one FEATURES line.
-- Validate the workflow: one owner per concept; every Task has exactly one Road; every Road a
-  legal Status; no Unknown left silently hardened.
+  at runtime, not just exported); the Tester's verification passed; no unowned seam; no open
+  question owned by this Plan. Then append one FEATURES line.
+- Validate: one owner/concept; one Road per Task; every Road a legal Status; no Unknown
+  silently hardened.
 - Interaction: 2–4 options recommended-first, one decision/turn, confirm SoT first, guided
-  next step.
+  next step. ASK owner decisions the same turn; STATE stores only the answer, never a parked
+  question.
 - Applicability: Lite = kernel+Router+Roads; Full = +Plans/Phases/Memory; tiny = skip.
 ```
 
@@ -168,8 +168,11 @@ FEATURES akrs/FEATURES.md · SoT <path(s)>
 # TESTER
 - Consume akrs/verify/<plan>-handoff.md. Verify the idea against the RUNNING product, not the
   paperwork. Never edit product code.
-- Measure: ≥1 raw measurement vs a SoT budget (never the product's own HUD — instruments are
-  evidence, never verdicts), then answer "as a user, is this acceptable? — yes/no because ___".
+- Cadence: asserts per Road; Mirror Check per Plan; a real-browser pass ONLY for Plans that
+  touched DOM/CSS + one final end-to-end pass — not per Road. Run it: execute
+  akrs/skills/akrs-live-verify.md (the rig + handoff template live there).
+- Instruments are evidence, never verdicts (never the product's own HUD). End every pass with
+  "as a user, is this acceptable? — yes/no because ___".
 - Pass → delete the handoff. Bug → write findings (handoff stays), escalate, re-test after the
   fix lands.
 - Tester memory (akrs/memory/tester/): create a topic file ONLY on a repeated error / red-flag

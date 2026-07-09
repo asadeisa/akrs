@@ -12,7 +12,7 @@
 
 import {
   existsSync, mkdirSync, cpSync, readdirSync, readFileSync, writeFileSync,
-  statSync, rmSync,
+  statSync, rmSync, renameSync,
 } from 'node:fs';
 import { dirname, join, resolve, relative, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -33,11 +33,12 @@ Usage
   npx akrs-framework init --force    Overwrite ./docs/akrs/ if it already exists
   npx akrs-framework validate        Validate the generated workflow in ./akrs
     --dir <path>   validate a workflow directory other than ./akrs
-    --fix          apply safe mechanical fixes (sync mirrored Road statuses only)
+    --fix          apply safe mechanical fixes (sync mirrored Road statuses; rotate an over-threshold LOG ledger)
     --clean        delete stale ephemeral artifacts (handoffs / change files)
 
-'validate' checks Road status/expected-files/deps, STATE, the kernel folder, and the
-ephemeral-artifact lifecycle (handoff / change / BLOCKED / tester memory). CI green = valid.
+'validate' checks Road status/expected-files/deps, STATE (incl. parked owner decisions), the
+LOG ledger (size + entry length), the kernel folder, and the ephemeral-artifact lifecycle
+(handoff / change / BLOCKED / tester memory). CI green = valid.
 
 Docs & issues: https://github.com/asadeisa/akrs
 `;
@@ -59,7 +60,6 @@ function runInit() {
 
   const copies = [
     ['docs/framework', join(target, 'framework')],
-    ['docs/guides', join(target, 'guides')],
     ['GETTING_STARTED.md', join(target, 'GETTING_STARTED.md')],
   ];
 
@@ -170,14 +170,29 @@ function runValidate() {
   const rel = (p) => relative(cwd, p).replace(/\\/g, '/') || p;
 
   if (!existsSync(akrs)) {
+    // FW-6(b): scan one directory level — if exactly one subfolder holds an akrs/, point there.
+    let hint = '';
+    if (!args.includes('--dir')) {
+      try {
+        const nested = readdirSync(cwd, { withFileTypes: true })
+          .filter((e) => e.isDirectory() && !e.name.startsWith('.') && e.name !== 'node_modules')
+          .filter((e) => existsSync(join(cwd, e.name, 'akrs')))
+          .map((e) => `${e.name}/akrs`);
+        if (nested.length === 1)
+          hint = `\nFound ${nested[0]} — run:\n\n    npx akrs-framework validate --dir ${nested[0]}\n`;
+      } catch {}
+    }
     process.stderr.write(`AKRS: no workflow found at "${rel(akrs)}". ` +
-      `Pass --dir <path> to point at your akrs/ directory.\n`);
+      `Pass --dir <path> to point at your akrs/ directory.\n${hint}`);
     return 1;
   }
 
   const allMd = listFiles(akrs, isMd);
-  const roadFiles = allMd.filter((p) => inDir(p, 'roads'));
-  const taskFiles = allMd.filter((p) => inDir(p, 'tasks'));
+  // FW-7(a): roads/README.md and tasks/README.md are template docs, not artifacts — never lint
+  // them as Roads/Tasks (they were the permanent "2 errors" noise in the v1.2 run).
+  const notReadme = (p) => basename(p).toLowerCase() !== 'readme.md';
+  const roadFiles = allMd.filter((p) => inDir(p, 'roads') && notReadme(p));
+  const taskFiles = allMd.filter((p) => inDir(p, 'tasks') && notReadme(p));
   const memoryFiles = allMd.filter((p) => inDir(p, 'memory'));
 
   const roads = roadFiles.map((p) => {
@@ -190,6 +205,8 @@ function runValidate() {
 
   const statePath = join(akrs, 'STATE.md');
   const stateText = existsSync(statePath) ? read(statePath) : null;
+  const logPath = join(akrs, 'LOG.md');
+  let logOverThreshold = false;
   const featuresPath = join(akrs, 'FEATURES.md');
   const featuresText = existsSync(featuresPath) ? read(featuresPath) : '';
   const overridden = (id) =>
@@ -281,9 +298,12 @@ function runValidate() {
   if (existsSync(sotIndex)) {
     for (const line of read(sotIndex).split(/\r?\n/)) {
       if (!line.includes('·')) continue;
+      // FW-7(b): skip the legend/header/table rows — only real source rows name a file.
+      if (/^\s*(#|Format\s*:|\|)/i.test(line)) continue;
       let src = line.split('·')[0].replace(/[`*\-]/g, '').trim();
       if (!src) continue;
       const filePart = src.replace(/:\d+(-\d+)?$/, '');
+      if (/\s/.test(filePart)) continue;          // a bare source path has no spaces (FW-7)
       const isDir = filePart.endsWith('/');
       const target = resolve(cwd, filePart);
       if (!existsSync(target)) err(sotIndex, `SOT-INDEX names a ${isDir ? 'directory' : 'source'} that does not exist: ${filePart}`);
@@ -363,6 +383,37 @@ function runValidate() {
     });
   }
 
+  // 15. STATE parks no unasked owner/developer decision (FW-5) — ask it the same turn (04 §2.6)
+  if (stateText) {
+    stateText.split(/\r?\n/).forEach((line, i) => {
+      if (/\b(pending|awaiting|await)\b/i.test(line) && /\b(owner|developer|decision)\b/i.test(line))
+        warn(statePath, `line ${i + 1}: an owner decision looks parked in STATE ("${line.trim().slice(0, 50)}…") — ` +
+          `ask it in-chat the same turn; STATE records only the answer (04 §2.6)`);
+    });
+  }
+
+  // 16 + 17. LOG ledger: entry-length lint (FW-3) and rotation threshold (FW-2)
+  if (existsSync(logPath)) {
+    const logText = read(logPath);
+    const logLines = logText.split(/\r?\n/);
+    // 16. a one-line ledger entry over ~40 words (only the post-doctrine bare-date format;
+    // the optional `deviations:` line is a separate line and is exempt).
+    logLines.forEach((line, i) => {
+      if (!/^\s*\d{4}-\d{2}-\d{2}\s*·/.test(line)) return;
+      const n = wordCount(line);
+      if (n > 40)
+        warn(logPath, `line ${i + 1}: ledger entry is ${n} words (~40 max) — one line per close-out, no narrative`);
+    });
+    // 17. rotation threshold — 200 entries or 16 KB. Count both old (## date) and ledger entries.
+    const entries = logLines.filter((l) => /^\s*(##\s|\d{4}-\d{2}-\d{2})/.test(l)).length;
+    const bytes = Buffer.byteLength(logText, 'utf8');
+    if (entries > 200 || bytes > 16 * 1024) {
+      logOverThreshold = true;
+      warn(logPath, `LOG.md is ${entries} entries / ${(bytes / 1024).toFixed(1)} KB — over the rotation ` +
+        `threshold (200 entries / 16 KB); run \`validate --fix\` to archive it`);
+    }
+  }
+
   // --- fixes ---------------------------------------------------------------
   let fixed = 0;
   if (doFix && mismatches.length) {
@@ -379,6 +430,27 @@ function runValidate() {
       const idx = errors.findIndex((e) => e.includes(`line ${m.lineIdx + 1}`) && e.includes(rel(m.file)));
       if (idx >= 0) errors.splice(idx, 1);
     }
+  }
+
+  // FW-2: rotate an over-threshold ledger — the tool splits it so no agent ever counts entries.
+  let rotated = 0;
+  if (doFix && logOverThreshold) {
+    let max = 0;
+    for (const f of readdirSync(akrs)) {
+      const mm = f.match(/^LOG-(\d+)\.md$/i);
+      if (mm) max = Math.max(max, parseInt(mm[1], 10));
+    }
+    const archiveName = `LOG-${String(max + 1).padStart(3, '0')}.md`;
+    try {
+      renameSync(logPath, join(akrs, archiveName));   // rename = byte-identical archive
+      writeFileSync(logPath,
+        `# LOG  (ledger — append-only, one line per close-out, newest at the bottom)\n` +
+        `Archived: ${archiveName} and earlier LOG-*.md — read-only; never rewritten.\n`);
+      notes.push(`rotated LOG.md → ${rel(join(akrs, archiveName))} (fresh ledger started)`);
+      rotated++;
+      for (let i = warns.length - 1; i >= 0; i--)
+        if (/over the rotation/.test(warns[i])) warns.splice(i, 1);
+    } catch {}
   }
 
   let cleaned = 0;
@@ -398,6 +470,7 @@ function runValidate() {
   for (const w of warns) out.write(`  ⚠ ${w}\n`);
   for (const n of notes) out.write(`  🧹 ${n}\n`);
   if (doFix) out.write(`\nFixed ${fixed} mirrored status${fixed === 1 ? '' : 'es'}.\n`);
+  if (doFix && rotated) out.write(`Rotated the LOG ledger into ${rotated} archive${rotated === 1 ? '' : 's'}.\n`);
   if (doClean) out.write(`Cleaned ${cleaned} stale artifact${cleaned === 1 ? '' : 's'}.\n`);
 
   const ok = errors.length === 0;

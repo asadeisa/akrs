@@ -1,4 +1,4 @@
-# AKRS Developer Interaction Protocol (v1)
+# AKRS Developer Interaction Protocol (v1, revised v1.3)
 
 ### How the Leader interacts with the Developer
 
@@ -61,6 +61,16 @@ between a Developer who feels **guided** and one who feels **stuck**.
 ### 2.5 Confirm before destructive or ownership-changing actions
 Overwriting an entry file, replacing an existing workflow, or deleting work always requires
 explicit approval (see §5, §6).
+
+### 2.6 Owner decisions are asked the same turn (never parked)
+Any item that is an **owner/developer decision** is **ASKED in-chat the same turn it is
+raised** — as a structured question (§2.1): 2–4 options, recommended-first. `STATE.md` records
+only the **answer**, never the unasked question. An owner decision left sitting in STATE
+("owner decision pending", "awaiting the developer") is a defect the validate CLI warns on
+(`bin/akrs.js`; `07-State-And-Sync-Specification.md §6`). In the whole v1.2 run neither Leader
+nor Worker asked the developer anything — decisions sat silently in STATE; this rule ends that.
+(Genuine *Unknowns* that cannot be decided yet are different: they park as Open questions owned
+by a Plan and expire at its close-out — `10-Verification-Specification.md §7`.)
 
 ---
 

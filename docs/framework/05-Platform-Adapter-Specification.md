@@ -1,4 +1,4 @@
-# AKRS Platform Adapter Specification (v1)
+# AKRS Platform Adapter Specification (v1, revised v1.3)
 
 ### How AKRS integrates with different AI platforms
 
@@ -58,6 +58,34 @@ Every other famous tool gets a generated file that just points at `AGENTS.md`. B
 Only Claude supports `@AGENTS.md`; everything else receives a plain "read AGENTS.md"
 instruction. Additional adapters may be added without changing AKRS architecture.
 
+### Skill adapters (v1.3)
+
+The framework's skills (`akrs-close-out`, `akrs-live-verify`) follow the **same one-body /
+thin-pointer pattern** as `AGENTS.md`. Phase A instantiates each canonical body at
+`akrs/skills/<name>.md` (the single owner of the procedure) and emits a **thin per-platform
+pointer** so a tool that auto-discovers skills can surface it:
+
+| Tool | Skill pointer file | Pointer body |
+|---|---|---|
+| Claude Code | `.claude/skills/<name>/SKILL.md` | frontmatter (`name` + `description`) + one line: *"Read and execute `akrs/skills/<name>.md`."* |
+| Every other platform | — | routed by the kernel's pointer line to the same `akrs/skills/<name>.md` |
+
+The canonical body is **never** placed inside a vendor dotfolder: `.claude/` is invisible to
+some agents' file tools (hidden-dir filters) and reads as another vendor's private config to
+others. One body, thin pointers — the procedure never exists twice. Agents reach a skill only
+through its three routed discovery paths: the kernel pointer line, a platform adapter (above),
+or a Task's `Skills:` field.
+
+### Platform-neutral skill bodies (v1.3)
+
+Skill bodies are **plain imperative markdown any model can execute** — no vendor tool ids, no
+platform-only syntax. Shell steps are concrete runnable commands; browser automation is
+described by **capability** ("drive the running page in a real browser; a Playwright-style
+driver or the browser automation your platform provides"), never by a hardcoded tool name.
+Frontmatter is `name` + `description` only (the open Agent Skills format). This keeps skills
+**generator-agnostic**: any model (GPT, Gemini, any) can author them at init, and whoever boots
+later can run them.
+
 ---
 
 ## 4. Adapter responsibilities
@@ -80,7 +108,9 @@ Validate Workflow
   ↓
 Generate akrs/kernel/         (CORE + role files — 08-Kernel-Specification.md)
   ↓
-Generate AGENTS.md (canonical) + thin pointer adapters
+Instantiate akrs/skills/      (canonical procedure bodies — 02 §7)
+  ↓
+Generate AGENTS.md (canonical) + thin pointer adapters (incl. .claude/skills/<name>/SKILL.md)
   ↓
 Workflow Ready
 ```

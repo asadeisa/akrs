@@ -9,6 +9,68 @@ version lines relate.
 
 ---
 
+## [1.3.0] — 2026-07-09
+
+The **subtraction release**: same guarantees as v1.2 (Mirror Check, honest instruments, the
+Tester), at a fraction of the agent writing. **Backward-compatible** — the new `validate`
+checks add no NEW errors on a v1.2-era workflow (the ledger lint applies only to post-upgrade
+entries). Nothing is asked of the Worker or Leader; every item removes an agent step or moves
+work into the CLI.
+
+### Changed
+- **`LOG.md` → a one-line ledger.** Close-out now writes ONE line per Road (+ an optional
+  `deviations:` line only when reality diverged from the Road), not a ~450-word essay. The
+  exact ledger-line format is owned by the new `akrs-close-out` skill; `07` keeps only the
+  invariants (`07-State-And-Sync-Specification.md`, `03-Execution-Contract.md`).
+- **Skills seam filled — procedures move out of the kernel/specs.** Two single-owner,
+  platform-neutral skill bodies now own the procedures: `akrs-close-out` (close-out steps +
+  ledger format) and `akrs-live-verify` (live rig + Test-Handoff template). The kernel and
+  specs keep only the invariants + a pointer; no instruction exists twice
+  (`docs/framework/skills/`, `02`, `05`, `08`, `03`, `07`, `10`).
+- **Verification diet.** Test-Handoff hard-capped at 1 page; cadence is asserts-per-Road,
+  Mirror-Check-per-Plan, and a live Tester pass only for Plans that touched DOM/CSS plus one
+  final end-to-end pass — not per Road (`10`, `08`).
+- **Ask-the-developer trigger.** Any owner/developer decision is asked in-chat the same turn
+  it's raised (2–4 options, recommended-first); STATE records only the answer. A parked owner
+  decision is now a validate warning (`04 §2.6`, `08`, `bin/akrs.js`).
+- Kernel template re-counted after the edits: `CORE` + largest role dropped from 350 → 344
+  words, net-negative (`08`).
+
+### Added
+- **Automatic LOG rotation in the CLI.** When the ledger crosses 200 entries or 16 KB,
+  `validate` warns and `validate --fix` archives it to a read-only `LOG-<NNN>.md` (byte-
+  identical) and starts a fresh ledger — no agent ever counts entries (`bin/akrs.js`, `07 §6`).
+- **Ledger-entry lint** — a one-line ledger entry over ~40 words warns (post-upgrade entries
+  only; the `deviations:` line is exempt) (`bin/akrs.js`).
+- **Generated projects ship the tool.** Phase A emits a `package.json` with
+  `"devDependencies": {"akrs-framework": "^<ver>"}` and scripts `validate` / `validate:fix` /
+  `validate:clean`, so `npm run validate` just works. The CLI also points you at a nested
+  `akrs/` when `./akrs` is missing (`02`, `GETTING_STARTED.md`, `bin/akrs.js`).
+- **`wall=` (wall-clock minutes) in the metrics line**, completing the ROI table
+  (tokens + tools + wall) (`07`, `skills/akrs-close-out.md`).
+- **`docs/framework/skills/`** — the framework's skill templates, instantiated per project at
+  `akrs/skills/<name>.md` with thin `.claude/skills/<name>/SKILL.md` pointers.
+- The `validate` CLI now runs **17 checks** (up from 14).
+
+### Fixed
+- **Validator false positives.** `roads/README.md` and `tasks/README.md` template docs are no
+  longer linted as artifacts, and the `SOT-INDEX` `Format:` legend line no longer reports a
+  missing source — the two errors that trained everyone to ignore red validate output
+  (`bin/akrs.js`).
+
+### Removed / upgrade notes
+- **`init` no longer copies `guides/`.** `npx akrs-framework init` now installs just the
+  framework (`framework/` — including `skills/` — + `GETTING_STARTED.md`). The human guides are
+  web-readable on GitHub; the README/GETTING_STARTED links to them keep working (npm rewrites
+  relative links to GitHub URLs).
+- **The npm tarball no longer contains `docs/guides`** (dropped from `files` and `.npmignore`).
+- Existing projects may delete a pre-existing `docs/akrs/guides/` — nothing reads it. A
+  `--force` re-init overwrites but does not delete it.
+- **Maintainer contact ships in the package** — `author` and `bugs.email` now name
+  Asad Eisa &lt;asad.eisa.dev@gmail.com&gt;.
+
+---
+
 ## [1.2.0] — 2026-07-03
 
 A large, **backward-compatible** growth of the framework (D4/D8: nothing removed or weakened;
@@ -156,6 +218,7 @@ The original AKRS specification: the read-once doctrine, the artifact layers
 (Router / Memory / Road / Task / Plan / Phase), and the first real-project test
 harness. Preserved unchanged under `docs/research/v0/`.
 
+[1.3.0]: https://github.com/asadeisa/akrs/releases/tag/v1.3.0
 [1.2.0]: https://github.com/asadeisa/akrs/releases/tag/v1.2.0
 [1.1.1]: https://github.com/asadeisa/akrs/releases/tag/v1.1.1
 [1.1.0]: https://github.com/asadeisa/akrs/releases/tag/v1.1.0

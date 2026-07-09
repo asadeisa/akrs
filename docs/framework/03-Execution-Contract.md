@@ -1,4 +1,4 @@
-# AKRS Execution Contract (v1)
+# AKRS Execution Contract (v1, revised v1.3)
 
 ### Execution guarantees for Worker agents
 
@@ -91,20 +91,22 @@ runnable (`10-Verification-Specification.md §3`).
 
 ---
 
-## 6. Close-out (v1 — mandatory when work lands)
+## 6. Close-out (mandatory when work lands)
 
-Reaching §5 is not the end. Before the work is considered done, the Worker (or the Leader on
-hand-off) performs close-out so the workflow does not drift, in this order:
+Reaching §5 is not the end. When work lands the Worker (or the Leader on hand-off) runs the
+close-out so the workflow does not drift. The **procedure — and the exact ledger-line format —
+is owned by the `akrs-close-out` skill** (instantiated per project at
+`akrs/skills/akrs-close-out.md`); this contract owns only the invariants. Close-out must, in
+one pass:
 
-1. **Append to `LOG.md`** — one close-out entry (what/why/how) ending in the metrics line,
-   newest at the bottom. `LOG.md` is append-only and never read at boot.
-2. **Rewrite `STATE.md` ≤ ~1 page** — move the landed objective to *Done* (last 3 only), set
-   the next obvious *Next*, record any new *Open questions*, refresh the timestamp + author.
-   STATE is rewritten fresh, never appended.
-3. **Reconcile the Road** — either:
-   - mark it `DONE + superseded by <memory>` (retire it), **or**
-   - refresh its *Expected files* / scope to match what actually shipped.
-4. **Update Memory** if a reusable fact changed owner or location.
+- **flip the Road** — retire it (`DONE + superseded by <memory>`) or refresh its *Expected
+  files* / scope to match what actually shipped;
+- **append ONE ledger line** to `LOG.md` (+ an optional `deviations:` line only when reality
+  diverged from the Road) — append-only, never read at boot
+  (`07-State-And-Sync-Specification.md §2`);
+- **rewrite `STATE.md` ≤ ~1 page** — landed objective → *Done* (last 3), set *Next*, record any
+  new *Open questions*, refresh the timestamp + author (rewritten fresh, never appended);
+- **update Memory** only if a reusable fact changed owner or location.
 
 **Git protocol:** one Road = one commit (or branch/PR); message `<ROAD-ID>: <summary>`.
 Commit hygiene lives inside the workflow, not beside it.

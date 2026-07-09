@@ -1,4 +1,4 @@
-# AKRS State & Sync Specification (v1)
+# AKRS State & Sync Specification (v1, revised v1.3)
 
 ### The portable save-point, the append-only journal, and the Road close-out lifecycle
 
@@ -13,8 +13,8 @@ mechanism:
   CLI could resume from.
 
 The fix is **`STATE.md`** (the save-point) plus a mandatory **Road close-out** (the
-reconciliation). v1.2 splits the historical record out into an append-only **`LOG.md`** so
-the save-point stays small.
+reconciliation). v1.2 splits the historical record out into an append-only **`LOG.md`**; v1.3
+demotes that journal to a **one-line ledger** so close-out costs ~20 words instead of ~450.
 
 ---
 
@@ -80,28 +80,29 @@ up exactly where it left off.
 
 ---
 
-## 2. `akrs/LOG.md` — the append-only close-out journal
+## 2. `akrs/LOG.md` — the append-only ledger
 
-`LOG.md` is the history `STATE.md` is no longer allowed to hold. Full close-out narratives
-(what landed, why, how) go here — **one entry per close-out, newest at the bottom**. It is
-**never read at boot** and **never edited retroactively**; append-only files don't
-merge-conflict, so concurrent close-outs are safe.
+`LOG.md` is the history `STATE.md` is not allowed to hold — demoted in v1.3 from a narrative
+journal to a **ledger: ONE line per close-out, newest at the bottom**. It is **never read at
+boot** and **never edited retroactively**; append-only files don't merge-conflict, so
+concurrent close-outs are safe.
 
-Each entry ends with one **metrics line**:
+The **exact ledger-line format is owned by the `akrs-close-out` skill**
+(`skills/akrs-close-out.md`); this spec owns only the invariants:
 
-```
-Metrics: road=<ID> model=<name> effort=<level> result=<landed|blocked> usage=<x%>
-```
+- **One line per close-out**, plus an optional `deviations:` line **only when reality diverged
+  from the Road** — the one piece of knowledge with no other home.
+- Each line carries the metrics the ROI table reads: **model, effort, tokens, tools, and
+  wall-clock minutes** (`wall=`). These are the ROI evidence the whole system exists to produce
+  (the ledger is the instrumentation the `TEAM-ADOPTION.md` cost story reads).
+- **Append-only, newest at the bottom; never rewritten; never read at boot.**
+- **Rotation is mechanical, never manual.** When the ledger crosses the CLI's threshold
+  (200 entries or 16 KB), `validate --fix` rotates it into a read-only `LOG-<NNN>.md` archive
+  and starts a fresh `LOG.md` — so no agent ever counts entries (§6, `bin/akrs.js`).
 
-Twenty entries are the ROI evidence the whole system exists to produce (the LOG is the
-instrumentation the `TEAM-ADOPTION.md` cost story reads).
-
-```markdown
-## 2026-06-28 — content-rewire-work-list
-Removed WorkCard.vue, created WorkList.vue, rewired the router and Memory. The old card
-component was superseded; projects.md is now the single owner of the component's truth.
-Metrics: road=content-rewire-work-list model=gemini-flash effort=low result=landed usage=8%
-```
+Why keep the ledger at all: the metrics series (the ROI number the framework exists to prove)
+and the cross-road chronology live nowhere else — Roads are archived per-file, and git history
+can't be read by an agent in one pass. A one-line ledger keeps both at a fraction of the words.
 
 ---
 
@@ -129,25 +130,19 @@ C2-before-E3 inversion, where the Worker was forced to invent an input contract.
 
 ## 4. Close-out (mandatory when work lands)
 
-Reaching execution completion (`03-Execution-Contract.md §5`) is **not** the end. Before the
-work is considered done:
+Reaching execution completion (`03-Execution-Contract.md §5`) is **not** the end. When work
+lands the Worker (or the Leader on hand-off) runs the close-out, whose **procedure is owned by
+the `akrs-close-out` skill** (`skills/akrs-close-out.md`) — instantiated per project at
+`akrs/skills/akrs-close-out.md`. This spec owns only the invariants:
 
-```
-Work lands
-  ↓
-Append narrative + metrics to LOG.md      (history — never read at boot)
-  ↓
-Rewrite STATE.md ≤ 1 page                 (move objective → Done[last 3], set Next, refresh timestamp+author)
-  ↓
-Reconcile the Road:
-   retire  → Status: DONE + superseded by <memory>
-   or
-   refresh → update Expected files / scope to match what actually shipped
-  ↓
-Update Memory if a reusable fact changed owner or location
-  ↓
-Done
-```
+- **Flip the Road** — retire it (`Status: DONE + superseded by <memory>`) or refresh its
+  Expected files / scope to match what actually shipped.
+- **Append one ledger line** to `LOG.md` (+ optional `deviations:` line — §2).
+- **Rewrite `STATE.md` ≤ 1 page** — objective → *Done* (last 3), set *Next*, refresh the
+  timestamp + author.
+- **Update the owning Memory only if a contract changed** (a reusable fact moved owner or
+  location).
+- **One commit**, then `validate`.
 
 **Overhead budget (D12).** Close-out touches **at most LOG + STATE + the Road + one Memory +
 one FEATURES line**. If close-out regularly costs more than that, the architecture must be
@@ -179,7 +174,7 @@ and `WorkList.vue` added.
 
 **What close-out would have done at landing time:**
 
-1. `LOG.md` → one entry: "WorkCard.vue removed, WorkList.vue created" + metrics line.
+1. `LOG.md` → one ledger line for the close-out (Road ID · DONE · metrics).
 2. `STATE.md` → *Done:* "WorkCard.vue removed, WorkList.vue created"; *Next:* "point Memory
    at WorkList.vue."
 3. Road → `DONE + superseded by memory/projects.md` **or** *Expected files* updated to
@@ -198,14 +193,18 @@ in `bin/akrs.js`). It checks, mechanically, what the agent should never have to:
 - every Road has a legal `Status` and its *Expected files* exist on disk (DONE Roads exempt);
 - no `ACTIVE` Road is gated by an unfinished `Deps` entry (without a STATE override);
 - parallel-`ACTIVE` Roads have disjoint Expected files;
-- `STATE.md` exists, carries its required fields, and is within its word budget;
+- `STATE.md` exists, carries its required fields, is within its word budget, and **parks no
+  unasked owner decision** ("pending/awaiting owner" phrasing warns — `04 §2.6`);
+- the `LOG.md` ledger stays a ledger: an over-long ledger entry warns, and when the ledger
+  crosses the rotation threshold (200 entries / 16 KB) `--fix` archives it to `LOG-<NNN>.md`;
 - the kernel folder is present and within budget; mirrored Road statuses agree with the
   canonical `Status:`; `SOT-INDEX`/`FEATURES` references resolve; ephemeral artifacts
   (handoff / change / BLOCKED / tester memory) are not stale.
 
 Run it at **every close-out** and, recommended, as a **pre-commit hook / CI job**. `--fix`
-syncs mirrored statuses; `--clean` deletes stale ephemerals. The audit statement for teams:
-**CI green = workflow valid.** Mechanical checking is the CLI's job, not the agent's (D12).
+syncs mirrored statuses and rotates an over-threshold ledger; `--clean` deletes stale
+ephemerals. The audit statement for teams: **CI green = workflow valid.** Mechanical checking
+is the CLI's job, not the agent's (D12).
 
 ---
 
@@ -215,8 +214,9 @@ syncs mirrored statuses; `--clean` deletes stale ephemerals. The audit statement
   (`02-Generation-Specification.md §3–4`).
 - Boot reads `STATE.md` to resume (`06-Runtime-Boot-Protocol.md`).
 - The Execution Contract makes close-out a Worker obligation (`03-Execution-Contract.md §6`).
-- The Kernel carries the one-line close-out rule and the `STATE.md` / `LOG.md` pointers
-  (`08-Kernel-Specification.md`).
+- The Kernel carries a one-line pointer to the `akrs-close-out` skill and the `STATE.md` /
+  `LOG.md` pointers (`08-Kernel-Specification.md`); the ledger-line format is owned by that
+  skill (`skills/akrs-close-out.md`), not by this spec.
 - Assumption aging is owned by `02-Generation-Specification.md §6`; open-question expiry at
   Plan close-out and the whole Plan-level verification pass are owned by
   `10-Verification-Specification.md`.

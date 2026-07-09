@@ -1,5 +1,8 @@
-# Published package = the framework + human guides only.
+# Published package = the framework only.
 # (package.json "files" is the allow-list; this is defense-in-depth.)
+
+# Human guides — web-readable on GitHub; npm rewrites the README's links to GitHub URLs
+docs/guides/
 
 # Research & history — not needed to use AKRS
 docs/research/

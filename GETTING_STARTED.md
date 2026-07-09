@@ -61,12 +61,12 @@ to learn *how* to build your workflow:
 ```
 docs/akrs/
 ├── GETTING_STARTED.md   (this guide)
-├── framework/           (01..11 — the specification)
-└── guides/              (routing flow + file structure)
+└── framework/           (01..11 + skills/ — the specification)
 ```
 
 Nothing is buried in `node_modules`; the files live in your repo where you and
 the Leader can read them. Run `npx akrs-framework init --force` later to refresh them.
+(The human guides aren't copied — they're web-readable on GitHub; links are at the bottom.)
 
 > Prefer a managed dependency? `npm install akrs-framework` (or `pnpm add` /
 > `yarn add`) works too — it installs the same docs under
@@ -102,10 +102,14 @@ akrs/
 ├── kernel/           ← the compiled operating files (Gate boots CORE + one role file)
 │   ├── CORE.md       ← shared ~1-page operating rules
 │   └── <role>.md     ← worker / leader / tester / changer
+├── skills/           ← akrs-close-out + akrs-live-verify (the procedure bodies)
 ├── router.md         ← "where do I go next?"
 ├── STATE.md          ← the portable save-point
 └── memory/           ← one file per reusable knowledge area
 ```
+
+> The Leader also generates a `package.json` wiring the validator, so you can run
+> **`npm run validate`** (see Step 7) without knowing the `npx` command.
 
 > **Why no Tasks/Roads yet?** Pre-built tasks rot the moment requirements
 > change. AKRS generates a Task + Road **on demand**, one at a time (Phase B).
@@ -223,11 +227,13 @@ Memory against what was actually built, per 07-State-And-Sync-Specification.md.
 You don't have to eyeball all of this. Run the mechanical check:
 
 ```bash
-npx akrs-framework validate      # add --fix to sync status mirrors, --clean to remove stale files
+npm run validate                 # or: npx akrs-framework validate
+# add --fix to sync status mirrors + rotate an over-size LOG ledger, --clean to remove stale files
 ```
 
 It flags illegal Road statuses, missing expected files, dependency-gating violations, an
-over-budget `STATE.md`, and stale ephemeral artifacts — so **CI green = workflow valid.**
+over-budget `STATE.md`, a parked owner decision, an over-size `LOG.md` ledger, and stale
+ephemeral artifacts — so **CI green = workflow valid.**
 
 > Close-out is the one discipline that keeps a Road and a Memory from ever
 > disagreeing about what the code is. Let the workflow do it — your job is just
@@ -285,7 +291,7 @@ entirely for throwaway work. See `docs/framework/01-Constitution.md` §12.
 
 ## Where to Go Next
 
-- **Understand the routing path:** [`docs/guides/ROUTING-FLOW.md`](docs/guides/ROUTING-FLOW.md)
-- **Understand the files:** [`docs/guides/FILE-STRUCTURE.md`](docs/guides/FILE-STRUCTURE.md)
-- **Read the doctrine:** [`docs/framework/`](docs/framework/)
-- **See it proven:** [`docs/validation/`](docs/validation/)
+- **Understand the routing path:** [`ROUTING-FLOW.md`](https://github.com/asadeisa/akrs/blob/main/docs/guides/ROUTING-FLOW.md) (GitHub)
+- **Understand the files:** [`FILE-STRUCTURE.md`](https://github.com/asadeisa/akrs/blob/main/docs/guides/FILE-STRUCTURE.md) (GitHub)
+- **Read the doctrine:** [`docs/framework/`](docs/framework/) (copied into `docs/akrs/framework/`)
+- **See it proven:** [`docs/validation/`](https://github.com/asadeisa/akrs/tree/main/docs/validation) (GitHub)

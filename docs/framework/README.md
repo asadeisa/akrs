@@ -44,8 +44,26 @@ others. This table grows as each part lands.
 | **Tester role + idea-level verification** | Done is proven against the running product — Mirror Check, raw measurement, Test-Handoff, seam ownership, expiring open questions | `10-Verification-Specification.md` |
 | **Change management + FEATURES index** | features change without leaving broken data — FEATURES index, on-demand change file, merge-or-vanish, requirements-delta | `11-Change-Management-Specification.md` |
 | **Kernel folder + Gate + BLOCKED + Skills** | the Gate loads `CORE.md` + one role file per session; a non-leader stuck agent raises `BLOCKED.md`; Tasks may name `Skills:` | `08-Kernel-Specification.md` + `06` + `03` |
-| **`validate` CLI (14 checks, `--fix`, `--clean`)** | mechanical enforcement — CI green = workflow valid; the tool fixes/cleans without bothering the agent | `bin/akrs.js` + `07 §6` |
+| **`validate` CLI (17 checks, `--fix`, `--clean`)** | mechanical enforcement — CI green = workflow valid; the tool fixes/cleans without bothering the agent | `bin/akrs.js` + `07 §6` |
 | **Overhead budget (D12)** | the workflow never becomes the agent's main job — close-out touches at most LOG + STATE + Road + one Memory + one FEATURES line | `01-Constitution.md §14` |
+
+---
+
+## What v1.3 changes (the subtraction release — same guarantees, ledger prices)
+
+v1.3 keeps every v1.2 guarantee (Mirror Check, honest instruments, the Tester) and pays for
+them with far less agent writing. Nothing new is asked of the Worker or Leader; each item below
+**removes an agent step or moves work into the CLI**.
+
+| v1.3 change | What it does | Owner file(s) |
+|---|---|---|
+| **LOG → one-line ledger** | close-out writes ONE line (+ optional `deviations:`), not a ~450-word essay; the exact format is owned by the `akrs-close-out` skill | `07` + `skills/akrs-close-out.md` |
+| **Skills seam filled** | `akrs-close-out` + `akrs-live-verify` — procedures move out of the kernel/specs into single-owner skill bodies; kernel + specs keep only the invariants + a pointer | `skills/` + `02` + `05` + `08` |
+| **Verification diet** | handoff ≤ 1 page; asserts per Road, Mirror Check per Plan, a live Tester pass only for DOM/CSS plans + one final end-to-end pass — not per Road | `10` + `08` |
+| **Ask-the-developer trigger** | owner/developer decisions are asked in-chat the same turn; STATE stores only the answer (a parked decision warns) | `04` + `08` + `bin/akrs.js` |
+| **CLI grows to 17 checks** | ledger-entry lint, automatic LOG rotation (`--fix`), parked-owner-decision warn, `wall=` metrics; plus false-positive fixes (roads/tasks `README`, SOT-INDEX legend) | `bin/akrs.js` + `07 §6` |
+| **Generated projects ship the tool** | Phase A emits a `package.json` with `npm run validate` / `:fix` / `:clean`; the CLI points you at a nested `akrs/` when `./akrs` is missing | `02` + `bin/akrs.js` |
+| **Packaging** | `init` copies just the framework (+ `skills/`); `docs/guides` leaves the npm tarball (web-readable on GitHub); maintainer contact ships in the package | `bin/akrs.js` + `package.json` |
 
 ---
 
@@ -64,6 +82,7 @@ others. This table grows as each part lands.
 | `09-Scale-And-Source-Index-Specification.md` | Staying minimal-read at scale: SoT Index, read windows, progressive analysis, domain partitioning | — (new v1.2 capability) |
 | `10-Verification-Specification.md` | Proving Done against the running product: Tester role, Mirror Check, idea-level `Verify:`, handoff, raw measurement, seam ownership | — (new v1.2 capability) |
 | `11-Change-Management-Specification.md` | Changing requirements without broken data: FEATURES index, on-demand change file, merge-or-vanish, requirements-delta | — (new v1.2 capability) |
+| `skills/` | The procedure bodies the specs point to: `akrs-close-out` (close-out steps + ledger format), `akrs-live-verify` (live rig + handoff template) — single-owner, platform-neutral | — (new v1.3 capability) |
 
 Origin assets (`ai-work-flow-original.png/.json`, `akrs-system-graph.drawio`) remain in
 `docs/research/v0/`. Regenerating the system graph to show the v1 kernel + state lanes is an
@@ -93,9 +112,10 @@ When a developer starts a real project with AKRS v1:
 4. Generate `STATE.md`.
 5. Generate Tasks + Roads on demand (Phase B).
 6. Generate a fresh project-specific kernel folder (`akrs/kernel/` — `CORE.md` + one file per
-   role) from `08-Kernel-Specification.md`.
-7. Remove the framework source documents from the generated project (only the kernel folder
-   ships).
+   role) from `08-Kernel-Specification.md`, and instantiate the skill bodies (`akrs/skills/`)
+   from `skills/`.
+7. Remove the framework source documents from the generated project (only `akrs/kernel/` +
+   `akrs/skills/` ship).
 8. Execute using the kernel folder; reconcile via close-out as work lands.
 
 The kernel folder is regenerated for every project, never versioned, never stored in this

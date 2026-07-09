@@ -140,12 +140,12 @@ This drops the framework into **`docs/akrs/`** in your current project:
 ```
 docs/akrs/
 ├── GETTING_STARTED.md   ← the human on-ramp
-├── framework/           ← the doctrine the Leader reads (01..11)
-└── guides/              ← routing flow + file structure (diagrams)
+└── framework/           ← the doctrine the Leader reads (01..11 + skills/)
 ```
 
 That's all most people need — the files now live in your repo, ready to read and
 to hand to your Leader model. Re-run with `npx akrs-framework init --force` to refresh them.
+The human guides live on GitHub (linked below); the README's links to them keep working on npm.
 
 <details>
 <summary>Prefer a managed dependency, or just want to read the docs?</summary>
@@ -175,14 +175,18 @@ git clone https://github.com/asadeisa/akrs
 Once you have a generated `akrs/` workflow, keep it honest with the built-in linter:
 
 ```bash
-npx akrs-framework validate          # 14 mechanical checks; exits non-zero on any failure
-npx akrs-framework validate --fix    # also sync mirrored Road statuses to canonical
+npx akrs-framework validate          # 17 mechanical checks; exits non-zero on any failure
+npx akrs-framework validate --fix    # also sync mirrored Road statuses + rotate an over-size LOG ledger
 npx akrs-framework validate --clean  # also delete stale ephemeral artifacts
 ```
 
-It checks Road status / expected files / dependency gating, `STATE.md`, the kernel folder,
-and the ephemeral-artifact lifecycle (handoff / change / BLOCKED / tester memory). Run it at
-every close-out and in CI — **CI green = workflow valid.** Zero dependencies.
+Generated projects also ship a `package.json` that wires this up, so a developer who has never
+seen the `npx` commands can just run **`npm run validate`** (or `validate:fix` / `validate:clean`).
+
+It checks Road status / expected files / dependency gating, `STATE.md` (including parked owner
+decisions), the `LOG.md` ledger (entry length + rotation), the kernel folder, and the
+ephemeral-artifact lifecycle (handoff / change / BLOCKED / tester memory). Run it at every
+close-out and in CI — **CI green = workflow valid.** Zero dependencies.
 
 ---
 
@@ -191,10 +195,10 @@ every close-out and in CI — **CI green = workflow valid.** Zero dependencies.
 | Document | Purpose |
 |----------|---------|
 | [GETTING_STARTED.md](GETTING_STARTED.md) | Complete beginner guide (step-by-step) |
-| [docs/guides/ROUTING-FLOW.md](docs/guides/ROUTING-FLOW.md) | Visual explanation of the execution path |
-| [docs/guides/FILE-STRUCTURE.md](docs/guides/FILE-STRUCTURE.md) | Folder organization and file ownership |
-| [docs/guides/TEAM-ADOPTION.md](docs/guides/TEAM-ADOPTION.md) | Mapping AKRS onto tickets, PRs, CI, and parallel work |
-| [docs/framework/](docs/framework/) | Complete framework specifications |
+| [docs/guides/ROUTING-FLOW.md](docs/guides/ROUTING-FLOW.md) | Visual explanation of the execution path · *read online (GitHub) — not copied by `init`* |
+| [docs/guides/FILE-STRUCTURE.md](docs/guides/FILE-STRUCTURE.md) | Folder organization and file ownership · *read online (GitHub)* |
+| [docs/guides/TEAM-ADOPTION.md](docs/guides/TEAM-ADOPTION.md) | Mapping AKRS onto tickets, PRs, CI, and parallel work · *read online (GitHub)* |
+| [docs/framework/](docs/framework/) | Complete framework specifications (incl. `skills/`) |
 | [examples/](examples/) | Real project examples |
 | [docs/validation/](docs/validation/) | Test results and case studies |
 
@@ -230,7 +234,7 @@ See `docs/validation/` for detailed test results and case studies.
 
 ## Versioning
 
-- **Framework Version:** v1.2.0 (specifications)
+- **Framework Version:** v1.3.0 (specifications)
 - **Generated Workflows:** Versioned independently (v1, v2, etc.)
 - **Kernel Version:** Generated per-project from latest framework (now a `kernel/` folder)
 
@@ -267,7 +271,7 @@ AKRS is free to use, modify, and distribute in personal and commercial projects.
 - Read `docs/validation/` for test results
 
 **Found a bug?**
-- Report it on GitHub
+- Report it on GitHub, or email [asad.eisa.dev@gmail.com](mailto:asad.eisa.dev@gmail.com)
 
 **Want to contribute?**
 - See `CONTRIBUTING.md`
@@ -288,4 +292,4 @@ AKRS is free to use, modify, and distribute in personal and commercial projects.
 
 Made with care for developers who want reliable, predictable AI agents.
 
-**AKRS v1.2.0** — July 2026
+**AKRS v1.3.0** — July 2026
