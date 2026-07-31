@@ -1,22 +1,43 @@
-# AKRS v1 — Adaptive Knowledge Routing System
+# AKRS — Adaptive Knowledge Routing System
+
+<img src="assets/banner.svg" alt="Without routing, an agent opens eleven whole files to find the three that mattered. With AKRS, it opens the same three — at the lines that mattered." width="100%">
 
 > Deliver the smallest correct knowledge, to the correct agent, at the correct moment.
 
 ---
 
-## What is AKRS?
+## What it is
 
-AKRS is a **framework for building AI execution workflows**.
+Point an agent at a small project and it just works.
 
-It's not a memory system. It's not a documentation tool. It's not a planning framework.
+Point it at a real codebase and you watch it open eleven files to find the three
+that mattered, reach for an approach you rejected two weeks ago, edit something
+outside the ticket, and leave your docs describing code that no longer exists.
+Every one of those files is still sitting in the context window when it finally
+starts writing.
 
-AKRS is a **knowledge-routing architecture** built on one idea:
+AKRS moves the thinking out of the prompt and into the repo.
 
-> An AI agent is only as good as what you put in front of it. Feed it the whole project and it drowns in noise; feed it the *smallest correct slice* and the right move becomes obvious.
+Your strongest model reads the specification once and compiles a routing layer
+into `akrs/`: a one-page Kernel, a Router, a Memory index, and one Road per task
+naming exactly what to read, what to change, and where to stop. Every agent
+after that boots from the routing layer instead of from your codebase — and
+opens a **window** into each file it needs, never the whole file.
 
-It's a different way to feed a model. Before the agent reasons, AKRS strips out the noise and narrows the design choices down to the one path that actually fits — so the model spends its effort *solving the problem* instead of *guessing where to look and which of a dozen approaches you meant*.
+AKRS is not a memory system, not a documentation tool, not a planning tool, not
+an MCP server, and not a runtime.
 
-This is **not** just about saving money on a cheaper model (though it does that too). Even your strongest model writes tighter, more in-scope code when it isn't wading through thousands of irrelevant files and a pile of plausible-but-wrong directions. AKRS gives *any* model a clean, narrow, correct field of view — that's the real win.
+**AKRS is a knowledge-routing doctrine.** A doctrine is a specification your
+strong model reads once and compiles into a project-specific routing layer, so
+every later agent — on any model — is handed the smallest correct slice of your
+project at the moment it acts, instead of being told to go find it.
+
+There is no app to install: the specification is the product. `npx
+akrs-framework init` drops eleven markdown files into your repo, and `validate`
+is a zero-dependency linter that proves the workflow still agrees with the code.
+Nothing runs at inference time — which is why it works with **any agent that
+boots from `AGENTS.md`**: Codex, Claude Code, Gemini CLI, Cursor, Copilot, or
+whatever ships next.
 
 ---
 
@@ -29,6 +50,10 @@ Large projects create three challenges for AI agents:
 - **Too many possible solutions** — Agent has no clear execution path
 
 Large, expensive models survive this through brute force. Small models fail.
+
+The objective is **not** reducing tokens. The objective is reducing the agent's
+**decision space** before reasoning begins — the smaller the decision space, the
+more predictable and reliable even a small execution model becomes.
 
 AKRS doesn't make agents smarter. **It makes decision spaces smaller.**
 
@@ -113,6 +138,26 @@ model directly.
 
 > Full mode diagrams are in
 > [`docs/guides/ROUTING-FLOW.md`](docs/guides/ROUTING-FLOW.md).
+
+---
+
+## Works With Any Agent
+
+AKRS standardizes on **`AGENTS.md`** as the single canonical entry file. Every
+other tool gets a thin pointer that just refers back to it — so the same
+workflow behaves identically no matter which CLI you run it in, and a plan
+started in one tool resumes in another from `STATE.md`.
+
+| Tool | Entry file | How it points |
+|---|---|---|
+| Codex CLI | `AGENTS.md` | native — *is* the canonical file |
+| Claude Code / CLI | `CLAUDE.md` | `@AGENTS.md` import |
+| Gemini CLI | `GEMINI.md` | "Read AGENTS.md and follow it." |
+| Cursor | `.cursor/rules` | "Read AGENTS.md and follow it." |
+| GitHub Copilot | `.github/copilot-instructions.md` | "Read AGENTS.md and follow it." |
+
+Adding a new tool means adding a pointer file — never touching the workflow.
+Specification: [`05-Platform-Adapter-Specification.md`](docs/framework/05-Platform-Adapter-Specification.md).
 
 ---
 
@@ -233,13 +278,22 @@ AKRS v1 has been tested with multiple AI models:
 
 See `docs/validation/` for detailed test results and case studies.
 
-**Key finding:** Less-capable models execute reliably when given a well-structured workflow — in the Atlas ERP run, the execution + close-out cost **$0.688 in tokens**, with no loss in quality or scope discipline.
+**Key finding:** a less-capable model, given a one-line prompt and a
+well-structured workflow, executed a real backend task, stayed inside scope, and
+reconciled the workflow afterward — without ever asking what to read.
+
+> **On cost.** AKRS deliberately does not record its own token or cost
+> telemetry: an executing agent cannot know those numbers reliably, and asking
+> for them only invites fabrication. Cost belongs to your provider's usage
+> dashboard, correlated with the `LOG.md` ledger's Road-by-Road chronology.
+> Model prices also fall every few months — the argument here is about decision
+> space, which doesn't.
 
 ---
 
 ## Versioning
 
-- **Framework Version:** v1.3.0 (specifications)
+- **Framework Version:** v1.3.1 (specifications)
 - **Generated Workflows:** Versioned independently (v1, v2, etc.)
 - **Kernel Version:** Generated per-project from latest framework (now a `kernel/` folder)
 
@@ -297,4 +351,4 @@ AKRS is free to use, modify, and distribute in personal and commercial projects.
 
 Made with care for developers who want reliable, predictable AI agents.
 
-**AKRS v1.3.0** — July 2026
+**AKRS v1.3.1** — August 2026
