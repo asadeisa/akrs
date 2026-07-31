@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640" role="img" aria-label="Left: without routing the agent opens eleven whole files to find the three the task needed, and its context window ends up nearly full. Right: routed through Router, Memory and Road, the same agent opens only the exact lines it needs across four files, and the context window stays barely filled.">
+  <defs>
+    <style>
+      .s     { font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+      .brand { font-size: 29px; font-weight: 700; fill: #E6EDF3; letter-spacing: -0.3px; }
+      .tag   { font-size: 14.5px; fill: #7D8590; }
+      .cap   { font-size: 17px; fill: #8B949E; }
+      .capb  { font-size: 17px; fill: #E6EDF3; font-weight: 650; }
+      .node  { font-size: 13px; fill: #F0C674; letter-spacing: .4px; }
+      .leg   { font-size: 13.5px; fill: #7D8590; }
+      .mtr   { font-size: 11.5px; letter-spacing: 1.8px; font-weight: 600; fill: #5E6672; }
+    </style>
+    <pattern id="cityA" width="28" height="28" patternUnits="userSpaceOnUse">
+      <rect width="19" height="19" rx="2.5" fill="#1B2534"/>
+    </pattern>
+    <pattern id="cityB" width="28" height="28" patternUnits="userSpaceOnUse">
+      <rect width="19" height="19" rx="2.5" fill="#141A23"/>
+    </pattern>
+    <filter id="soft" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="7"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="640" fill="#0B0F14"/>
+
+  <text class="s brand" x="64" y="50">AKRS</text>
+  <text class="s tag"   x="1216" y="38" text-anchor="end">Deliver the smallest correct knowledge,</text>
+  <text class="s tag"   x="1216" y="60" text-anchor="end">to the correct agent, at the correct moment.</text>
+
+  <!-- ==================== LEFT ==================== -->
+  <rect x="64" y="88" width="552" height="468" rx="14" fill="#0E141C" stroke="#1C2430" stroke-width="1"/>
+  <rect x="78" y="102" width="524" height="392" fill="url(#cityA)"/>
+
+  <g>
+    <rect x="106" y="130" width="19" height="19" rx="2.5" fill="#8C4B4B" opacity="0"><animate attributeName="opacity" values="0;0;.95;.95" keyTimes="0;.06;.10;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="190" y="130" width="19" height="19" rx="2.5" fill="#8C4B4B" opacity="0"><animate attributeName="opacity" values="0;0;.95;.95" keyTimes="0;.12;.16;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="162" y="242" width="19" height="19" rx="2.5" fill="#F5A524" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.18;.22;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="134" y="326" width="19" height="19" rx="2.5" fill="#8C4B4B" opacity="0"><animate attributeName="opacity" values="0;0;.95;.95" keyTimes="0;.24;.28;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="218" y="410" width="19" height="19" rx="2.5" fill="#8C4B4B" opacity="0"><animate attributeName="opacity" values="0;0;.95;.95" keyTimes="0;.30;.34;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="302" y="382" width="19" height="19" rx="2.5" fill="#8C4B4B" opacity="0"><animate attributeName="opacity" values="0;0;.95;.95" keyTimes="0;.36;.40;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="330" y="186" width="19" height="19" rx="2.5" fill="#F5A524" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.42;.46;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="442" y="186" width="19" height="19" rx="2.5" fill="#8C4B4B" opacity="0"><animate attributeName="opacity" values="0;0;.95;.95" keyTimes="0;.50;.54;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="246" y="326" width="19" height="19" rx="2.5" fill="#8C4B4B" opacity="0"><animate attributeName="opacity" values="0;0;.95;.95" keyTimes="0;.58;.62;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="386" y="130" width="19" height="19" rx="2.5" fill="#8C4B4B" opacity="0"><animate attributeName="opacity" values="0;0;.95;.95" keyTimes="0;.66;.70;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="526" y="438" width="19" height="19" rx="2.5" fill="#F5A524" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.76;.80;1" dur="9s" repeatCount="indefinite"/></rect>
+  </g>
+
+  <path d="M116 140 H272 V250 H148 V376 H344 V196 H470 V330 H232 V448 H535"
+        fill="none" stroke="#8C4B4B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"
+        stroke-dasharray="1900" stroke-dashoffset="1900" opacity="0.85">
+    <animate attributeName="stroke-dashoffset" values="1900;0;0" keyTimes="0;0.84;1" dur="9s" repeatCount="indefinite"/>
+  </path>
+  <circle r="7" fill="#D97070">
+    <animateMotion dur="9s" repeatCount="indefinite" keyTimes="0;0.84;1" keyPoints="0;1;1" calcMode="linear"
+      path="M116 140 H272 V250 H148 V376 H344 V196 H470 V330 H232 V448 H535"/>
+  </circle>
+  <circle cx="535" cy="447" r="16" fill="none" stroke="#F5A524" stroke-width="1.5" opacity="0">
+    <animate attributeName="r" values="12;30;30" keyTimes="0;.90;1" dur="9s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;.7;0;0" keyTimes="0;.84;.86;.92;1" dur="9s" repeatCount="indefinite"/>
+  </circle>
+
+  <text class="s mtr" x="78" y="516">CONTEXT WINDOW</text>
+  <rect x="78" y="524" width="524" height="26" rx="6" fill="#10161F" stroke="#243040" stroke-width="1"/>
+  <g>
+    <rect x="82"  y="527" width="44" height="20" rx="2" fill="#8C4B4B" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.06;.10;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="129" y="527" width="44" height="20" rx="2" fill="#8C4B4B" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.12;.16;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="176" y="527" width="44" height="20" rx="2" fill="#F5A524" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.18;.22;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="223" y="527" width="44" height="20" rx="2" fill="#8C4B4B" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.24;.28;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="270" y="527" width="44" height="20" rx="2" fill="#8C4B4B" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.30;.34;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="317" y="527" width="44" height="20" rx="2" fill="#8C4B4B" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.36;.40;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="364" y="527" width="44" height="20" rx="2" fill="#F5A524" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.42;.46;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="411" y="527" width="44" height="20" rx="2" fill="#8C4B4B" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.50;.54;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="458" y="527" width="44" height="20" rx="2" fill="#8C4B4B" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.58;.62;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="505" y="527" width="44" height="20" rx="2" fill="#8C4B4B" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.66;.70;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="552" y="527" width="44" height="20" rx="2" fill="#F5A524" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.76;.80;1" dur="9s" repeatCount="indefinite"/></rect>
+  </g>
+
+  <!-- ==================== RIGHT ==================== -->
+  <rect x="664" y="88" width="552" height="468" rx="14" fill="#0E141C" stroke="#1C2430" stroke-width="1"/>
+  <rect x="678" y="102" width="524" height="392" fill="url(#cityB)"/>
+
+  <path d="M690 150 L950 303" fill="none" stroke="#F5A524" stroke-width="14" stroke-linecap="round"
+        opacity="0.16" filter="url(#soft)" stroke-dasharray="320" stroke-dashoffset="320">
+    <animate attributeName="stroke-dashoffset" values="320;0;0" keyTimes="0;.17;1" dur="9s" repeatCount="indefinite"/>
+  </path>
+  <path d="M690 150 L950 303" fill="none" stroke="#F5A524" stroke-width="4" stroke-linecap="round"
+        stroke-dasharray="320" stroke-dashoffset="320">
+    <animate attributeName="stroke-dashoffset" values="320;0;0" keyTimes="0;.17;1" dur="9s" repeatCount="indefinite"/>
+  </path>
+
+  <g>
+    <circle cx="768" cy="196" r="8" fill="#F5A524" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.05;.08;1" dur="9s" repeatCount="indefinite"/></circle>
+    <text class="s node" x="750" y="188" text-anchor="end" opacity="0">Router<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.05;.08;1" dur="9s" repeatCount="indefinite"/></text>
+    <circle cx="846" cy="242" r="8" fill="#F5A524" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.09;.12;1" dur="9s" repeatCount="indefinite"/></circle>
+    <text class="s node" x="828" y="234" text-anchor="end" opacity="0">Memory<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.09;.12;1" dur="9s" repeatCount="indefinite"/></text>
+    <circle cx="950" cy="303" r="10" fill="#F5A524" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.14;.17;1" dur="9s" repeatCount="indefinite"/></circle>
+    <text class="s node" x="932" y="295" text-anchor="end" opacity="0">Road<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.14;.17;1" dur="9s" repeatCount="indefinite"/></text>
+  </g>
+
+  <g fill="none" stroke="#F5A524" stroke-width="2" opacity="0.55" stroke-dasharray="300" stroke-dashoffset="300">
+    <path d="M950 303 C 995 303, 1000 150, 1040 150"><animate attributeName="stroke-dashoffset" values="300;300;0;0" keyTimes="0;.17;.235;1" dur="9s" repeatCount="indefinite"/></path>
+    <path d="M950 303 C 995 303, 1000 252, 1040 252"><animate attributeName="stroke-dashoffset" values="300;300;0;0" keyTimes="0;.17;.235;1" dur="9s" repeatCount="indefinite"/></path>
+    <path d="M950 303 C 995 303, 1000 354, 1040 354"><animate attributeName="stroke-dashoffset" values="300;300;0;0" keyTimes="0;.17;.235;1" dur="9s" repeatCount="indefinite"/></path>
+    <path d="M950 303 C 995 303, 1000 456, 1040 456"><animate attributeName="stroke-dashoffset" values="300;300;0;0" keyTimes="0;.17;.235;1" dur="9s" repeatCount="indefinite"/></path>
+  </g>
+
+  <g fill="#0E141C" stroke="#243040" stroke-width="1">
+    <rect x="1040" y="106" width="150" height="88" rx="8"/>
+    <rect x="1040" y="208" width="150" height="88" rx="8"/>
+    <rect x="1040" y="310" width="150" height="88" rx="8"/>
+    <rect x="1040" y="412" width="150" height="88" rx="8"/>
+  </g>
+  <g fill="#1B2534">
+    <rect x="1056" y="117" width="118" height="12" rx="2"/><rect x="1056" y="135" width="118" height="12" rx="2"/><rect x="1056" y="153" width="118" height="12" rx="2"/><rect x="1056" y="171" width="118" height="12" rx="2"/>
+    <rect x="1056" y="219" width="118" height="12" rx="2"/><rect x="1056" y="237" width="118" height="12" rx="2"/><rect x="1056" y="255" width="118" height="12" rx="2"/><rect x="1056" y="273" width="118" height="12" rx="2"/>
+    <rect x="1056" y="321" width="118" height="12" rx="2"/><rect x="1056" y="339" width="118" height="12" rx="2"/><rect x="1056" y="357" width="118" height="12" rx="2"/><rect x="1056" y="375" width="118" height="12" rx="2"/>
+    <rect x="1056" y="423" width="118" height="12" rx="2"/><rect x="1056" y="441" width="118" height="12" rx="2"/><rect x="1056" y="459" width="118" height="12" rx="2"/><rect x="1056" y="477" width="118" height="12" rx="2"/>
+  </g>
+  <g fill="#F5A524">
+    <rect x="1056" y="135" width="118" height="12" rx="2" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.24;.28;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="1056" y="219" width="118" height="12" rx="2" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.26;.30;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="1056" y="357" width="118" height="12" rx="2" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.28;.32;1" dur="9s" repeatCount="indefinite"/></rect>
+  </g>
+  <g fill="#3FB950">
+    <rect x="1056" y="255" width="118" height="12" rx="2" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.32;.36;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="1056" y="441" width="118" height="12" rx="2" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.34;.38;1" dur="9s" repeatCount="indefinite"/></rect>
+  </g>
+
+  <circle r="7" fill="#FFD07A" opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.005;.165;.19;1" dur="9s" repeatCount="indefinite"/>
+    <animateMotion dur="9s" repeatCount="indefinite" keyTimes="0;.17;1" keyPoints="0;1;1" calcMode="linear" path="M690 150 L950 303"/>
+  </circle>
+
+  <text class="s mtr" x="678" y="516">CONTEXT WINDOW</text>
+  <rect x="678" y="524" width="524" height="26" rx="6" fill="#10161F" stroke="#243040" stroke-width="1"/>
+  <g>
+    <rect x="682" y="527" width="10" height="20" rx="2" fill="#F5A524" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.24;.28;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="695" y="527" width="10" height="20" rx="2" fill="#F5A524" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.26;.30;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="708" y="527" width="10" height="20" rx="2" fill="#F5A524" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.28;.32;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="721" y="527" width="10" height="20" rx="2" fill="#3FB950" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.32;.36;1" dur="9s" repeatCount="indefinite"/></rect>
+    <rect x="734" y="527" width="10" height="20" rx="2" fill="#3FB950" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.34;.38;1" dur="9s" repeatCount="indefinite"/></rect>
+  </g>
+
+  <text class="s cap"  x="340" y="584" text-anchor="middle">eleven whole files to find the three that mattered</text>
+  <text class="s capb" x="940" y="584" text-anchor="middle">the same three — opened at the lines that mattered</text>
+
+  <g>
+    <rect x="407" y="603" width="15" height="11" rx="2" fill="#F5A524"/>
+    <text class="s leg" x="430" y="613">what the task needed</text>
+    <rect x="618" y="603" width="15" height="11" rx="2" fill="#8C4B4B"/>
+    <text class="s leg" x="641" y="613">read for nothing</text>
+    <rect x="801" y="603" width="15" height="11" rx="2" fill="#3FB950"/>
+    <text class="s leg" x="824" y="613">changed</text>
+  </g>
+</svg>
