@@ -1,81 +1,92 @@
 # Roadmap
 
-AKRS v1 is **documentation-first** by design. The architecture is stable; what
-evolves is the tooling around it. Everything below is planned so that no step
-requires restructuring the repository.
+AKRS is **documentation-first** by design. The architecture is stable; what
+evolves is the tooling around it. Nothing planned below requires restructuring
+the repository or breaking a generated workflow.
+
+**Current release: v1.3.1.** Unreleased work is deliberately left unnumbered —
+version numbers get assigned when something actually ships, not before.
 
 ---
 
-## v1.x — Now
+## Shipped
 
-- ✅ Framework specification complete (`docs/framework/`)
-- ✅ Validation with multiple models (`docs/validation/`)
-- ✅ Human guides and release engineering docs
-- ✅ npm / pnpm / yarn distribution
-- ✅ `npx akrs-framework init` — copies the framework into a project's `docs/akrs/`
-- ✅ **v1.3** — the subtraction release: LOG → one-line ledger, the skills seam filled
-  (`akrs-close-out` / `akrs-live-verify`), the verification diet, and `validate` grown to
-  **17 checks** (LOG rotation + ledger lint + parked-owner warn). Details in `CHANGELOG.md`.
-- ✅ **v1.3.1** — field-feedback patch from a low-capability-model run: install auto-syncs
-  doctrine out of `node_modules`, `validate` rule 2 gated by status (`QUEUED`/`ACTIVE`/`DONE`),
-  telemetry dropped from the ledger, per-Plan handoff made explicit, and mandatory SoT-Index
-  Phase-A checklist. Details in `CHANGELOG.md`.
+- **Framework specification** complete — `docs/framework/` (01–11 + `skills/`).
+- **The Kernel** — heavy doctrine teaches the Leader; a ~1-page compiled kernel
+  folder is what the target project actually carries.
+- **STATE + close-out lifecycle** — a portable save-point any CLI can resume
+  from, and mandatory reconciliation when work lands, so a Road and a Memory can
+  never disagree about the code.
+- **Scale mechanics** — SoT Index, read windows, progressive analysis, domain
+  partitioning: no agent ever reads a whole large source.
+- **Verification** — the Tester role, idea-level `Verify:`, the Mirror Check, the
+  Test-Handoff baton, raw measurement against a budget, seam ownership, expiring
+  open questions.
+- **Change management** — the FEATURES index, on-demand change files,
+  merge-or-vanish, the requirements-delta procedure.
+- **Skills** — `akrs-close-out` and `akrs-live-verify` as single-owner,
+  platform-neutral procedure bodies.
+- **`validate` CLI** — 17 mechanical checks, `--fix`, `--clean`, zero
+  dependencies. CI green = workflow valid.
+- **Distribution** — npm / pnpm / yarn, `npx akrs-framework init`, and a
+  postinstall that syncs doctrine out of `node_modules` into `docs/akrs/`.
 
-Focus: stability, clarity, adoption. Gather real-world feedback.
+Per-version detail: [`CHANGELOG.md`](CHANGELOG.md).
+
+**Focus right now: adoption and real-world feedback.** If you have run AKRS on
+anything, [issue #3](https://github.com/asadeisa/akrs/issues/3) is where that
+goes — including the runs that went badly.
 
 ---
 
-## v1.1 — Templates & Examples
+## Next
 
-- Curated `templates/` for common stacks (Node service, React app, monorepo).
-- More worked `examples/` (existing-project integration, v0→v1 migration).
-- A copy-paste **Leader prompt pack** for popular models.
+### Templates and examples
 
-No architectural change — purely additive content.
+Purely additive content; no architectural change.
 
----
+- Curated `templates/` for common stacks — Node service, React app, monorepo.
+- More worked `examples/` — existing-project integration, v0 → v1 migration.
+- A copy-paste **Leader prompt pack** for the major agent CLIs.
 
-## v1.2 — CLI scaffolding (the big one)
+### `scaffold` — growing the CLI from copying docs to building a workflow
 
-`npx akrs-framework init` exists today (it vendors the framework into `docs/akrs/`). v1.2
-grows the CLI from *copying docs* into *scaffolding a workflow*:
+`init` vendors the framework into `docs/akrs/`. The next step turns the CLI into
+a generator:
 
 ```
 npx akrs-framework scaffold
 ```
 
-- Scaffolds `akrs/` (Router, Memory, STATE) interactively.
-- Confirms Source of Truth before generating anything.
-- Emits a starter `AGENTS.md` + tool pointers.
+- Scaffolds `akrs/` interactively — Router, Memory, STATE.
+- Confirms the Source of Truth before generating anything.
+- Emits a starter `AGENTS.md` plus the thin per-tool pointers.
 
-The current package layout already anticipates this: the CLI ships alongside the
+The package layout already anticipates this: the CLI ships alongside the
 framework docs, it does not replace them.
 
----
+### Deeper verification
 
-## Validation Utilities — shipped in v1.2
-
-The mechanical lint is no longer a roadmap item — it shipped in **v1.2** as
-**`npx akrs-framework validate`** and grew in **v1.3** to **17 checks** (`--fix` now also
-rotates an over-size `LOG.md` ledger; `--clean` unchanged; see
-`07-State-And-Sync-Specification.md` §6). Generated projects also ship a `package.json` wiring
-`npm run validate`. Future work here is deeper, project-specific verification (e.g. the
-~50-line import-lint the Mirror Check recommends).
+The Mirror Check is mandatory but has no mechanical enforcement — a
+zero-dependency CLI cannot parse imports across arbitrary languages. The
+specification recommends a ~50-line per-project import-lint instead, and that
+reference implementation has not shipped yet:
+[issue #2](https://github.com/asadeisa/akrs/issues/2).
 
 ---
 
-## v2.0 — Generation & Orchestration
+## v2.0 — only if something breaks compatibility
 
-- Assisted **Kernel generation** from a chosen model.
-- Multi-model orchestration (Leader plans, Worker executes) wired end-to-end.
-- Platform integrations / adapters for major agent runtimes.
+- Assisted **Kernel generation** driven by a chosen model.
+- Multi-model orchestration wired end-to-end — Leader plans, Worker executes.
+- Platform integrations for major agent runtimes.
 
-A v2 only happens if it requires a breaking change to the route or artifacts;
-otherwise these land as v1.x minors.
+A v2 happens only if a change breaks the route or the artifact contract.
+Otherwise these land as v1.x minors.
 
 ---
 
-## Guiding Constraint
+## Guiding constraint
 
 Every future feature must preserve the core promise:
 
