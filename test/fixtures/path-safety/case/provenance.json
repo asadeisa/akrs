@@ -1,0 +1,15 @@
+{
+  "fixture": "path-safety/case",
+  "capturedOn": "2026-08-26",
+  "evidenceMeasuredOn": "2026-08-18",
+  "bugIds": ["B23"],
+  "sources": [
+    {
+      "kind": "synthetic-regression",
+      "project": "AKRS v2 evidence",
+      "path": "plans/update-to-v-2.0.0/source-opus-plan/06-bug-register.md#B23"
+    }
+  ],
+  "runtimeFiles": ["Expected.txt", "akrs/roads/R1.md"],
+  "notes": "The Road intentionally declares expected.txt while the entry is Expected.txt so every host reports the same case finding."
+}
