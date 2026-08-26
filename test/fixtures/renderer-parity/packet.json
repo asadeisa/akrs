@@ -1,0 +1,39 @@
+{
+  "schema_version": "akrs.packet/v2",
+  "command": "probe",
+  "run_id": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+  "request_id": null,
+  "timestamp": "2026-08-25T10:30:00.000Z",
+  "status": "warning",
+  "root": "E:/project",
+  "snapshot": {
+    "before": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "after": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "data": {
+    "items": [
+      "alpha",
+      "beta"
+    ],
+    "summary": "Rendered once"
+  },
+  "findings": [
+    {
+      "code": "AKRS-C024",
+      "severity": "warning",
+      "message": "Renderer parity fixture.",
+      "file": "akrs/roads/R1.json",
+      "line": 7,
+      "detail": {
+        "source": "fixture"
+      }
+    }
+  ],
+  "changed": [],
+  "next_commands": [
+    {
+      "command": "help",
+      "args": []
+    }
+  ]
+}

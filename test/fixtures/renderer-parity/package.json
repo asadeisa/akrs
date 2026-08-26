@@ -1,0 +1,4 @@
+{
+  "main": "renderer-parity.test.js",
+  "type": "module"
+}

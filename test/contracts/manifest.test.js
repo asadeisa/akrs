@@ -16,11 +16,8 @@ import {
 const fixtureUrl = new URL('../fixtures/packet-envelope/valid-manifest.json', import.meta.url);
 const validManifest = JSON.parse(await readFile(fixtureUrl, 'utf8'));
 
-test('F2 keeps the enabled manifest empty until owning packets deliver handlers', () => {
-  assert.deepEqual(commandManifest, {
-    schema_version: 'akrs.command-manifest/v1',
-    commands: [],
-  });
+test('F2 enables only commands whose owning packet delivered complete handlers', () => {
+  assert.deepEqual(commandManifest.commands.map(({ id }) => id), ['help', 'version']);
   assert.equal(validateCommandManifest(commandManifest).ok, true);
 });
 

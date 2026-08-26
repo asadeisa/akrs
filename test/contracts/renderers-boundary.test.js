@@ -62,7 +62,13 @@ test('public core entry is importable without the legacy CLI adapter', () => {
 
 test('lib modules do not import the CLI or terminal-only modules', async () => {
   const libRoot = fileURLToPath(new URL('../../lib/', import.meta.url));
-  const forbidden = ['bin/akrs.js', 'node:readline', 'node:tty', 'node:process'];
+  const forbidden = [
+    'bin/akrs.js',
+    'bin/cli-adapter.js',
+    'node:readline',
+    'node:tty',
+    'node:process',
+  ];
 
   for (const path of await javascriptFiles(libRoot)) {
     const source = await readFile(path, 'utf8');

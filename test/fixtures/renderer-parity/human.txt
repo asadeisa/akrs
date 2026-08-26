@@ -1,0 +1,18 @@
+AKRS probe [warning]
+Root: E:/project
+Run: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+
+Data:
+{
+  "items": [
+    "alpha",
+    "beta"
+  ],
+  "summary": "Rendered once"
+}
+
+Findings:
+  WARNING AKRS-C024 akrs/roads/R1.json:7 — Renderer parity fixture.
+
+Next commands:
+  akrs --help
