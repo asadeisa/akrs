@@ -1,3 +1,4 @@
+import { CliUsageError, WorkflowNotFoundError } from '../lib/core/errors.js';
 import { createCompleteEvent, createPacket } from '../lib/core/packet.js';
 import { createDefaultProviders } from '../lib/core/providers.js';
 import { normalizeAbsolutePath } from '../lib/core/roots.js';
@@ -16,20 +17,7 @@ const FORMAT_FLAGS = Object.freeze({
   '--prompt': 'prompt',
 });
 
-export class CliUsageError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = 'CliUsageError';
-  }
-}
-
-export class WorkflowNotFoundError extends Error {
-  constructor(workflowRoot) {
-    super(`workflow not found: ${workflowRoot}`);
-    this.name = 'WorkflowNotFoundError';
-    this.workflowRoot = workflowRoot;
-  }
-}
+export { CliUsageError, WorkflowNotFoundError };
 
 function knownCommands(manifest) {
   return manifest.commands.map(({ id }) => id);

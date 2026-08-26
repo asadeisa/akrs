@@ -17,7 +17,9 @@ const fixtureUrl = new URL('../fixtures/packet-envelope/valid-manifest.json', im
 const validManifest = JSON.parse(await readFile(fixtureUrl, 'utf8'));
 
 test('F2 enables only commands whose owning packet delivered complete handlers', () => {
-  assert.deepEqual(commandManifest.commands.map(({ id }) => id), ['help', 'version']);
+  assert.deepEqual(commandManifest.commands.map(({ id }) => id), [
+    'help', 'version', 'validate', 'explain',
+  ]);
   assert.equal(validateCommandManifest(commandManifest).ok, true);
 });
 

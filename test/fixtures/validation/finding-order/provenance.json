@@ -1,0 +1,8 @@
+{
+  "fixture": "finding-order",
+  "kind": "synthetic-regression",
+  "capturedOn": "2026-08-26",
+  "bugIds": ["B22"],
+  "source": "P0-W04-honest-validation.md",
+  "runtimeFiles": ["orders.json"]
+}

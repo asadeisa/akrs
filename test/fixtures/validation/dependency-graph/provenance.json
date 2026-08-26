@@ -1,0 +1,15 @@
+{
+  "fixture": "dependency-graph",
+  "kind": "synthetic-regression",
+  "capturedOn": "2026-08-26",
+  "bugIds": ["B19"],
+  "source": "P0-W04-honest-validation.md",
+  "runtimeFiles": [
+    "README.md",
+    "akrs/roads/A.md",
+    "akrs/roads/D.md",
+    "akrs/roads/Q.md",
+    "akrs/roads/X.md",
+    "akrs/roads/Y.md"
+  ]
+}

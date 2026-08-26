@@ -1,0 +1,8 @@
+{
+  "fixture": "coverage-zero",
+  "kind": "synthetic-regression",
+  "capturedOn": "2026-08-26",
+  "bugIds": ["B1"],
+  "source": "P0-W04-honest-validation.md",
+  "runtimeFiles": ["akrs/roads/R1.md"]
+}
