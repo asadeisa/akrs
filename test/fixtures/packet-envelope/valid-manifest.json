@@ -1,0 +1,51 @@
+{
+  "schema_version": "akrs.command-manifest/v1",
+  "commands": [
+    {
+      "id": "example-query",
+      "tokens": [
+        "example"
+      ],
+      "summary": "Return an example packet.",
+      "input_schema": "akrs.command-input/example-query/v1",
+      "positionals": [
+        {
+          "name": "target",
+          "required": true,
+          "variadic": false
+        }
+      ],
+      "flags": [
+        {
+          "name": "--root",
+          "value_type": "path",
+          "required": false,
+          "repeatable": false
+        }
+      ],
+      "required_role": "any",
+      "mutability": "query",
+      "dry_run": false,
+      "idempotency": "not_applicable",
+      "expected_snapshot": "not_applicable",
+      "snapshot_inputs": [
+        "workflow"
+      ],
+      "streaming": "none",
+      "output_schema": "akrs.command-output/example-query/v1",
+      "statuses": [
+        "ok",
+        "warning",
+        "error"
+      ],
+      "exit_codes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "next_command_builder": "none"
+    }
+  ]
+}

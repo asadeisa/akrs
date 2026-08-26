@@ -34,6 +34,7 @@
   },
   "files": [
     "bin",
+    "lib",
     "docs/framework",
     "GETTING_STARTED.md",
     "README.md",

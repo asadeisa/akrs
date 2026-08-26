@@ -1,0 +1,10 @@
+{
+  "code": "AKRS-R001",
+  "severity": "warning",
+  "message": "Road is incomplete.",
+  "file": "akrs/roads/R1.json",
+  "line": 4,
+  "detail": {
+    "field": "acceptance"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": "akrs.event/v1",
+  "run_id": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+  "sequence": 1,
+  "timestamp": "2026-08-25T10:30:01.000Z",
+  "type": "progress",
+  "data": {
+    "completed": 1,
+    "total": 2
+  }
+}
