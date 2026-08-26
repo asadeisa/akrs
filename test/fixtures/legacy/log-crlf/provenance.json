@@ -1,0 +1,15 @@
+{
+  "fixture": "log-crlf",
+  "capturedOn": "2026-08-26",
+  "evidenceMeasuredOn": "2026-08-18",
+  "bugIds": ["B8"],
+  "sources": [
+    {
+      "kind": "byte-sensitive-excerpt",
+      "project": "medecation",
+      "path": "akrs/LOG.md"
+    }
+  ],
+  "runtimeFiles": ["akrs/LOG.md.base64"],
+  "notes": "The exact LOG.md bytes are Base64-encoded because repository attributes normalize text files to LF. Tests decode and verify CRLF directly."
+}

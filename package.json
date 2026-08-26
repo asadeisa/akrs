@@ -29,7 +29,8 @@
     "akrs": "bin/akrs.js"
   },
   "scripts": {
-    "postinstall": "node bin/akrs.js postinstall"
+    "postinstall": "node bin/akrs.js postinstall",
+    "test": "node --test"
   },
   "files": [
     "bin",

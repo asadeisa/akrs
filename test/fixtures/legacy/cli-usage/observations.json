@@ -1,0 +1,17 @@
+[
+  { "name": "bare", "argv": [], "observedExitCode": 0 },
+  { "name": "help", "argv": ["--help"], "observedExitCode": 1 },
+  { "name": "version", "argv": ["--version"], "observedExitCode": 1 },
+  { "name": "unknown-command", "argv": ["bogus"], "observedExitCode": 1 },
+  { "name": "unknown-flag", "argv": ["validate", "--fixx"], "observedExitCode": 0 },
+  { "name": "missing-dir-value", "argv": ["validate", "--dir"], "observedExitCode": 0 },
+  { "name": "missing-workflow", "argv": ["validate", "--dir", "does-not-exist"], "observedExitCode": 1 },
+  {
+    "name": "validation-finding",
+    "argv": ["validate", "--dir", "akrs"],
+    "observedExitCode": 1,
+    "observedFindingsStream": "stdout",
+    "observedOrdering": "filesystem",
+    "observedSeverityEncoding": "emoji-only"
+  }
+]

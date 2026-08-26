@@ -1,0 +1,20 @@
+{
+  "fixture": "road-nested-plans",
+  "capturedOn": "2026-08-26",
+  "evidenceMeasuredOn": "2026-08-18",
+  "bugIds": ["B16"],
+  "sources": [
+    {
+      "kind": "synthetic-reproduction",
+      "project": "AKRS v2 evidence",
+      "path": "plans/update-to-v-2.0.0/source-opus-plan/01-evidence.md#E11"
+    }
+  ],
+  "runtimeFiles": [
+    "akrs/FEATURES.md",
+    "akrs/memory/seams.md",
+    "akrs/roads/P1/R1.md",
+    "akrs/roads/P2/R1.md"
+  ],
+  "notes": "Two nested Roads intentionally share a basename; nested references exercise E11."
+}

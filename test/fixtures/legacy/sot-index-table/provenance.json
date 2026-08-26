@@ -1,0 +1,20 @@
+{
+  "fixture": "sot-index-table",
+  "capturedOn": "2026-08-26",
+  "evidenceMeasuredOn": "2026-08-18",
+  "bugIds": ["B1"],
+  "sources": [
+    {
+      "kind": "excerpt",
+      "project": "ai-farmer",
+      "path": "akrs/SOT-INDEX.md"
+    },
+    {
+      "kind": "excerpt",
+      "project": "medecation",
+      "path": "akrs/SOT-INDEX.md"
+    }
+  ],
+  "runtimeFiles": ["ai-farmer/akrs/SOT-INDEX.md", "medecation/akrs/SOT-INDEX.md"],
+  "notes": "One representative Markdown-table section from each evidence project is retained."
+}

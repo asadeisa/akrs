@@ -1,0 +1,20 @@
+{
+  "fixture": "cli-usage",
+  "capturedOn": "2026-08-26",
+  "evidenceMeasuredOn": "2026-08-18",
+  "bugIds": ["B3", "B4", "B5", "B6", "B7", "B22", "B24"],
+  "sources": [
+    {
+      "kind": "measured-observation",
+      "project": "akrs-framework",
+      "path": "plans/update-to-v-2.0.0/source-opus-plan/01-evidence.md#E14"
+    }
+  ],
+  "runtimeFiles": [
+    "observations.json",
+    "project/README.md",
+    "project/akrs/roads/alpha.md",
+    "project/akrs/roads/zeta.md"
+  ],
+  "notes": "Observed v1 behavior is evidence only and is not asserted as the desired v2 contract."
+}

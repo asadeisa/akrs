@@ -1,0 +1,15 @@
+{
+  "fixture": "log-duplicate-closure",
+  "capturedOn": "2026-08-26",
+  "evidenceMeasuredOn": "2026-08-18",
+  "bugIds": ["B26"],
+  "sources": [
+    {
+      "kind": "excerpt",
+      "project": "medecation",
+      "path": "akrs/LOG.md"
+    }
+  ],
+  "runtimeFiles": ["akrs/LOG.md"],
+  "notes": "Both duplicate IDs are retained; unrelated ledger history is removed."
+}

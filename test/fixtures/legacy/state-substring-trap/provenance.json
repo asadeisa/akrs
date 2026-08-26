@@ -1,0 +1,15 @@
+{
+  "fixture": "state-substring-trap",
+  "capturedOn": "2026-08-26",
+  "evidenceMeasuredOn": "2026-08-18",
+  "bugIds": ["B18"],
+  "sources": [
+    {
+      "kind": "synthetic-reproduction",
+      "project": "AKRS v2 evidence",
+      "path": "plans/update-to-v-2.0.0/source-opus-plan/06-bug-register.md#B18"
+    }
+  ],
+  "runtimeFiles": ["akrs/STATE.md"],
+  "notes": "Model contains the substring Mode, but there is no Mode field."
+}

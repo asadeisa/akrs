@@ -1,0 +1,15 @@
+{
+  "fixture": "road-prose-bullets",
+  "capturedOn": "2026-08-26",
+  "evidenceMeasuredOn": "2026-08-18",
+  "bugIds": ["B2", "B23"],
+  "sources": [
+    {
+      "kind": "excerpt",
+      "project": "medecation",
+      "path": "akrs/roads/R-P7-5.md"
+    }
+  ],
+  "runtimeFiles": ["akrs/roads/R-P7-5.md"],
+  "notes": "The three prose bullets that become Raw, The, and AKRS are preserved verbatim."
+}

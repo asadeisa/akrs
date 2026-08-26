@@ -1,0 +1,20 @@
+{
+  "fixture": "memory-unknown",
+  "capturedOn": "2026-08-26",
+  "evidenceMeasuredOn": "2026-08-18",
+  "bugIds": ["B25"],
+  "sources": [
+    {
+      "kind": "excerpt",
+      "project": "ai-farmer",
+      "path": "akrs/memory/model.md"
+    },
+    {
+      "kind": "excerpt",
+      "project": "medecation",
+      "path": "akrs/memory/docs-assets.md"
+    }
+  ],
+  "runtimeFiles": ["akrs/memory/docs-assets.md", "akrs/memory/model.md"],
+  "notes": "Only the two measured unresolved Unknown records are retained."
+}

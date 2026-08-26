@@ -1,0 +1,15 @@
+{
+  "fixture": "log-archived",
+  "capturedOn": "2026-08-26",
+  "evidenceMeasuredOn": "2026-08-18",
+  "bugIds": ["B9"],
+  "sources": [
+    {
+      "kind": "synthetic-reproduction",
+      "project": "AKRS v2 evidence",
+      "path": "plans/update-to-v-2.0.0/source-opus-plan/06-bug-register.md#B9"
+    }
+  ],
+  "runtimeFiles": ["akrs/LOG-001.md", "akrs/roads/R1.md"],
+  "notes": "The archived table intentionally disagrees with the canonical Road so a later --fix regression can prove the archive remains unchanged."
+}

@@ -1,0 +1,15 @@
+{
+  "fixture": "road-table-expected-files",
+  "capturedOn": "2026-08-26",
+  "evidenceMeasuredOn": "2026-08-18",
+  "bugIds": ["B1", "B2"],
+  "sources": [
+    {
+      "kind": "excerpt",
+      "project": "ai-farmer",
+      "path": "akrs/roads/R37-frontend-farmer-experience.md"
+    }
+  ],
+  "runtimeFiles": ["akrs/roads/R37-frontend-farmer-experience.md"],
+  "notes": "Only the Road identity, status, and representative Expected-files table rows are retained."
+}
