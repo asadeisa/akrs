@@ -1,0 +1,16 @@
+import './closure.test.js';
+import './executors.test.js';
+import './handoff-result.test.js';
+import './memory.test.js';
+import './plan.test.js';
+import './registry.test.js';
+import './road.test.js';
+import './schema-findings.test.js';
+import './scenario.test.js';
+import './scope.test.js';
+import './state.test.js';
+import './templates.test.js';
+import './verification.test.js';
+import './primitives.test.js';
+import './glob.test.js';
+import './manifest-refreeze.test.js';

@@ -1,0 +1,17 @@
+{
+  "files": {
+    "closure.jsonl": "sha256:f33b0b4834e8405912b433a134b199ef00134fd4fc4f92894a05e0af0045448e",
+    "executors.json": "sha256:ad8f3e45c4e0cc0d07d1e863c08f94ed1305936c4b185bdadd023e1c5e98bc8b",
+    "handoff.jsonl": "sha256:2e996674148e4afb1694c63d40ecc02708b561b63746a9c3fe3b65b13573d06a",
+    "memory-input.json": "sha256:7e866f359f235965caf28d74ff63608ef201fb872fc2ff32e0bbc82ccd190f93",
+    "memory-record.md": "sha256:51fb08642ed4ba709460cfa5bb1d16fb0615c9a60821177cb6d86cf37b8021a3",
+    "plan.json": "sha256:8c9432764cab31b609903d841f4729806d8209b485625e351ea941d7f2d9df1f",
+    "result.jsonl": "sha256:8f93fcd3bedeee6dd5c7256c20c51f20e3f957679f71b13396358eeb27a364cf",
+    "road.json": "sha256:54f3b59ae8a9ee636f8f584c3689fe64bb79ef9c829ef792eaa01fa13319aadc",
+    "run.json": "sha256:981d92ec1014b6471eb101e14164ebb21bf43232cc3bb7c52d0e17c6058f82ad",
+    "scope-request.jsonl": "sha256:6f85f3f3f499c52fd0e2c7978aea31c4cbcbfcb4f15432547207c5ad27def62b",
+    "scope-resolution.jsonl": "sha256:3536eb068c7b3c4fecec198becd203726bea89c6a9593383bc2cc78b7f45649f",
+    "state.json": "sha256:98cc55497d4281aae9c369c527ab66a6fe31a57d45db6f26d3fa0486d89eb60d",
+    "verification.json": "sha256:708a5511945adac4c119899511c2c6613ecda8d9be576daa01fed8a3cb66ce14"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "schema": "akrs.run/v1",
+  "id": "01HZX9Q7M3T5V8W2K4N6P0R1S2",
+  "plan": "P6",
+  "snapshot": "sha256:2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae",
+  "contract_hash": "sha256:fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9",
+  "started_at": "2026-10-03T09:15:30.123Z",
+  "ended_at": "2026-10-03T09:15:42.456Z",
+  "status": "passed",
+  "steps": [
+    {
+      "index": 0,
+      "step": "goto",
+      "status": "passed",
+      "soft": false,
+      "duration_ms": 120,
+      "detail": null,
+      "evidence": []
+    },
+    {
+      "index": 1,
+      "step": "screenshot",
+      "status": "passed",
+      "soft": false,
+      "duration_ms": 80,
+      "detail": null,
+      "evidence": [
+        {
+          "path": "akrs/verifications/P6/evidence/01HZX9Q7M3T5V8W2K4N6P0R1S2/after-save.png",
+          "type": "screenshot",
+          "bytes": 2048,
+          "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "akrs/verifications/P6/evidence/01HZX9Q7M3T5V8W2K4N6P0R1S2/console.log",
+          "type": "console",
+          "bytes": 12,
+          "sha256": "sha256:2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae"
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "step": "expect_text",
+      "status": "failed",
+      "soft": true,
+      "duration_ms": 5,
+      "detail": "text \"Saved\" not found",
+      "evidence": []
+    }
+  ],
+  "evidence": [
+    {
+      "path": "akrs/verifications/P6/evidence/01HZX9Q7M3T5V8W2K4N6P0R1S2/after-save.png",
+      "type": "screenshot",
+      "bytes": 2048,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "akrs/verifications/P6/evidence/01HZX9Q7M3T5V8W2K4N6P0R1S2/console.log",
+      "type": "console",
+      "bytes": 12,
+      "sha256": "sha256:2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae"
+    }
+  ],
+  "meta": {
+    "generator": "akrs/2.0.0-alpha.0",
+    "content_hash": "sha256:b0a83dfd16af9aba91dc8a503b3bf234a93551d4e3b1dab8dd37966dc90c3de7"
+  }
+}

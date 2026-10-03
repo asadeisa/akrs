@@ -1,0 +1,14 @@
+{
+  "schema": "akrs.memory-input/v1",
+  "topic": "ui",
+  "label": "Assumption Med",
+  "decided_by": null,
+  "owner_plan": null,
+  "text": "مكوّن الجدول يكفي للصفحة 界面 🚀\r\nسطر ثانٍ",
+  "pointers": [
+    {
+      "path": "app/components/Table.vue",
+      "lines": null
+    }
+  ]
+}

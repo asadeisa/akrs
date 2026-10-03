@@ -1,0 +1,9 @@
+import './strict-json.test.js';
+import './json-codec.test.js';
+import './hash.test.js';
+import './jsonl-codec.test.js';
+import './markdown-codec.test.js';
+import './input-channels.test.js';
+import './core-exports.test.js';
+import './golden-bytes.test.js';
+import './golden-artifacts.test.js';

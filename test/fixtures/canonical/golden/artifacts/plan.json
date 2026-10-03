@@ -1,0 +1,26 @@
+{
+  "schema": "akrs.plan/v1",
+  "id": "P7",
+  "title": null,
+  "questions": [],
+  "seams": [],
+  "findings": [
+    {
+      "result": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+      "finding": "F-9",
+      "status": "resolved"
+    }
+  ],
+  "closure": {
+    "status": "closed",
+    "at": "2026-10-03T09:15:30.123Z",
+    "operation": {
+      "request": "01BX5ZZKBKACTAV9WEVGEMMVRY",
+      "run": "01HZX9Q7M3T5V8W2K4N6P0R1S2"
+    }
+  },
+  "meta": {
+    "generator": "akrs/2.0.0-alpha.0",
+    "content_hash": "sha256:1400e045ed1921d4ed8684cfc3e9a81e519d531b2a3176c60efa0f67d7dda19e"
+  }
+}

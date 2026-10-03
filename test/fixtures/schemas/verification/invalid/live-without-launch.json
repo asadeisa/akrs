@@ -1,0 +1,239 @@
+{
+  "expect": [
+    {
+      "code": "invalid_value",
+      "path": "$.launch"
+    }
+  ],
+  "value": {
+    "schema": "akrs.verification/v1",
+    "plan": "P6",
+    "roads": [
+      "R-P6-1",
+      "R-P6-2"
+    ],
+    "policy": "live",
+    "reads": [
+      {
+        "path": "SOT/09-use-cases.md",
+        "lines": [
+          28,
+          41
+        ],
+        "why": "canonical paid-state rule"
+      },
+      {
+        "path": "SOT/10-budgets.md",
+        "lines": null,
+        "why": null
+      }
+    ],
+    "launch": null,
+    "setup": [
+      {
+        "name": "install",
+        "argv": [
+          "npm",
+          "ci"
+        ]
+      },
+      {
+        "name": "seed",
+        "argv": [
+          "npm",
+          "run",
+          "seed"
+        ]
+      }
+    ],
+    "teardown": [
+      {
+        "name": "stop",
+        "argv": [
+          "npm",
+          "run",
+          "stop"
+        ]
+      },
+      {
+        "name": "clean",
+        "argv": [
+          "npm",
+          "run",
+          "clean"
+        ]
+      }
+    ],
+    "acceptance": [
+      "The admin flow is reachable end to end.",
+      "The user can save without errors."
+    ],
+    "measurements": [
+      {
+        "name": "frame_time",
+        "unit": "ms",
+        "budget": 16,
+        "direction": "max"
+      },
+      {
+        "name": "fps",
+        "unit": "fps",
+        "budget": 30,
+        "direction": "min"
+      }
+    ],
+    "evidence_types": [
+      "a11y",
+      "console",
+      "screenshot",
+      "timing"
+    ],
+    "reachability": [
+      "Every Performance bullet is reachable at runtime.",
+      "LEVEL_WON has a subscriber."
+    ],
+    "boundaries": [
+      "Never edit product code.",
+      "Never change the launch command."
+    ],
+    "timeout_ms": 600000,
+    "allowed_hosts": [
+      "api.example.test",
+      "staging.example.test"
+    ],
+    "scenario": [
+      {
+        "step": "goto",
+        "url": "/admin",
+        "soft": false
+      },
+      {
+        "step": "click",
+        "text": "Save",
+        "selector": null,
+        "role": null,
+        "name": null,
+        "soft": false
+      },
+      {
+        "step": "click",
+        "text": null,
+        "selector": "#menu",
+        "role": null,
+        "name": null,
+        "soft": true
+      },
+      {
+        "step": "click",
+        "text": null,
+        "selector": null,
+        "role": "button",
+        "name": "Open",
+        "soft": false
+      },
+      {
+        "step": "fill",
+        "selector": "#name",
+        "value": "اسم المستخدم 🚀",
+        "soft": false
+      },
+      {
+        "step": "press",
+        "key": "Enter",
+        "soft": false
+      },
+      {
+        "step": "wait_for",
+        "text": "Saved",
+        "selector": null,
+        "url": null,
+        "timeout_ms": 5000,
+        "soft": false
+      },
+      {
+        "step": "wait_for",
+        "text": null,
+        "selector": ".toast",
+        "url": null,
+        "timeout_ms": 5000,
+        "soft": true
+      },
+      {
+        "step": "wait_for",
+        "text": null,
+        "selector": null,
+        "url": "/admin/done",
+        "timeout_ms": null,
+        "soft": false
+      },
+      {
+        "step": "expect_text",
+        "text": "Saved",
+        "soft": false
+      },
+      {
+        "step": "expect_no_console_errors",
+        "soft": false
+      },
+      {
+        "step": "http",
+        "method": "POST",
+        "url": "http://localhost:3000/api/items",
+        "headers": [
+          {
+            "name": "accept",
+            "value": "application/json"
+          },
+          {
+            "name": "content-type",
+            "value": "application/json"
+          }
+        ],
+        "body": "{\"name\":\"x\"}",
+        "expect_status": 201,
+        "expect_json": {
+          "pointer": "/name",
+          "equals": "x"
+        },
+        "soft": false
+      },
+      {
+        "step": "http",
+        "method": "GET",
+        "url": "/api/health",
+        "headers": [],
+        "body": null,
+        "expect_status": 200,
+        "expect_json": null,
+        "soft": false
+      },
+      {
+        "step": "screenshot",
+        "name": "after-save",
+        "soft": false
+      },
+      {
+        "step": "measure",
+        "metric": "lcp",
+        "budget_ms": 2500,
+        "soft": false
+      },
+      {
+        "step": "measure",
+        "metric": "ttfb",
+        "budget_ms": null,
+        "soft": true
+      },
+      {
+        "step": "viewport",
+        "width": 390,
+        "height": 844,
+        "soft": false
+      }
+    ],
+    "meta": {
+      "generator": "akrs/2.0.0-alpha.0",
+      "content_hash": "sha256:fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "akrs.road/v1",
+  "id": "R1",
+  "plan": null,
+  "task": null,
+  "status": "ACTIVE",
+  "deps": [],
+  "reads": [],
+  "writes": [
+    {
+      "path": "README.md",
+      "class": "file",
+      "action": "modify"
+    }
+  ],
+  "forbidden": [],
+  "checks": [],
+  "acceptance": [
+    "README.md mentions the example."
+  ],
+  "boundaries": [],
+  "on_landing": null,
+  "complexity": null,
+  "executor_class": null,
+  "steps": [],
+  "scope_policy": {
+    "auto_reads": [],
+    "auto_writes": []
+  },
+  "oversize_reason": null,
+  "meta": {
+    "generator": "akrs/2.0.0-alpha.0",
+    "content_hash": "sha256:fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9"
+  }
+}

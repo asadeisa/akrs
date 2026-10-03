@@ -41,12 +41,14 @@ function entry(overrides = {}) {
     statuses: ['ok', 'warning', 'error', 'blocked'],
     exit_codes: [0, 1, 2, 3, 4],
     next_command_builder: 'none',
+    mcp_tool: null,
+    mcp_action: null,
     ...overrides,
   };
 }
 
 function manifest(command = entry()) {
-  return { schema_version: 'akrs.command-manifest/v1', commands: [command] };
+  return { schema_version: 'akrs.command-manifest/v1', commands: [command], reserved_commands: [] };
 }
 
 function packet({ status = 'ok', findings = [] } = {}) {

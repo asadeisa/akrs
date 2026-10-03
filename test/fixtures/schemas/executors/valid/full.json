@@ -1,0 +1,39 @@
+{
+  "schema": "akrs.executors/v1",
+  "executors": [
+    {
+      "id": "flash",
+      "role": "worker",
+      "class": "weak",
+      "label": "DeepSeek V4 Flash via Freebuff",
+      "user_answer": "weak — cheap, needs small steps"
+    },
+    {
+      "id": "lead",
+      "role": "leader",
+      "class": "frontier",
+      "label": "Opus via Claude Code",
+      "user_answer": "frontier"
+    },
+    {
+      "id": "qa",
+      "role": "tester",
+      "class": "medium",
+      "label": "Qwen",
+      "user_answer": "متوسط — يحتاج خطوات واضحة"
+    }
+  ],
+  "class_overrides": {
+    "weak": {
+      "max_writes": 4,
+      "envelope_grant_cap": 1
+    },
+    "frontier": {
+      "read_budget_tokens": 80000
+    }
+  },
+  "meta": {
+    "generator": "akrs/2.0.0-alpha.0",
+    "content_hash": "sha256:fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9"
+  }
+}

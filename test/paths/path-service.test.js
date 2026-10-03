@@ -83,8 +83,8 @@ test('B13 restricted paths reject lexical escape and Windows-specific ambiguous 
     assert.throws(() => validateRestrictedPath(value), PathSafetyError, value);
   }
   assert.equal(validateRestrictedPath('akrs/roads/R1.json'), 'akrs/roads/R1.json');
-  assert.deepEqual(PATH_SAFETY_POLICY.path_classes, ['file_or_directory']);
-  assert.equal(PATH_SAFETY_POLICY.glob_grammar, 'none_until_P1_W01');
+  assert.deepEqual(PATH_SAFETY_POLICY.path_classes, ['file', 'dir', 'glob', 'ephemeral']);
+  assert.equal(PATH_SAFETY_POLICY.glob_grammar, 'restricted_star_question_globstar_v1');
 });
 
 test('B13 existing symlinks and nearest existing ancestors cannot escape the repository', async (t) => {

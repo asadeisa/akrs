@@ -1,0 +1,25 @@
+{
+  "expect": [
+    {
+      "code": "invalid_value",
+      "path": "$.closure.at"
+    }
+  ],
+  "value": {
+    "schema": "akrs.plan/v1",
+    "id": "P6",
+    "title": null,
+    "questions": [],
+    "seams": [],
+    "findings": [],
+    "closure": {
+      "status": "closed",
+      "at": null,
+      "operation": null
+    },
+    "meta": {
+      "generator": "akrs/2.0.0-alpha.0",
+      "content_hash": "sha256:fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9"
+    }
+  }
+}

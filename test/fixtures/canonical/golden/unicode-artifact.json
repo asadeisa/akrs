@@ -1,0 +1,45 @@
+{
+  "schema": "akrs.sample/v1",
+  "id": "R-GOLDEN",
+  "deps": [
+    "R-1",
+    "R-2",
+    "R-3"
+  ],
+  "reads": [
+    {
+      "path": "docs/b.md",
+      "lines": [
+        3,
+        9
+      ],
+      "why": "second"
+    },
+    {
+      "path": "docs/a.md",
+      "lines": null,
+      "why": null
+    }
+  ],
+  "writes": [
+    {
+      "path": "src/a.js",
+      "class": "file",
+      "action": "modify"
+    },
+    {
+      "path": "src/z.js",
+      "class": "file",
+      "action": "create"
+    }
+  ],
+  "checks": [
+    "second",
+    "first"
+  ],
+  "nested": {
+    "a": 7,
+    "b": true
+  },
+  "note": "mixed: café 日本語 😀 \u2028|\u2029 \"quoted\" back\\slash\ttab\nnewline"
+}

@@ -1,0 +1,21 @@
+{
+  "schema": "akrs.memory-input/v1",
+  "topic": "ui",
+  "label": "Decided",
+  "decided_by": "P6",
+  "owner_plan": null,
+  "text": "The admin page uses the shared table component.",
+  "pointers": [
+    {
+      "path": "SOT/09-use-cases.md",
+      "lines": [
+        28,
+        41
+      ]
+    },
+    {
+      "path": "akrs/memory/ui.md",
+      "lines": null
+    }
+  ]
+}

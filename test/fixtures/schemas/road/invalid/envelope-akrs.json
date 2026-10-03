@@ -1,0 +1,115 @@
+{
+  "expect": [
+    {
+      "code": "invalid_envelope",
+      "path": "$.scope_policy.auto_writes[0]"
+    }
+  ],
+  "value": {
+    "schema": "akrs.road/v1",
+    "id": "R-P6-1",
+    "plan": "P6",
+    "task": "T-P6-1",
+    "status": "QUEUED",
+    "deps": [
+      "R-P5-6",
+      "R-P5-7"
+    ],
+    "reads": [
+      {
+        "path": "SOT/09-use-cases.md",
+        "lines": [
+          28,
+          41
+        ],
+        "why": "canonical paid-state rule"
+      },
+      {
+        "path": "akrs/memory/ui.md",
+        "lines": null,
+        "why": "landed UI decisions"
+      },
+      {
+        "path": "app/config/payment-status.ts",
+        "lines": [
+          12,
+          25
+        ],
+        "why": null
+      }
+    ],
+    "writes": [
+      {
+        "path": "akrs/handoffs/R-P6-1.md",
+        "class": "ephemeral",
+        "action": "create"
+      },
+      {
+        "path": "app/components",
+        "class": "dir",
+        "action": "modify"
+      },
+      {
+        "path": "app/pages/admin.vue",
+        "class": "file",
+        "action": "create"
+      },
+      {
+        "path": "app/stubs/*.tmp",
+        "class": "glob",
+        "action": "delete"
+      }
+    ],
+    "forbidden": [
+      "secrets/**",
+      "server/**"
+    ],
+    "checks": [
+      {
+        "name": "unit",
+        "argv": [
+          "npm",
+          "test",
+          "--",
+          "admin.spec.ts"
+        ],
+        "timeout_ms": 120000
+      },
+      {
+        "name": "lint",
+        "argv": [
+          "npm",
+          "run",
+          "lint"
+        ],
+        "timeout_ms": 60000
+      }
+    ],
+    "acceptance": [
+      "The declared user path works from the committed build.",
+      "The admin table lists every item."
+    ],
+    "boundaries": [
+      "No backend route change.",
+      "No new dependency."
+    ],
+    "on_landing": "akrs/skills/akrs-close-out.md",
+    "complexity": 3,
+    "executor_class": "weak",
+    "steps": [
+      "Create app/pages/admin.vue with the admin route.",
+      "Run the unit check."
+    ],
+    "scope_policy": {
+      "auto_reads": [],
+      "auto_writes": [
+        "akrs/**"
+      ]
+    },
+    "oversize_reason": null,
+    "meta": {
+      "generator": "akrs/2.0.0-alpha.0",
+      "content_hash": "sha256:fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9"
+    }
+  }
+}

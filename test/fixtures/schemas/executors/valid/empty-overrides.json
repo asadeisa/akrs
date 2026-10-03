@@ -1,0 +1,17 @@
+{
+  "schema": "akrs.executors/v1",
+  "executors": [
+    {
+      "id": "lead",
+      "role": "leader",
+      "class": "frontier",
+      "label": "Opus",
+      "user_answer": "frontier"
+    }
+  ],
+  "class_overrides": {},
+  "meta": {
+    "generator": "akrs/2.0.0-alpha.0",
+    "content_hash": "sha256:fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9"
+  }
+}

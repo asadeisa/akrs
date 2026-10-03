@@ -1,0 +1,49 @@
+{
+  "schema": "akrs.sample/v1",
+  "id": "R-GOLDEN",
+  "deps": [
+    "R-1",
+    "R-2",
+    "R-3"
+  ],
+  "reads": [
+    {
+      "path": "docs/b.md",
+      "lines": [
+        3,
+        9
+      ],
+      "why": "second"
+    },
+    {
+      "path": "docs/a.md",
+      "lines": null,
+      "why": null
+    }
+  ],
+  "writes": [
+    {
+      "path": "src/a.js",
+      "class": "file",
+      "action": "modify"
+    },
+    {
+      "path": "src/z.js",
+      "class": "file",
+      "action": "create"
+    }
+  ],
+  "checks": [
+    "second",
+    "first"
+  ],
+  "nested": {
+    "a": 7,
+    "b": true
+  },
+  "note": "golden note",
+  "meta": {
+    "generator": "akrs/2.0.0-alpha.0",
+    "content_hash": "sha256:1df21b86b6d6a78c20baaf0959fb19ec48a46a6eb8bad3db3dc95a6592036228"
+  }
+}

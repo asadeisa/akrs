@@ -1,0 +1,8 @@
+{
+  "files": {
+    "sample-artifact.json": "sha256:2e052fa9edd0ea799e5557bfee1221859f849ad79c126fb1e4b27270ab1e0203",
+    "unicode-artifact.json": "sha256:82448cc59c3caf445e79977cfb7c720792ab5295693332e9f728cbdad9a93d36",
+    "closure.jsonl": "sha256:4d2d9d8521d9898b50d298aedd1a24c32d19ae8e8d49f7cd0f97189fcbb43296",
+    "memory.md": "sha256:a1e93595b57048f66b3d7cd398250592090866510f457ca7e3e134d411dcb7ae"
+  }
+}

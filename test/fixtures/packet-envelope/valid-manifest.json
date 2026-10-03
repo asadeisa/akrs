@@ -45,7 +45,37 @@
         3,
         4
       ],
-      "next_command_builder": "none"
+      "next_command_builder": "none",
+      "mcp_tool": null,
+      "mcp_action": null
+    }
+  ],
+  "reserved_commands": [
+    {
+      "id": "example-reserved",
+      "tokens": [
+        "example",
+        "reserved"
+      ],
+      "owner_packet": "P1-W07",
+      "mutability": "query",
+      "positionals": [
+        {
+          "name": "road",
+          "required": false,
+          "variadic": false
+        }
+      ],
+      "flags": [
+        {
+          "name": "--json",
+          "value_type": "boolean",
+          "required": false,
+          "repeatable": false
+        }
+      ],
+      "input_schema": null,
+      "store": "example/{road}.jsonl"
     }
   ]
 }

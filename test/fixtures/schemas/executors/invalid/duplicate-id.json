@@ -1,0 +1,32 @@
+{
+  "expect": [
+    {
+      "code": "duplicate_value",
+      "path": "$.executors[1].id"
+    }
+  ],
+  "value": {
+    "schema": "akrs.executors/v1",
+    "executors": [
+      {
+        "id": "x",
+        "role": "worker",
+        "class": "weak",
+        "label": "a",
+        "user_answer": "a"
+      },
+      {
+        "id": "x",
+        "role": "tester",
+        "class": "weak",
+        "label": "b",
+        "user_answer": "b"
+      }
+    ],
+    "class_overrides": {},
+    "meta": {
+      "generator": "akrs/2.0.0-alpha.0",
+      "content_hash": "sha256:fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9"
+    }
+  }
+}

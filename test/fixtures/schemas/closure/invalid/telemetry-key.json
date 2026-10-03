@@ -1,0 +1,19 @@
+{
+  "expect": [
+    {
+      "code": "unknown_key",
+      "path": "$.tokens"
+    }
+  ],
+  "value": {
+    "id": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+    "hash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ts": "2026-10-03T09:15:30.123Z",
+    "kind": "road",
+    "subject": "R1",
+    "outcome": "DONE",
+    "deviations": null,
+    "operation": null,
+    "tokens": 12
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "expect": [
+    {
+      "code": "invalid_format",
+      "path": "$.id"
+    }
+  ],
+  "value": {
+    "id": "not-a-ulid",
+    "label": "Unknown",
+    "decided_by": null,
+    "owner_plan": "P6",
+    "text": "x",
+    "pointers": []
+  }
+}

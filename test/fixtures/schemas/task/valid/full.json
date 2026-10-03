@@ -1,0 +1,10 @@
+{
+  "schema": "akrs.task/v1",
+  "id": "T-P6-1",
+  "plan": "P6",
+  "road": "R-P6-1",
+  "objective": "Ship the admin page.",
+  "constraints": "Keep the existing router.",
+  "approach": "Follow the Road steps; this text only explains why.",
+  "notes": null
+}

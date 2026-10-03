@@ -1,0 +1,17 @@
+{
+  "schema": "akrs.state/v1",
+  "mode": 0,
+  "role": "worker",
+  "plan": null,
+  "phase": null,
+  "task": null,
+  "next": "الخطوة التالية: راجع الملف\r\nثم 继续 🚀 \u2028 end",
+  "updated": {
+    "at": "2026-10-03T09:15:30.123Z",
+    "by": "codex"
+  },
+  "meta": {
+    "generator": "akrs/2.0.0-alpha.0",
+    "content_hash": "sha256:764711d7a7bdc3e9b92b6b1e3c8519fe5e6e0c8158ec53465a7e14dc501463f2"
+  }
+}

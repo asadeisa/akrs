@@ -46,7 +46,7 @@ test('manifest exposes init, sync, and postinstall as writers with the required 
     const entry = byId[id];
     assert.equal(entry.mutability, 'mutation', id);
     assert.equal(entry.dry_run, true, id);
-    assert.equal(entry.idempotency, 'required', id);
+    assert.equal(entry.idempotency, id === 'postinstall' ? 'none' : 'journal', id);
     assert.deepEqual(entry.tokens, [id]);
     assert.equal(typeof commandHandlers[id], 'function', id);
   }

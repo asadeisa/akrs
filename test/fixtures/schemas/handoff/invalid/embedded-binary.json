@@ -1,0 +1,21 @@
+{
+  "expect": [
+    {
+      "code": "embedded_binary",
+      "path": "$.result"
+    }
+  ],
+  "value": {
+    "id": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+    "hash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ts": "2026-10-03T09:15:30.123Z",
+    "road": "R1",
+    "snapshot": "sha256:2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae",
+    "result": "see data:image/png;base64,AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "reach": [
+      "x"
+    ],
+    "expect": "y",
+    "ready": true
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "schema": "akrs.plan/v1",
+  "id": "P6",
+  "title": "Admin",
+  "questions": [
+    {
+      "id": "Q-1",
+      "text": "Is the 99% target needed before the defense?",
+      "status": "open",
+      "resolution": null,
+      "decision": null
+    },
+    {
+      "id": "Q-2",
+      "text": "Which table component?",
+      "status": "resolved",
+      "resolution": "The shared one.",
+      "decision": null
+    },
+    {
+      "id": "Q-3",
+      "text": "Blown-out lighting?",
+      "status": "resolved",
+      "resolution": "accepted as-is because the demo is dark",
+      "decision": "01BX5ZZKBKACTAV9WEVGEMMVRY"
+    }
+  ],
+  "seams": [
+    {
+      "id": "S-1",
+      "text": "Router wiring for the admin page.",
+      "owner": {
+        "road": "R-P6-3",
+        "intent": null
+      }
+    },
+    {
+      "id": "S-2",
+      "text": "Event LEVEL_WON has no subscriber.",
+      "owner": {
+        "road": null,
+        "intent": "Wire it in the HUD phase."
+      }
+    }
+  ],
+  "findings": [
+    {
+      "result": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+      "finding": "F-1",
+      "status": "open"
+    },
+    {
+      "result": "01BX5ZZKBKACTAV9WEVGEMMVRY",
+      "finding": "F-2",
+      "status": "resolved"
+    }
+  ],
+  "closure": {
+    "status": "open",
+    "at": null,
+    "operation": null
+  },
+  "meta": {
+    "generator": "akrs/2.0.0-alpha.0",
+    "content_hash": "sha256:fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9"
+  }
+}

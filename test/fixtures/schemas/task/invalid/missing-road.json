@@ -1,0 +1,17 @@
+{
+  "expect": [
+    {
+      "code": "missing_key",
+      "path": "$.road"
+    }
+  ],
+  "value": {
+    "schema": "akrs.task/v1",
+    "id": "T1",
+    "plan": null,
+    "objective": "x",
+    "constraints": null,
+    "approach": null,
+    "notes": null
+  }
+}
