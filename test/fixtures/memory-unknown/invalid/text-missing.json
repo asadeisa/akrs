@@ -1,0 +1,24 @@
+{
+  "expect": [
+    {
+      "pointer": "/text",
+      "code": "missing_key"
+    }
+  ],
+  "document": {
+    "schema": "akrs.memory-input/v1",
+    "topic": "payments",
+    "label": "Decided",
+    "decided_by": "P6",
+    "owner_plan": null,
+    "pointers": [
+      {
+        "path": "SOT/04-use-cases.md",
+        "lines": [
+          3,
+          5
+        ]
+      }
+    ]
+  }
+}

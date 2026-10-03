@@ -1,0 +1,26 @@
+{
+  "files": [
+    ["legacy-prose", false, 0],
+    ["tampered", true, 2],
+    ["use-cases", true, 3]
+  ],
+  "record_ids": [
+    "01ARZ3NDEKTSV4RRFFQ69G5FA0",
+    "01ARZ3NDEKTSV4RRFFQ69G5FA1",
+    "01ARZ3NDEKTSV4RRFFQ69G5FA2",
+    "01ARZ3NDEKTSV4RRFFQ69G5FA3",
+    "01ARZ3NDEKTSV4RRFFQ69G5FA4"
+  ],
+  "unknown": [
+    { "id": "01ARZ3NDEKTSV4RRFFQ69G5FA3", "label": "Unknown", "state": "unverified", "owner_plan": "P3", "decided_by": null },
+    { "id": "01ARZ3NDEKTSV4RRFFQ69G5FA2", "label": "Unknown", "state": "declared", "owner_plan": "P2", "decided_by": null }
+  ],
+  "facts": [
+    { "id": "01ARZ3NDEKTSV4RRFFQ69G5FA4", "label": "Decided", "state": "declared", "owner_plan": null, "decided_by": "P3" },
+    { "id": "01ARZ3NDEKTSV4RRFFQ69G5FA0", "label": "Decided", "state": "declared", "owner_plan": null, "decided_by": "P2" },
+    { "id": "01ARZ3NDEKTSV4RRFFQ69G5FA1", "label": "Assumption Med", "state": "declared", "owner_plan": null, "decided_by": null }
+  ],
+  "unverified": [
+    { "id": "01ARZ3NDEKTSV4RRFFQ69G5FA3", "label": "Unknown", "state": "unverified", "owner_plan": "P3", "decided_by": null }
+  ]
+}

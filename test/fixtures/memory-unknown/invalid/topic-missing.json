@@ -1,0 +1,24 @@
+{
+  "expect": [
+    {
+      "pointer": "/topic",
+      "code": "missing_key"
+    }
+  ],
+  "document": {
+    "schema": "akrs.memory-input/v1",
+    "label": "Decided",
+    "decided_by": "P6",
+    "owner_plan": null,
+    "text": "Paid state is derived from the settlement event.",
+    "pointers": [
+      {
+        "path": "SOT/04-use-cases.md",
+        "lines": [
+          3,
+          5
+        ]
+      }
+    ]
+  }
+}

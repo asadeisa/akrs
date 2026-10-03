@@ -1,0 +1,25 @@
+{
+  "expect": [
+    {
+      "pointer": "/pointers/0/lines",
+      "code": "invalid_line_range"
+    }
+  ],
+  "document": {
+    "schema": "akrs.memory-input/v1",
+    "topic": "payments",
+    "label": "Decided",
+    "decided_by": "P6",
+    "owner_plan": null,
+    "text": "Paid state is derived from the settlement event.",
+    "pointers": [
+      {
+        "path": "SOT/04-use-cases.md",
+        "lines": [
+          0,
+          3
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "expect": [
+    {
+      "pointer": "/pointers",
+      "code": "invalid_value"
+    }
+  ],
+  "document": {
+    "schema": "akrs.memory-input/v1",
+    "topic": "payments",
+    "label": "Decided",
+    "decided_by": "P6",
+    "owner_plan": null,
+    "text": "Paid state is derived from the settlement event.",
+    "pointers": []
+  }
+}

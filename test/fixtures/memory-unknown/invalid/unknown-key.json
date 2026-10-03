@@ -1,0 +1,26 @@
+{
+  "expect": [
+    {
+      "pointer": "/confidence",
+      "code": "unknown_key"
+    }
+  ],
+  "document": {
+    "schema": "akrs.memory-input/v1",
+    "topic": "payments",
+    "label": "Decided",
+    "decided_by": "P6",
+    "owner_plan": null,
+    "text": "Paid state is derived from the settlement event.",
+    "pointers": [
+      {
+        "path": "SOT/04-use-cases.md",
+        "lines": [
+          3,
+          5
+        ]
+      }
+    ],
+    "confidence": "high"
+  }
+}

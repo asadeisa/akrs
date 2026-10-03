@@ -1,0 +1,17 @@
+{
+  "schema": "akrs.memory-input/v1",
+  "topic": "payments",
+  "label": "Assumption Med",
+  "decided_by": null,
+  "owner_plan": null,
+  "text": "Paid state is derived from the settlement event.",
+  "pointers": [
+    {
+      "path": "SOT/04-use-cases.md",
+      "lines": [
+        3,
+        5
+      ]
+    }
+  ]
+}

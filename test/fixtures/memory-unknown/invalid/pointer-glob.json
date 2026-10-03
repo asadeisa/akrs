@@ -1,0 +1,22 @@
+{
+  "expect": [
+    {
+      "pointer": "/pointers/0/path",
+      "code": "class_mismatch"
+    }
+  ],
+  "document": {
+    "schema": "akrs.memory-input/v1",
+    "topic": "payments",
+    "label": "Decided",
+    "decided_by": "P6",
+    "owner_plan": null,
+    "text": "Paid state is derived from the settlement event.",
+    "pointers": [
+      {
+        "path": "SOT/*.md",
+        "lines": null
+      }
+    ]
+  }
+}

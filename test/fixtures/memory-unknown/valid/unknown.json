@@ -1,0 +1,9 @@
+{
+  "schema": "akrs.memory-input/v1",
+  "topic": "payments",
+  "label": "Unknown",
+  "decided_by": null,
+  "owner_plan": "P6",
+  "text": "Paid state is derived from the settlement event.",
+  "pointers": []
+}

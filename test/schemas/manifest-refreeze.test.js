@@ -127,6 +127,8 @@ const P0_COMMANDS = {
   // P1-W06: the Road and Task writers (revalidate under the lock) and the template query, with their A1 6.2 MCP mapping.
   'road-new': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'road_new'], dry_run: true },
   'task-new': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'task_new'], dry_run: true },
+  // P1-W08: the Memory writer (append, revalidated under the lock), A1 6.2 MCP mapping.
+  'memory-add': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'memory_add'], dry_run: true },
   template: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_road', 'template'], dry_run: false },
 };
 

@@ -1,0 +1,25 @@
+{
+  "expect": [
+    {
+      "pointer": "/text",
+      "code": "invalid_value"
+    }
+  ],
+  "document": {
+    "schema": "akrs.memory-input/v1",
+    "topic": "payments",
+    "label": "Decided",
+    "decided_by": "P6",
+    "owner_plan": null,
+    "text": "   \n ",
+    "pointers": [
+      {
+        "path": "SOT/04-use-cases.md",
+        "lines": [
+          3,
+          5
+        ]
+      }
+    ]
+  }
+}
