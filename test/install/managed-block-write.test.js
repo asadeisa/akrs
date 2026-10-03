@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { chmod, link, readFile, rename, stat, writeFile } from 'node:fs/promises';
+import { chmod, link, readFile, realpath, rename, stat, writeFile } from 'node:fs/promises';
 import { test } from 'node:test';
 import { applyManagedBlockToFile } from '../../lib/store/managed-block.js';
 import { PathSafetyError, createPathService } from '../../lib/store/path-service.js';
@@ -56,7 +56,7 @@ test('F4 a new file is placed with a hard link that never replaces, and the temp
   assert.equal(result.outcome, 'created');
   assert.equal(result.applied, true);
   assert.equal(links.length, 1);
-  assert.equal(links[0][1], repository.path('new/.gitignore'));
+  assert.equal(links[0][1], await realpath(repository.path('new/.gitignore')));
   assert.notEqual(links[0][0], links[0][1]);
   assert.deepEqual(Object.keys(await listFiles(repository.root)), ['new/.gitignore']);
 });
@@ -126,7 +126,7 @@ test('F4 the write goes through a same-directory temp sibling renamed over the t
   assert.equal(result.applied, true);
   assert.equal(renames.length, 1);
   const [from, to] = renames[0];
-  assert.equal(to, repository.path('docs/notes.md'));
+  assert.equal(to, await realpath(repository.path('docs/notes.md')));
   assert.notEqual(from, to);
   assert.equal(from.slice(0, from.lastIndexOf(process.platform === 'win32' ? '\\' : '/')),
     to.slice(0, to.lastIndexOf(process.platform === 'win32' ? '\\' : '/')));

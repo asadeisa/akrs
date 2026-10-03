@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { mkdir, readFile, symlink, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, realpath, symlink, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import {
@@ -54,8 +55,10 @@ test('B12 every repository and workflow resolver shares one canonical repository
   assert.equal(workflowTarget.repository_root, service.repository_root);
   assert.equal(repositoryTarget.relative_path, 'src/new.js');
   assert.equal(workflowTarget.relative_path, 'akrs/roads/R1.json');
-  assert.equal(repositoryTarget.absolute_path, temporary.path('src/new.js').replaceAll('\\', '/'));
-  assert.equal(workflowTarget.absolute_path, temporary.path('akrs', 'roads', 'R1.json').replaceAll('\\', '/'));
+  // The temp root may be an 8.3 short alias on Windows; the service reports the canonical long path.
+  const canonicalRoot = await realpath(temporary.root);
+  assert.equal(repositoryTarget.absolute_path, join(canonicalRoot, 'src', 'new.js').replaceAll('\\', '/'));
+  assert.equal(workflowTarget.absolute_path, join(canonicalRoot, 'akrs', 'roads', 'R1.json').replaceAll('\\', '/'));
 });
 
 test('B13 restricted paths reject lexical escape and Windows-specific ambiguous forms on every OS', () => {

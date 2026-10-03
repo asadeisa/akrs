@@ -67,15 +67,16 @@ export async function sha256File(path) {
   return createHash('sha256').update(await readFile(path)).digest('hex');
 }
 
+// Read-only git must never take .git/index.lock: a timed-out child killed mid-refresh would leave
+// a stale lock behind on Windows and block the developer's next commit.
+const READ_ONLY_GIT = Object.freeze({ cwd: repositoryRoot, env: { GIT_OPTIONAL_LOCKS: '0' }, timeoutMs: 60_000 });
+
 // Returns null when the repository is not a git work tree (for example a source archive).
 export async function gitStatus() {
-  const inside = await runProcess('git', ['rev-parse', '--is-inside-work-tree'], {
-    cwd: repositoryRoot,
-  }).catch(() => null);
+  const inside = await runProcess('git', ['rev-parse', '--is-inside-work-tree'], READ_ONLY_GIT)
+    .catch(() => null);
   if (!inside || inside.exitCode !== 0) return null;
-  const status = await runProcess('git', ['status', '--short', '--untracked-files=all'], {
-    cwd: repositoryRoot,
-  });
+  const status = await runProcess('git', ['status', '--short', '--untracked-files=all'], READ_ONLY_GIT);
   if (status.exitCode !== 0) throw new Error(describeFailure('git status', status));
   return status.stdout;
 }

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, realpath, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { runCliAdapter } from '../../bin/cli-adapter.js';
@@ -209,7 +209,7 @@ test('F5 forced init reports removed links and junctions in changed', async (t) 
 test('F6 a failed backup removal after a successful swap is a pending recovery note, not an error', async (t) => {
   const { source, repository } = await installed(t);
   await writeTree(source.root, { 'docs/framework/other.md': 'other v2\n' });
-  const backup = repository.path('docs/.akrs.akrs-backup');
+  const backup = join(await realpath(repository.path('docs')), '.akrs.akrs-backup');
   const failing = async (path, options) => {
     if (path === backup) throw Object.assign(new Error('simulated EBUSY'), { code: 'EBUSY' });
     return rm(path, options);

@@ -4,3 +4,4 @@ import './doctrine-install.test.js';
 import './install-hardening.test.js';
 import './install-recovery.test.js';
 import './install-commands.test.js';
+import './short-paths.test.js';

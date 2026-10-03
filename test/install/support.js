@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, readdir, symlink, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
@@ -88,4 +89,16 @@ export async function markRecovery(directory, role) {
     join(directory, '.akrs-recovery.json'),
     `${JSON.stringify({ schema_version: 'akrs.install-staging/v1', role })}\n`,
   );
+}
+
+// Returns the 8.3 short alias of an existing path on Windows, or null when none can be produced.
+export function shortAlias(path) {
+  if (process.platform !== 'win32') return null;
+  const result = spawnSync(
+    'cmd.exe',
+    ['/d', '/s', '/c', `"for %I in ("${path}") do @echo %~sI"`],
+    { windowsVerbatimArguments: true, encoding: 'utf8' },
+  );
+  const alias = result.status === 0 ? result.stdout.trim() : '';
+  return alias !== '' && alias.includes('~') && alias.toLowerCase() !== path.toLowerCase() ? alias : null;
 }
