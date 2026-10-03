@@ -35,9 +35,9 @@ async function validate(root, format = '--json') {
   });
 }
 
-test('manifest enables only complete P0-W03, P0-W04, and P0-W06 commands', () => {
+test('manifest enables only complete P0-W03, P0-W04, P0-W06, and P1-W06 commands', () => {
   assert.deepEqual(commandManifest.commands.map(({ id }) => id), [
-    'help', 'version', 'validate', 'explain', 'init', 'sync', 'postinstall',
+    'help', 'version', 'validate', 'explain', 'init', 'sync', 'postinstall', 'road-new', 'task-new', 'template',
   ]);
 });
 

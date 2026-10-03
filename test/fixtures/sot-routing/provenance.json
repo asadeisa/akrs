@@ -1,0 +1,21 @@
+{
+  "fixture": "sot-routing",
+  "kind": "synthetic-regression",
+  "capturedOn": "2026-10-03",
+  "bugIds": [],
+  "source": "P1-W06-road-task-writers.md (SOT windows preserve order, line range, and why; no fact body is copied) and 12-v2-agent-and-interface-contract.md section 5.4",
+  "note": "repo/ is a miniature product repository with canonical SOT files whose lines carry FACT-SENTINEL-* markers. roads/ holds Road INPUT documents: one valid Road whose reads route SOT windows in a deliberate non-sorted order, and invalid Roads whose windows cannot be resolved. expected.json names the sentinels that must never be copied into a Road, and the pointer and reason `road new` must report for each invalid document.",
+  "runtimeFiles": [
+    "expected.json",
+    "repo/SOT/09-use-cases.md",
+    "repo/SOT/10-refunds.md",
+    "repo/akrs/.gitkeep",
+    "repo/app/config/payment-status.ts",
+    "roads/invalid-window-directory.json",
+    "roads/invalid-window-missing-file.json",
+    "roads/invalid-window-out-of-range.json",
+    "roads/invalid-window-past-end.json",
+    "roads/invalid-window-wrong-case.json",
+    "roads/valid-ordered-windows.json"
+  ]
+}

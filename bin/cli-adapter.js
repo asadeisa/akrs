@@ -59,9 +59,17 @@ function parseCommandInput(argv, command) {
   const definitions = new Map(command.flags.map((flag) => [flag.name, flag]));
   const flags = {};
   const positionalValues = [];
+  // `--json -`: a lone dash directly after --json selects stdin as the input channel, for commands that declare
+  // an --input channel; --json keeps meaning JSON output.
+  const acceptsStdin = definitions.has('--input');
+  let stdin = false;
 
   for (let index = 0; index < remainder.length; index += 1) {
     const token = remainder[index];
+    if (token === '-' && acceptsStdin && remainder[index - 1] === '--json' && !stdin) {
+      stdin = true;
+      continue;
+    }
     if (!token.startsWith('-')) {
       positionalValues.push(token);
       continue;
@@ -131,7 +139,7 @@ function parseCommandInput(argv, command) {
     throw new CliUsageError(`${command.tokens.join(' ')} does not support --jsonl`);
   }
 
-  return { flags, positionals, format };
+  return { flags, positionals, format, stdin };
 }
 
 function diagnosticPacket({
@@ -171,6 +179,8 @@ function alwaysSucceeds(command) {
 
 function packetExitCode(packet, command) {
   if (alwaysSucceeds(command)) return 0;
+  // a usage or schema error found by the command itself (a rejected input document, a reused request ID)
+  if (packet.data.kind === 'usage' && command.exit_codes.includes(2)) return 2;
   if (packet.findings.length > 0) return 1;
   if (packet.status === 'ok' || packet.status === 'noop') return 0;
   return 1;
@@ -178,6 +188,7 @@ function packetExitCode(packet, command) {
 
 function renderResult({ packet, events, format, exitCode, providers, manifest }) {
   const options = { knownCommands: knownCommands(manifest) };
+  const textOptions = { ...options, commandTokens: new Map(manifest.commands.map(({ id, tokens }) => [id, tokens])) };
   if (format === 'json') {
     return { stdout: renderJson(packet, options), stderr: '' };
   }
@@ -191,9 +202,9 @@ function renderResult({ packet, events, format, exitCode, providers, manifest })
     return { stdout: renderJsonl(outputEvents, options), stderr: '' };
   }
   if (format === 'prompt') {
-    return { stdout: renderPrompt(packet, options), stderr: '' };
+    return { stdout: renderPrompt(packet, textOptions), stderr: '' };
   }
-  const output = renderHuman(packet, options);
+  const output = renderHuman(packet, textOptions);
   return exitCode === 0 && (packet.status === 'ok' || packet.status === 'noop')
     ? { stdout: output, stderr: '' }
     : { stdout: '', stderr: output };
@@ -203,6 +214,13 @@ const defaultResolveContext = async ({ cwd }) => ({
   repository_root: normalizeAbsolutePath(cwd),
 });
 
+// Stdin as bytes, read only when a handler asks for it (the adapter never reads it on its own).
+async function defaultReadStdin() {
+  const chunks = [];
+  for await (const chunk of process.stdin) chunks.push(chunk);
+  return Buffer.concat(chunks);
+}
+
 export async function runCliAdapter({
   argv,
   cwd,
@@ -210,6 +228,7 @@ export async function runCliAdapter({
   handlers,
   providers = createDefaultProviders(),
   resolveContext = defaultResolveContext,
+  readStdin = defaultReadStdin,
 }) {
   const manifestResult = validateCommandManifest(manifest);
   if (!manifestResult.ok) throw new ContractValidationError('command manifest', manifestResult.issues);
@@ -231,7 +250,7 @@ export async function runCliAdapter({
     if (typeof handler !== 'function') {
       throw new TypeError(`no handler registered for command: ${command.id}`);
     }
-    const result = await handler({ command, context, input, manifest, providers });
+    const result = await handler({ command, context, input, manifest, providers, readStdin });
     packet = result?.packet ?? result;
     events = result?.packet ? result.events : undefined;
     const validation = validatePacket(packet, { knownCommands: knownCommands(manifest) });

@@ -1,0 +1,57 @@
+{
+  "schema": "akrs.road/v1",
+  "id": "R-P6-1",
+  "plan": "P6",
+  "task": "T-P6-1",
+  "deps": [],
+  "reads": [
+    {
+      "path": "SOT/09-use-cases.md",
+      "lines": [
+        25,
+        99
+      ],
+      "why": "window runs past the last line"
+    }
+  ],
+  "writes": [
+    {
+      "path": "app/pages/admin.vue",
+      "class": "file",
+      "action": "create"
+    }
+  ],
+  "forbidden": [
+    "server/**"
+  ],
+  "checks": [
+    {
+      "name": "unit",
+      "argv": [
+        "npm",
+        "test",
+        "--",
+        "admin.spec.ts"
+      ],
+      "timeout_ms": 120000
+    }
+  ],
+  "acceptance": [
+    "The admin table lists every booking with its paid state."
+  ],
+  "boundaries": [
+    "No backend route change."
+  ],
+  "on_landing": null,
+  "complexity": 2,
+  "executor_class": "weak",
+  "steps": [
+    "Create app/pages/admin.vue.",
+    "Run the unit check."
+  ],
+  "scope_policy": {
+    "auto_reads": [],
+    "auto_writes": []
+  },
+  "oversize_reason": null
+}

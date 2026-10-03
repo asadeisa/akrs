@@ -1,0 +1,44 @@
+{
+  "valid": {
+    "file": "valid-ordered-windows.json",
+    "sentinels": [
+      "FACT-SENTINEL-PAID-STATE",
+      "FACT-SENTINEL-REFUND-FULL",
+      "FACT-SENTINEL-REFUND-REVERSES",
+      "FACT-SENTINEL-NO-SHOW",
+      "FACT-SENTINEL-HISTORY"
+    ],
+    "line_counts": {
+      "SOT/09-use-cases.md": 30,
+      "SOT/10-refunds.md": 12,
+      "app/config/payment-status.ts": 20
+    }
+  },
+  "invalid": [
+    {
+      "file": "invalid-window-out-of-range.json",
+      "pointer": "/reads/0",
+      "reason": "out_of_range"
+    },
+    {
+      "file": "invalid-window-past-end.json",
+      "pointer": "/reads/0",
+      "reason": "out_of_range"
+    },
+    {
+      "file": "invalid-window-missing-file.json",
+      "pointer": "/reads/0",
+      "reason": "missing"
+    },
+    {
+      "file": "invalid-window-directory.json",
+      "pointer": "/reads/0",
+      "reason": "not_file"
+    },
+    {
+      "file": "invalid-window-wrong-case.json",
+      "pointer": "/reads/0",
+      "reason": "case_mismatch"
+    }
+  ]
+}

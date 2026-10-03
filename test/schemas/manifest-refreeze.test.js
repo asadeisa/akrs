@@ -124,6 +124,10 @@ const P0_COMMANDS = {
   init: { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: [null, null], dry_run: true },
   sync: { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: [null, null], dry_run: true },
   postinstall: { idempotency: 'none', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: true },
+  // P1-W06: the Road and Task writers (revalidate under the lock) and the template query, with their A1 6.2 MCP mapping.
+  'road-new': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'road_new'], dry_run: true },
+  'task-new': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'task_new'], dry_run: true },
+  template: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_road', 'template'], dry_run: false },
 };
 
 test('Q16 the shipped P0 manifest carries the re-frozen capability values', () => {

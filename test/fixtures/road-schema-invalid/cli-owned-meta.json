@@ -1,0 +1,66 @@
+{
+  "expect": [
+    {
+      "pointer": "/meta",
+      "code": "unknown_key"
+    }
+  ],
+  "document": {
+    "schema": "akrs.road/v1",
+    "id": "R-P6-1",
+    "plan": "P6",
+    "task": "T-P6-1",
+    "deps": [],
+    "reads": [
+      {
+        "path": "SOT/09-use-cases.md",
+        "lines": [
+          28,
+          41
+        ],
+        "why": "canonical paid-state rule"
+      }
+    ],
+    "writes": [
+      {
+        "path": "app/pages/admin.vue",
+        "class": "file",
+        "action": "create"
+      }
+    ],
+    "forbidden": [
+      "server/**"
+    ],
+    "checks": [
+      {
+        "name": "unit",
+        "argv": [
+          "npm",
+          "test"
+        ],
+        "timeout_ms": 120000
+      }
+    ],
+    "acceptance": [
+      "The declared user path works from the committed build."
+    ],
+    "boundaries": [
+      "No backend route change."
+    ],
+    "on_landing": null,
+    "complexity": 3,
+    "executor_class": "weak",
+    "steps": [
+      "Create the page."
+    ],
+    "scope_policy": {
+      "auto_reads": [],
+      "auto_writes": []
+    },
+    "oversize_reason": null,
+    "meta": {
+      "generator": "akrs/2.0.0-alpha.0",
+      "content_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  }
+}

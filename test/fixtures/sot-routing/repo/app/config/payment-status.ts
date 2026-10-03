@@ -1,0 +1,20 @@
+// payment status values used by the admin table
+export const STATUS_1 = 'pending';
+export const STATUS_2 = 'paid';
+export const STATUS_3 = 'expired';
+export const STATUS_4 = 'cancelled';
+export const STATUS_5 = 'refunded';
+export const STATUS_6 = 'no_show';
+export const STATUS_7 = 'failed';
+export const STATUS_8 = 'reversed';
+export const STATUS_9 = 'held';
+export const STATUS_10 = 'released';
+export const STATUS_11 = 'archived';
+export const STATUS_12 = 'void';
+export const STATUS_13 = 'review';
+export const STATUS_14 = 'locked';
+export const STATUS_15 = 'done';
+export const STATUS_16 = 'open';
+export const STATUS_17 = 'closed';
+export const STATUS_18 = 'sealed';
+export const STATUS_19 = 'spare';

@@ -1,0 +1,38 @@
+{
+  "fixture": "road-schema-invalid",
+  "kind": "synthetic-regression",
+  "capturedOn": "2026-10-03",
+  "bugIds": [
+    "B2",
+    "B21"
+  ],
+  "source": "P1-W06-road-task-writers.md (Test first: unknown/missing key, ambiguous/escaping path, invalid check, invalid read window)",
+  "note": "Each file is { expect: [{pointer, code}], document }. `document` is a Road INPUT document (form input) that is valid except for exactly the listed RFC 6901 pointers. The pointers come from lib/schemas/road.js issue paths converted by toJsonPointer; `road new` must report the same pointers and write nothing.",
+  "runtimeFiles": [
+    "acceptance-empty.json",
+    "bad-id.json",
+    "check-bad-timeout.json",
+    "check-duplicate-name.json",
+    "check-empty-argv.json",
+    "check-shell-string.json",
+    "check-unknown-key.json",
+    "cli-owned-meta.json",
+    "cli-owned-status.json",
+    "duplicate-dependency.json",
+    "envelope-control-plane.json",
+    "missing-key.json",
+    "path-absolute.json",
+    "path-ambiguous-dot-segment.json",
+    "path-ambiguous-double-slash.json",
+    "path-backslash.json",
+    "path-case-duplicate.json",
+    "path-glob-class-mismatch.json",
+    "path-traversal.json",
+    "read-window-on-glob.json",
+    "read-window-reversed.json",
+    "read-window-zero.json",
+    "self-dependency.json",
+    "unknown-key.json",
+    "wrong-schema.json"
+  ]
+}
