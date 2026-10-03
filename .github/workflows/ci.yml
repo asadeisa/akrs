@@ -25,4 +25,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
+      # npm test also runs test/package and the renderer-parity golden comparison.
       - run: npm test
+      - run: npm pack --dry-run
+      - run: node --test test/package/pack-smoke.test.js

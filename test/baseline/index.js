@@ -3,3 +3,4 @@ import './cli-smoke.test.js';
 import './fixture-corpus.test.js';
 import './harness-config.test.js';
 import './helpers.test.js';
+import './phase0-gate.test.js';

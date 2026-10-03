@@ -8,8 +8,9 @@ docs/guides/
 docs/research/
 docs/validation/
 
-# Examples & templates (large / evolving; available on GitHub)
-examples/
+# Examples & templates (large / evolving; available on GitHub) — only examples/minimal ships
+examples/*
+!examples/minimal/
 templates/
 
 # Repo / maintainer docs

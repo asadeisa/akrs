@@ -28,9 +28,11 @@ For maintainers cutting a new AKRS release. Follow top to bottom.
 ## 4. Package Contents
 
 - [ ] `package.json` `files` field includes only what users need
-      (`bin`, `docs/framework` — incl. `skills/`, `GETTING_STARTED.md`, `README.md`,
-      `LICENSE`, `CHANGELOG.md`, `VERSIONING.md`). **No `docs/guides`** (web-readable on
+      (`bin`, `lib`, `docs/framework` — incl. `skills/`, `examples/minimal`, `GETTING_STARTED.md`,
+      `README.md`, `LICENSE`, `CHANGELOG.md`, `VERSIONING.md`). **No `docs/guides`** (web-readable on
       GitHub only; npm rewrites the README's links).
+- [ ] v2 prereleases (`2.0.0-alpha.*`) publish under the `next` dist-tag (`publishConfig.tag`), so
+      `latest` stays on v1 until the final v2 release.
 - [ ] `.npmignore` excludes research, validation internals, `docs/guides`, dev artifacts.
 - [ ] Dry-run the package and inspect contents:
   ```bash
@@ -40,7 +42,9 @@ For maintainers cutting a new AKRS release. Follow top to bottom.
 
 ## 5. Install Smoke Test
 
-In a clean temp directory, verify each manager:
+The shared tarball smoke is automated: `node --test test/package/pack-smoke.test.js` packs into a
+dedicated OS-temp directory, installs into a child temp project, and cleans up only those paths.
+Run it first; then, in a clean temp directory, verify each manager:
 
 ```bash
 npm install  <path-or-tarball>

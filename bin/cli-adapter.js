@@ -165,7 +165,12 @@ function diagnosticPacket({
   });
 }
 
-function packetExitCode(packet) {
+function alwaysSucceeds(command) {
+  return command?.exit_codes.length === 1 && command.exit_codes[0] === 0;
+}
+
+function packetExitCode(packet, command) {
+  if (alwaysSucceeds(command)) return 0;
   if (packet.findings.length > 0) return 1;
   if (packet.status === 'ok' || packet.status === 'noop') return 0;
   return 1;
@@ -189,7 +194,7 @@ function renderResult({ packet, events, format, exitCode, providers, manifest })
     return { stdout: renderPrompt(packet, options), stderr: '' };
   }
   const output = renderHuman(packet, options);
-  return exitCode === 0
+  return exitCode === 0 && (packet.status === 'ok' || packet.status === 'noop')
     ? { stdout: output, stderr: '' }
     : { stdout: '', stderr: output };
 }
@@ -231,7 +236,7 @@ export async function runCliAdapter({
     events = result?.packet ? result.events : undefined;
     const validation = validatePacket(packet, { knownCommands: knownCommands(manifest) });
     if (!validation.ok) throw new ContractValidationError('packet', validation.issues);
-    exitCode = packetExitCode(packet);
+    exitCode = packetExitCode(packet, command);
   } catch (error) {
     let code = 'AKRS-C004';
     let kind = 'internal';
@@ -245,6 +250,7 @@ export async function runCliAdapter({
       kind = 'workflow_missing';
       exitCode = 3;
     }
+    if (alwaysSucceeds(command)) exitCode = 0;
     packet = diagnosticPacket({
       argv,
       code,
@@ -272,7 +278,7 @@ export async function runCliAdapter({
       providers,
       manifest,
     });
-    exitCode = 4;
+    exitCode = alwaysSucceeds(command) ? 0 : 4;
     const rendered = renderResult({
       packet,
       events: undefined,

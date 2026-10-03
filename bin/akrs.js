@@ -1,18 +1,36 @@
 #!/usr/bin/env node
 
 import {
-  commandHandlers,
-  commandManifest,
-} from '../lib/core/index.js';
-import { runCliAdapter } from './cli-adapter.js';
+  checkNodeVersion,
+  failureExitCode,
+  formatInternalError,
+  refusalExitCode,
+} from './node-guard.js';
 
-const result = await runCliAdapter({
-  argv: process.argv.slice(2),
-  cwd: process.cwd(),
-  manifest: commandManifest,
-  handlers: commandHandlers,
-});
+async function main(argv) {
+  const { commandHandlers, commandManifest } = await import('../lib/core/index.js');
+  const { runCliAdapter } = await import('./cli-adapter.js');
 
-if (result.stdout) process.stdout.write(result.stdout);
-if (result.stderr) process.stderr.write(result.stderr);
-process.exitCode = result.exitCode;
+  const result = await runCliAdapter({
+    argv,
+    cwd: process.cwd(),
+    manifest: commandManifest,
+    handlers: commandHandlers,
+  });
+
+  if (result.stdout) process.stdout.write(result.stdout);
+  if (result.stderr) process.stderr.write(result.stderr);
+  process.exitCode = result.exitCode;
+}
+
+const argv = process.argv.slice(2);
+const nodeCheck = checkNodeVersion(process.versions.node);
+if (nodeCheck.ok) {
+  main(argv).catch((error) => {
+    process.stderr.write(formatInternalError(error));
+    process.exitCode = failureExitCode(argv);
+  });
+} else {
+  process.stderr.write(nodeCheck.message);
+  process.exitCode = refusalExitCode(argv);
+}
