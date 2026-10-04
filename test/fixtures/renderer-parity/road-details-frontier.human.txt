@@ -28,4 +28,5 @@ Checks:
   - unit: ["npm","test","--","admin.spec.ts"] (timeout 120000 ms)
 
 Next commands:
+  - akrs verify --road R-P6-1 --root <root>
   - akrs audit --git --road R-P6-1 --root <root>

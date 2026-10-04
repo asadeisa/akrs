@@ -60,4 +60,5 @@ Steps:
   2. Run the unit check.
 
 Next commands:
+  - akrs verify --road R-P6-1 --root <root>
   - akrs audit --git --road R-P6-1 --root <root>

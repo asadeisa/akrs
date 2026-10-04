@@ -152,6 +152,7 @@ const P0_COMMANDS = {
   'executor-list': { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
   'road-fit': { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_road', 'fit'], dry_run: false },
   'road-details': { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_road', 'details'], dry_run: false },
+  verify: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_road', 'verify'], dry_run: false },
   // P1-W12: report-only git queries (not in the A1 6.2 MCP tool table).
   audit: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
   doctor: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },

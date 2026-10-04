@@ -63,4 +63,5 @@ Done means:
   1. The declared user path works from the committed build.
 
 Next commands:
+  - akrs verify --road R-P6-1 --root <root>
   - akrs audit --git --road R-P6-1 --root <root>

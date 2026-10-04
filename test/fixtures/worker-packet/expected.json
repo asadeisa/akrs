@@ -137,6 +137,15 @@
     "findings": [],
     "next_commands": [
       {
+        "command": "verify",
+        "args": [
+          "--road",
+          "R-P6-1",
+          "--root",
+          "<root>"
+        ]
+      },
+      {
         "command": "audit",
         "args": [
           "--git",
@@ -285,6 +294,15 @@
     },
     "findings": [],
     "next_commands": [
+      {
+        "command": "verify",
+        "args": [
+          "--road",
+          "R-P6-1",
+          "--root",
+          "<root>"
+        ]
+      },
       {
         "command": "audit",
         "args": [
