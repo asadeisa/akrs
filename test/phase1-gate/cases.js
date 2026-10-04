@@ -11,6 +11,7 @@ import { renderState, setState } from '../../lib/store/state/index.js';
 import { setExecutor } from '../../lib/store/executors/index.js';
 import { scaffoldWorkflow } from '../../lib/store/scaffold/index.js';
 import { appendHandoff, defineVerification } from '../../lib/store/verification/index.js';
+import { appendResult } from '../../lib/store/test-result/index.js';
 import { moveRoad } from '../../lib/store/roads/move.js';
 import { updateRoad } from '../../lib/store/roads/update.js';
 import { requestScope, resolveScope } from '../../lib/store/scope/writer.js';
@@ -119,6 +120,21 @@ export const CASES = Object.freeze({
       ...gateOptions(repo, extra), key: 'P6',
       channel: stdin({ schema: 'akrs.handoff/v1', road: 'R-P6-1', result: 'The admin page is reachable.', reach: ['Open /admin'], expect: 'The page lists reservations.' }),
     }),
+  },
+  // P2-W07: the Tester result is a transactional append like the handoff; a checks-policy contract needs no run
+  'test-result': {
+    command: 'test result',
+    seed: async (repo) => {
+      await seedPlan(repo, 'P6');
+      await seedRoad(repo, { id: 'R-P6-1', plan: 'P6' }, { folder: 'roads/P6', status: 'DONE' });
+      const verification = { ...(await contract(['R-P6-1'])), policy: 'checks', launch: null, setup: [], teardown: [], measurements: [], scenario: [], evidence_types: [] };
+      await defineVerification({ ...authoringOptions(repo, { providers: providersOf(repo) }), key: 'P6', channel: stdin(verification) });
+      await appendHandoff({
+        ...authoringOptions(repo, { providers: providersOf(repo) }), key: 'P6',
+        channel: stdin({ schema: 'akrs.handoff/v1', road: 'R-P6-1', result: 'The admin page is reachable.', reach: ['Open /admin'], expect: 'The page lists reservations.' }),
+      });
+    },
+    run: (repo, extra) => appendResult({ ...gateOptions(repo, extra), key: 'P6', flat: { verdict: 'fail', because: 'The page does not list reservations.' } }),
   },
   'state-set': {
     command: 'state set',
