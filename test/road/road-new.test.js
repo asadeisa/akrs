@@ -556,10 +556,17 @@ test('--dry-run returns the exact proposed object and the files it would change,
 
 test('two concurrent writers of the same ID: exactly one wins, the other is refused as a duplicate', async (t) => {
   const repo = await createRepo(t);
-  const [a, b] = await Promise.all([
-    submit(repo, roadInput({ acceptance: ['variant A'] })),
-    submit(repo, roadInput({ acceptance: ['variant B'] }), { providers: fakeProviders({ firstId: 5000 }) }),
-  ]);
+  const runs = [
+    [roadInput({ acceptance: ['variant A'] }), {}],
+    [roadInput({ acceptance: ['variant B'] }), { providers: fakeProviders({ firstId: 5000 }) }],
+  ];
+  const results = await Promise.all(runs.map(([input, extra]) => submit(repo, input, extra)));
+  // A contender that outlives the lock wait budget on a loaded runner gets the documented `lock_blocked` packet and writes
+  // nothing; the packet's own next step is "run it again", so it is retried once the lock is free, as an agent would.
+  for (const [index, run] of results.entries()) {
+    if (run.outcome === 'lock_blocked') results[index] = await submit(repo, ...runs[index]);
+  }
+  const [a, b] = results;
   assert.deepEqual([a.outcome, b.outcome].sort(), ['committed', 'rejected']);
   const loser = a.outcome === 'rejected' ? a : b;
   assert.deepEqual(codesOf(loser.packet), ['AKRS-R001']);
