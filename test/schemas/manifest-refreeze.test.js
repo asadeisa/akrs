@@ -161,6 +161,8 @@ const P0_COMMANDS = {
   'lease-release': { idempotency: 'journal', expected_snapshot: 'not_applicable', mcp: ['akrs_write', 'lease_release'], dry_run: true },
   // P2-W06: the Plan Tester packet (A1 6.2: akrs_test details).
   'test-details': { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_test', 'details'], dry_run: false },
+  // P2-W13: a derived_write (the screenshot is the only write): no journal, no snapshot guard (A1 7.2: akrs_page read).
+  page: { idempotency: 'none', expected_snapshot: 'not_applicable', mcp: ['akrs_page', 'read'], dry_run: false },
   // P1-W12: report-only git queries (not in the A1 6.2 MCP tool table).
   audit: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
   doctor: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
