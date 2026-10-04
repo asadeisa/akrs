@@ -1,0 +1,49 @@
+{
+  "schema": "akrs.road/v1",
+  "id": "R1",
+  "plan": null,
+  "task": "T1",
+  "status": "QUEUED",
+  "deps": [],
+  "reads": [],
+  "writes": [
+    {
+      "path": "README.md",
+      "class": "file",
+      "action": "modify"
+    }
+  ],
+  "forbidden": [],
+  "checks": [
+    {
+      "name": "node-version",
+      "argv": [
+        "node",
+        "--version"
+      ],
+      "timeout_ms": 60000
+    }
+  ],
+  "acceptance": [
+    "README.md says what the project does."
+  ],
+  "boundaries": [
+    "Change no file other than README.md."
+  ],
+  "on_landing": null,
+  "complexity": 1,
+  "executor_class": null,
+  "steps": [
+    "Open README.md.",
+    "Describe what the project does in a few lines."
+  ],
+  "scope_policy": {
+    "auto_reads": [],
+    "auto_writes": []
+  },
+  "oversize_reason": null,
+  "meta": {
+    "generator": "akrs/2.0.0-alpha.0",
+    "content_hash": "sha256:cc046044b6027780ce5f2c3cd602f19b9cf603da3abdbfea7582f1a1916e5951"
+  }
+}

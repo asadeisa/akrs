@@ -1,0 +1,28 @@
+{
+  "schema": "akrs.verification/v1",
+  "plan": "R1",
+  "roads": [
+    "R1"
+  ],
+  "policy": "none",
+  "reads": [],
+  "launch": null,
+  "setup": [],
+  "teardown": [],
+  "acceptance": [
+    "README.md says what the project does."
+  ],
+  "measurements": [],
+  "evidence_types": [],
+  "reachability": [],
+  "boundaries": [
+    "Never edit product code."
+  ],
+  "timeout_ms": 600000,
+  "allowed_hosts": [],
+  "scenario": [],
+  "meta": {
+    "generator": "akrs/2.0.0-alpha.0",
+    "content_hash": "sha256:e421c903ff277f7ce961a2f7a91d9ea6e3dfadefa00690c3b8e52418c7112768"
+  }
+}

@@ -19,8 +19,8 @@ const STATUSES = ['ok', 'warning', 'error', 'blocked', 'noop'];
 
 test('the manifest with the new entries is valid and keeps the frozen entry shape', () => {
   assert.equal(validateCommandManifest(commandManifest).ok, true);
-  assert.deepEqual(commandManifest.commands.map(({ id }) => id).slice(-21), ['road-new', 'task-new', 'memory-add', 'log-append', 'road-update', 'road-move',
-    'scope-request', 'scope-approve', 'scope-reject', 'scope-list', 'test-define', 'test-handoff', 'state-set', 'state-render', 'executor-set', 'executor-remove', 'executor-list', 'road-fit', 'audit', 'doctor', 'template']);
+  assert.deepEqual(commandManifest.commands.map(({ id }) => id).slice(-22), ['road-new', 'task-new', 'memory-add', 'log-append', 'road-update', 'road-move',
+    'scope-request', 'scope-approve', 'scope-reject', 'scope-list', 'test-define', 'test-handoff', 'state-set', 'state-render', 'init-scaffold', 'executor-set', 'executor-remove', 'executor-list', 'road-fit', 'audit', 'doctor', 'template']);
 });
 
 for (const [id, tokens, inputs, mcp] of [

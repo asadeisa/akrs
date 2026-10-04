@@ -16,7 +16,7 @@ import {
 const packageJson = JSON.parse(await readFile(new URL('../../package.json', import.meta.url), 'utf8'));
 const MISSING_MODULE = /ERR_MODULE_NOT_FOUND|Cannot find module/;
 
-async function runInstalled(installed, sandbox, label, args) {
+async function runInstalled(installed, sandbox, label, args, expectedExit = 0) {
   const result = await runNode([installed.binPath, ...args], {
     cwd: sandbox.projectDirectory,
     timeoutMs: 30_000,
@@ -26,7 +26,7 @@ async function runInstalled(installed, sandbox, label, args) {
     false,
     describeFailure(`${label} hit a missing module`, result),
   );
-  assert.equal(result.exitCode, 0, describeFailure(label, result));
+  assert.equal(result.exitCode, expectedExit, describeFailure(label, result));
   return result;
 }
 
@@ -78,6 +78,22 @@ test('packed tarball installs into a temp project and runs from the installed co
   assert.equal(validatePacket.command, 'validate');
   assert.equal(validatePacket.status, 'ok');
   assert.deepEqual(validatePacket.findings, []);
+
+  // init --scaffold from the installed package: machine fields name the tier, Road and Plan; the result validates honestly.
+  const scaffold = await runInstalled(installed, sandbox, 'init-scaffold', [
+    'init', '--scaffold', '--root', sandbox.projectDirectory, '--json',
+  ]);
+  const scaffoldPacket = JSON.parse(scaffold.stdout);
+  assert.equal(scaffoldPacket.command, 'init-scaffold');
+  assert.equal(scaffoldPacket.status, 'ok');
+  assert.deepEqual(
+    { tier: scaffoldPacket.data.scaffold.tier, plan_id: scaffoldPacket.data.scaffold.plan_id, road_id: scaffoldPacket.data.scaffold.road_id },
+    { tier: 'no_plan', plan_id: null, road_id: 'R1' },
+  );
+  const scaffolded = await runInstalled(installed, sandbox, 'validate-scaffold', ['validate', '--root', sandbox.projectDirectory, '--json'], 1);
+  const scaffoldValidation = JSON.parse(scaffolded.stdout);
+  assert.equal(scaffoldValidation.data.coverage.skipped, 0);
+  assert.deepEqual(scaffoldValidation.findings.map(({ code }) => code), ['AKRS-S006']);
 
   // postinstall layout contract shared with the init/sync implementation.
   const docsRoot = sandbox.inside(join(sandbox.projectDirectory, 'docs', 'akrs'));

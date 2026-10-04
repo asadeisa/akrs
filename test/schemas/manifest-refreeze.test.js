@@ -144,6 +144,8 @@ const P0_COMMANDS = {
   // P1-W11: the canonical State and its disposable render (A1 6.2: akrs_write state_set).
   'state-set': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'state_set'], dry_run: true },
   'state-render': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: [null, null], dry_run: true },
+  // P1-W13: `init --scaffold`, a leader mutation selected by its second token (bootstrap, no MCP tool).
+  'init-scaffold': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: [null, null], dry_run: true },
   // P1-W15: executor classes and route fit (A1 6.2: akrs_write executor_set, akrs_road fit).
   'executor-set': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'executor_set'], dry_run: true },
   'executor-remove': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: [null, null], dry_run: true },

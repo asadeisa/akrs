@@ -1,7 +1,4 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { test } from 'node:test';
 import {
   analyzeDependencyCycles,
@@ -10,6 +7,7 @@ import {
   registerRoadIdentities,
 } from '../../lib/validation/graph.js';
 import { validateWorkflow } from '../../lib/commands/validation.js';
+import { createRepo, seedRoad } from '../road/support.js';
 
 const providers = {
   now: () => '2026-08-25T10:30:00.000Z',
@@ -63,30 +61,16 @@ test('references and cycles inspect every Road status while readiness is separat
 });
 
 test('finding bytes are independent of filesystem creation order', async (t) => {
-  const roots = [];
-  const orderFixture = JSON.parse(await readFile(new URL(
-    '../fixtures/validation/finding-order/orders.json', import.meta.url,
-  ), 'utf8'));
-  for (const order of orderFixture) {
-    const root = await mkdtemp(join(tmpdir(), 'akrs-order-'));
-    roots.push(root);
-    const roads = join(root, 'akrs', 'roads');
-    await mkdir(roads, { recursive: true });
-    for (const name of order) {
-      await writeFile(join(roads, name), `# ${name}\n\nStatus: ACTIVE\n\nDeps: MISSING\n`, 'utf8');
-    }
-  }
-  t.after(() => Promise.all(roots.map((root) => rm(root, { recursive: true, force: true }))));
-
   const packets = [];
-  for (const root of roots) {
+  for (const order of [['R-A', 'R-B', 'R-C'], ['R-C', 'R-A', 'R-B']]) {
+    const repo = await createRepo(t);
+    for (const id of order) await seedRoad(repo, { id, plan: null, deps: ['R-MISSING'] }, { folder: 'roads' });
     packets.push(await validateWorkflow({
-      repositoryRoot: root,
-      workflowRoot: join(root, 'akrs'),
+      repositoryRoot: repo.root,
+      workflowRoot: repo.path('akrs'),
       providers,
     }));
   }
-
   const project = (packet) => packet.findings.map((finding) => ({
     code: finding.code,
     severity: finding.severity,
@@ -95,5 +79,6 @@ test('finding bytes are independent of filesystem creation order', async (t) => 
     line: finding.line,
     detail: finding.detail,
   }));
+  assert.equal(project(packets[0]).filter(({ code }) => code === 'AKRS-R005').length, 3);
   assert.deepEqual(project(packets[0]), project(packets[1]));
 });

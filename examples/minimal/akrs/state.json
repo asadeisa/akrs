@@ -1,0 +1,17 @@
+{
+  "schema": "akrs.state/v1",
+  "mode": 0,
+  "role": "leader",
+  "plan": null,
+  "phase": null,
+  "task": "T1",
+  "next": "Review the Road R1, then classify the executors with executor set.",
+  "updated": {
+    "at": "2026-10-03T10:00:00.000Z",
+    "by": "akrs/2.0.0-alpha.0"
+  },
+  "meta": {
+    "generator": "akrs/2.0.0-alpha.0",
+    "content_hash": "sha256:a7b5f7f7ae3c142072b3a684f4225fd440a765712a44932cf9368ee4fab0cd5a"
+  }
+}

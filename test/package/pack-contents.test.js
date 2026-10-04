@@ -31,7 +31,8 @@ test('npm pack --dry-run ships the runtime and excludes development material', a
     'bin/akrs.js', 'bin/node-guard.js', 'bin/cli-adapter.js',
     'lib/core/index.js', 'lib/commands/meta.js',
     'docs/framework/01-Constitution.md',
-    'examples/minimal/README.md', 'examples/minimal/akrs/roads/R1.md',
+    'examples/minimal/README.md', 'examples/minimal/akrs/roads/R1.json', 'examples/minimal/akrs/state.json', 'examples/minimal/akrs/STATE.md',
+    'examples/minimal/akrs/executors.json', 'examples/minimal/akrs/tasks/T1.md', 'examples/minimal/akrs/verifications/R1/contract.json',
   ]) {
     assert.equal(paths.includes(required), true, `tarball must contain ${required}`);
   }

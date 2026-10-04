@@ -12,6 +12,7 @@ import {
 import { createTempRepository } from '../helpers/temp-repository.js';
 import { byteTreeHash } from '../helpers/byte-tree.js';
 import { runCli } from '../helpers/process.js';
+import { createRepo, seedRoad } from '../road/support.js';
 
 const caseFixture = fileURLToPath(new URL('../fixtures/path-safety/case/', import.meta.url));
 
@@ -136,39 +137,30 @@ test('B23 case mismatches produce the same stable finding on case-sensitive and 
 });
 
 test('B13 and B23 validation emits stable findings and never resolves outside its one root', async (t) => {
-  const caseTree = await createTempRepository(t, {
-    prefix: 'akrs-validate-case-',
-    fixture: caseFixture,
-  });
+  // P1-W13: the same two properties over canonical v2 Roads (the v1 Markdown "Expected files" form is not parsed any more).
+  const caseTree = await createRepo(t);
+  await caseTree.write('Expected.txt', 'case-sensitive fixture\n');
+  await seedRoad(caseTree, { id: 'R-CASE', plan: null, reads: [{ path: 'expected.txt', lines: null, why: 'x' }] }, { folder: 'roads' });
   const caseResult = await runCli([
     'validate', '--root', caseTree.root,
     '--workflow-root', caseTree.path('akrs'), '--json',
   ], { cwd: caseTree.root });
   assert.equal(caseResult.exitCode, 1);
-  assert.equal(JSON.parse(caseResult.stdout).findings.some(({ code, detail }) =>
-    code === 'AKRS-C006'
-      && detail.expected_path === 'expected.txt'
-      && detail.actual_path === 'Expected.txt'), true);
+  const caseFinding = JSON.parse(caseResult.stdout).findings.find(({ code }) => code === 'AKRS-R012');
+  assert.ok(caseFinding, 'the case mismatch is reported');
+  assert.match(JSON.stringify(caseFinding.detail), /case_mismatch/);
 
-  const unsafeTree = await createTempRepository(t, { prefix: 'akrs-validate-escape-' });
-  await unsafeTree.write('akrs/roads/R1.md', [
-    '# Road R1',
-    '',
-    'Status: ACTIVE',
-    '',
-    '## Expected files',
-    '',
-    '- `../../outside.txt`',
-    '',
-  ].join('\n'));
+  const unsafeTree = await createRepo(t);
+  await seedRoad(unsafeTree, { id: 'R-ESC', plan: null, reads: [{ path: '../../outside.txt', lines: null, why: 'x' }] }, { folder: 'roads' });
   const before = await byteTreeHash(unsafeTree.root);
   const unsafeResult = await runCli([
     'validate', '--root', unsafeTree.root,
     '--workflow-root', unsafeTree.path('akrs'), '--json',
   ], { cwd: unsafeTree.root });
   assert.equal(unsafeResult.exitCode, 1);
-  assert.equal(JSON.parse(unsafeResult.stdout).findings.some(({ code, detail }) =>
-    code === 'AKRS-R010' && detail.expected_path === '../../outside.txt'), true);
+  const unsafe = JSON.parse(unsafeResult.stdout);
+  assert.equal(unsafe.findings.some(({ code, detail }) => code === 'AKRS-R011' && JSON.stringify(detail).includes('/reads/0/path')), true);
+  assert.equal(unsafe.data.checks.find(({ check }) => check === 'road-integrity').status, 'failed');
   assert.equal(await byteTreeHash(unsafeTree.root), before);
 });
 

@@ -1,12 +1,15 @@
 // P1-W02: the validate packet reports a real, stable snapshot of its declared inputs (replaces the EMPTY placeholder).
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { fileURLToPath } from 'node:url';
 import { EMPTY_SNAPSHOT, commandSnapshot } from '../../lib/store/snapshots/index.js';
 import { runCli } from '../helpers/process.js';
-import { createTempRepository } from '../helpers/temp-repository.js';
+import { createRepo, seedRoad } from '../road/support.js';
 
-const fixture = fileURLToPath(new URL('../fixtures/validation/dependency-graph', import.meta.url));
+async function workflow(t) {
+  const repository = await createRepo(t);
+  await seedRoad(repository, { id: 'R-A', plan: null }, { folder: 'roads' });
+  return repository;
+}
 
 async function validatePacket(repository) {
   const result = await runCli([
@@ -18,7 +21,7 @@ async function validatePacket(repository) {
 }
 
 test('validate reports the workflow snapshot, identical before and after', async (t) => {
-  const repository = await createTempRepository(t, { prefix: 'akrs-snap-cli-', fixture });
+  const repository = await workflow(t);
   const packet = await validatePacket(repository);
   assert.equal(packet.command, 'validate');
   assert.equal(packet.snapshot.before, packet.snapshot.after);
@@ -31,7 +34,7 @@ test('validate reports the workflow snapshot, identical before and after', async
 });
 
 test('validate snapshot changes with the workflow inputs and not with housekeeping', async (t) => {
-  const repository = await createTempRepository(t, { prefix: 'akrs-snap-cli-', fixture });
+  const repository = await workflow(t);
   const first = (await validatePacket(repository)).snapshot.before;
   await repository.write('akrs/.ops/lock', 'pid 1');
   await repository.write('akrs/drafts/scratch.md', 'draft');

@@ -1,0 +1,24 @@
+{
+  "schema": "akrs.executors/v1",
+  "executors": [
+    {
+      "id": "leader",
+      "role": "leader",
+      "class": "frontier",
+      "label": "Example leader model",
+      "user_answer": "frontier"
+    },
+    {
+      "id": "worker",
+      "role": "worker",
+      "class": "weak",
+      "label": "Example worker model",
+      "user_answer": "weak: needs small steps"
+    }
+  ],
+  "class_overrides": {},
+  "meta": {
+    "generator": "akrs/2.0.0-alpha.0",
+    "content_hash": "sha256:0db59d5b921287562c07f61012f67afcd1ec4ebe470fa983cd69f444768e4ca7"
+  }
+}

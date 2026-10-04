@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { access, readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { createPathService } from '../../lib/store/path-service.js';
-import { loadLegacyRoads } from '../../lib/validation/legacy-roads.js';
+import { runCli } from '../helpers/process.js';
+import { createTempRepository } from '../helpers/temp-repository.js';
 
 const testRoot = fileURLToPath(new URL('../', import.meta.url));
 const legacyRoot = fileURLToPath(new URL('../fixtures/legacy/', import.meta.url));
@@ -67,57 +67,78 @@ test('Phase-0 gate: every active Phase-0 defect names an existing regression tes
   }
 });
 
-test('Phase-0 gate: retired parser defects defer to P1-W13 with a baseline reproduction', async () => {
+test('Phase-0 gate: retired parser defects close in P1-W13 with tombstone tests', async () => {
   const ledger = await readLedger();
   const retired = ledger.filter(({ status }) => status === 'retired');
   assert.deepEqual(retired.map(({ bugId }) => bugId), DEFERRED_PARSER_DEFECTS);
   for (const entry of retired) assert.equal(entry.finalClosurePacket, 'P1-W13', entry.bugId);
 });
 
-async function legacyRoads(fixture) {
-  const repositoryRoot = join(legacyRoot, fixture);
-  const pathService = await createPathService({
-    repositoryRoot,
-    workflowRoot: join(repositoryRoot, 'akrs'),
-  });
-  return loadLegacyRoads({ pathService });
+// ---- P1-W13 tombstones: the v1 parser paths of B2/B17/B18/B20/B21 are deleted, not merely unused ------------------
+const productionRoot = fileURLToPath(new URL('../../', import.meta.url));
+
+async function productionSources() {
+  const files = [];
+  async function walk(directory) {
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const path = join(directory, entry.name);
+      if (entry.isDirectory()) await walk(path);
+      else if (entry.name.endsWith('.js')) files.push(path);
+    }
+  }
+  await walk(join(productionRoot, 'lib'));
+  await walk(join(productionRoot, 'bin'));
+  // the permanent finding catalog keeps the retired legacy codes (and their wording): codes are never deleted
+  return Promise.all(files.filter((path) => !path.endsWith('catalog.js')).map(async (path) => ({ path, text: await readFile(path, 'utf8') })));
 }
 
-test('B2 baseline: legacy expected-files extraction still turns prose bullets into fake paths', async () => {
-  const [road] = await legacyRoads('road-prose-bullets');
-  assert.deepEqual(road.expected, ['Raw', 'The', 'AKRS']);
+async function validateFixture(t, fixture) {
+  const repository = await createTempRepository(t, { prefix: 'akrs-tombstone-', fixture: join(legacyRoot, fixture) });
+  const result = await runCli(['validate', '--root', repository.root, '--workflow-root', repository.path('akrs'), '--json'], { cwd: repository.root });
+  return { repository, packet: JSON.parse(result.stdout), exitCode: result.exitCode };
+}
+
+test('tombstone: the legacy Road parser module is gone from the tree and the package', async () => {
+  await assert.rejects(() => access(join(productionRoot, 'lib', 'validation', 'legacy-roads.js')), { code: 'ENOENT' });
+  for (const { path, text } of await productionSources()) {
+    assert.equal(/legacy-roads|loadLegacyRoads|legacyExpectedFiles|legacyDependencyIds/.test(text), false, path);
+  }
 });
 
-test('B17 baseline: the v1 override predicate fires on unrelated prose naming the Road', async () => {
-  const state = await readFile(join(legacyRoot, 'state-override-trap', 'akrs', 'STATE.md'), 'utf8');
-  // Verbatim v1.3.1 predicate (bin/akrs.js:258 at 674ce97), kept only as a reproduction.
-  const overridden = (id) => /override/i.test(state)
-    && new RegExp(id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i').test(state);
-  assert.equal(overridden('R2'), true);
+test('B2 tombstone: prose bullets under "Expected files" never become paths; the Markdown Road is reported as a legacy form', async (t) => {
+  for (const { path, text } of await productionSources()) assert.equal(/expected files/i.test(text), false, path);
+  const { packet, exitCode } = await validateFixture(t, 'road-prose-bullets');
+  assert.equal(exitCode, 1);
+  assert.equal(packet.findings.some(({ code, file }) => code === 'AKRS-R019' && file.endsWith('.md')), true);
+  assert.equal(JSON.stringify(packet.findings).includes('"Raw"'), false);
+  assert.equal(packet.data.checks.find(({ check }) => check === 'legacy-forms').status, 'failed');
 });
 
-test('B18 baseline: v1 substring STATE field checks accept unrelated words', async () => {
-  const state = await readFile(join(legacyRoot, 'state-substring-trap', 'akrs', 'STATE.md'), 'utf8');
-  // Verbatim v1.3.1 field check (bin/akrs.js:311 at 674ce97), kept only as a reproduction.
-  const present = (field) => new RegExp(field.replace(' ', '\\s*'), 'i').test(state);
-  assert.equal(['Mode', 'Done', 'Next'].every(present), true);
-  assert.equal(/^\s*-\s*Mode:/im.test(state), false);
+test('B17 tombstone: nothing scans STATE prose for an override; a v1 STATE.md is never read as state', async (t) => {
+  for (const { path, text } of await productionSources()) assert.equal(/overridden\s*\(/.test(text), false, path);
+  const { packet } = await validateFixture(t, 'state-override-trap');
+  assert.equal(packet.data.checks.find(({ check }) => check === 'state').status, 'not_applicable');
+  assert.equal(JSON.stringify(packet.findings).toLowerCase().includes('override'), false);
 });
 
-test('B20 baseline: the v1 SOT-INDEX source extraction strips hyphens from paths', () => {
-  // Verbatim v1.3.1 extraction (bin/akrs.js:358 at 674ce97), kept only as a reproduction.
-  const extract = (line) => line.split('·')[0].replace(/[`*\-]/g, '').trim();
-  assert.equal(extract('- `src/use-auth.ts` · auth hook'), 'src/useauth.ts');
+test('B18 tombstone: no substring field check exists; state is the closed state.json schema, never STATE.md prose', async (t) => {
+  const { validateState } = await import('../../lib/schemas/state.js');
+  assert.equal(validateState({ schema: 'akrs.state/v1', Model: 'x', Rollback: 'y', Done: 'z', Next: 'w' }, { form: 'input' }).ok, false);
+  const { packet } = await validateFixture(t, 'state-substring-trap');
+  assert.equal(packet.data.checks.find(({ check }) => check === 'state').status, 'not_applicable');
 });
 
-test('B21 baseline: legacy dependency extraction still yields phantom IDs from prose', async (t) => {
-  const { mkdtemp, mkdir, rm, writeFile } = await import('node:fs/promises');
-  const { tmpdir } = await import('node:os');
-  const root = await mkdtemp(join(tmpdir(), 'akrs-b21-'));
-  t.after(() => rm(root, { recursive: true, force: true }));
-  await mkdir(join(root, 'akrs', 'roads'), { recursive: true });
-  await writeFile(join(root, 'akrs', 'roads', 'R2.md'), '# Road R2\n\nStatus: QUEUED\nDeps: R1 (blocked by X)\n');
-  const pathService = await createPathService({ repositoryRoot: root, workflowRoot: join(root, 'akrs') });
-  const [road] = await loadLegacyRoads({ pathService });
-  assert.deepEqual(road.deps, ['R1', '(blocked', 'by', 'X)']);
+test('B20 tombstone: there is no SOT-INDEX path extraction at all (so no hyphen stripping)', async () => {
+  for (const { path, text } of await productionSources()) assert.equal(/SOT-INDEX/i.test(text), false, path);
+});
+
+test('B21 tombstone: a Markdown "Deps: R1 (blocked by X)" yields no phantom dependency IDs; the Road is a legacy form only', async (t) => {
+  for (const { path, text } of await productionSources()) assert.equal(text.includes('split(/[,\\s]+/)'), false, path);
+  const repository = await createTempRepository(t, { prefix: 'akrs-b21-' });
+  await repository.write('akrs/roads/R2.md', '# Road R2\n\nStatus: QUEUED\nDeps: R1 (blocked by X)\n');
+  const result = await runCli(['validate', '--root', repository.root, '--workflow-root', repository.path('akrs'), '--json'], { cwd: repository.root });
+  const packet = JSON.parse(result.stdout);
+  assert.equal(packet.findings.some(({ code }) => code === 'AKRS-R019'), true);
+  assert.equal(packet.findings.some(({ code }) => code === 'AKRS-R005'), false, 'no phantom dependency IDs from prose');
+  assert.equal(JSON.stringify(packet.findings).includes('(blocked'), false);
 });
