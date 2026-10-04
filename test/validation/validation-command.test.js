@@ -27,7 +27,7 @@ async function validate(root, format = '--json') {
 test('manifest enables only complete P0-W03, P0-W04, P0-W06, P1-W06, P1-W08, P1-W09, P1-W07, P1-W10, P1-W11, P1-W12, P1-W15, and P1-W13 commands', () => {
   assert.deepEqual(commandManifest.commands.map(({ id }) => id), [
     'help', 'version', 'validate', 'explain', 'init', 'sync', 'postinstall', 'road-new', 'task-new', 'memory-add', 'log-append', 'road-update', 'road-move',
-    'scope-request', 'scope-approve', 'scope-reject', 'scope-list', 'test-define', 'test-handoff', 'state-set', 'state-render', 'init-scaffold', 'executor-set', 'executor-remove', 'executor-list', 'road-fit', 'road-details', 'verify', 'audit', 'doctor', 'template',
+    'scope-request', 'scope-approve', 'scope-reject', 'scope-list', 'test-define', 'test-handoff', 'state-set', 'state-render', 'init-scaffold', 'executor-set', 'executor-remove', 'executor-list', 'road-fit', 'road-details', 'verify', 'road-check', 'road-activate', 'road-finish', 'road-reopen', 'lease-release', 'audit', 'doctor', 'template',
   ]);
 });
 

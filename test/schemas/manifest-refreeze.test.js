@@ -153,6 +153,12 @@ const P0_COMMANDS = {
   'road-fit': { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_road', 'fit'], dry_run: false },
   'road-details': { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_road', 'details'], dry_run: false },
   verify: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_road', 'verify'], dry_run: false },
+  // P2-W05: the Road lifecycle (A1 6.2: akrs_road check, akrs_write activate and lease_release; finish and reopen have no tool of their own).
+  'road-check': { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_road', 'check'], dry_run: false },
+  'road-activate': { idempotency: 'journal', expected_snapshot: 'required', mcp: ['akrs_write', 'activate'], dry_run: true },
+  'road-finish': { idempotency: 'journal', expected_snapshot: 'required', mcp: [null, null], dry_run: true },
+  'road-reopen': { idempotency: 'journal', expected_snapshot: 'required', mcp: [null, null], dry_run: true },
+  'lease-release': { idempotency: 'journal', expected_snapshot: 'not_applicable', mcp: ['akrs_write', 'lease_release'], dry_run: true },
   // P1-W12: report-only git queries (not in the A1 6.2 MCP tool table).
   audit: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
   doctor: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },

@@ -1,0 +1,253 @@
+[
+  {
+    "step": "details",
+    "exit_code": 0,
+    "status": "ok",
+    "kind": "road_details",
+    "findings": [],
+    "next": [
+      [
+        "verify",
+        "--road",
+        "R-P6-1",
+        "--root",
+        "<root>"
+      ],
+      [
+        "audit",
+        "--git",
+        "--road",
+        "R-P6-1",
+        "--root",
+        "<root>"
+      ]
+    ],
+    "facts": null
+  },
+  {
+    "step": "verify",
+    "exit_code": 0,
+    "status": "ok",
+    "kind": "verify_road",
+    "findings": [],
+    "next": [
+      [
+        "audit",
+        "--git",
+        "--road",
+        "R-P6-1",
+        "--root",
+        "<root>"
+      ]
+    ],
+    "facts": {
+      "outcome": "passed",
+      "summary": {
+        "declared": 1,
+        "selected": 1,
+        "passed": 1,
+        "failed": 0,
+        "timed_out": 0,
+        "spawn_failed": 0,
+        "interrupted": 0,
+        "not_run": 0
+      }
+    }
+  },
+  {
+    "step": "audit",
+    "exit_code": 0,
+    "status": "ok",
+    "kind": "audit",
+    "findings": [],
+    "next": [],
+    "facts": {
+      "status": "clean",
+      "counts": {
+        "undeclared": 0,
+        "declared": 2,
+        "missing_declared": 0,
+        "pre_existing": 0,
+        "test": 0,
+        "workflow": 0,
+        "evidence": 0,
+        "agent_adapter": 0,
+        "workflow_draft": 0,
+        "workflow_cache": 0
+      }
+    }
+  },
+  {
+    "step": "check",
+    "exit_code": 0,
+    "status": "ok",
+    "kind": "road_check",
+    "findings": [],
+    "next": [
+      [
+        "verify",
+        "--road",
+        "R-P6-1",
+        "--root",
+        "<root>"
+      ],
+      [
+        "road-finish",
+        "R-P6-1",
+        "--if-snapshot",
+        "--root",
+        "<root>"
+      ]
+    ],
+    "facts": null
+  },
+  {
+    "step": "finish",
+    "exit_code": 0,
+    "status": "ok",
+    "kind": "road_lifecycle",
+    "findings": [],
+    "next": [
+      [
+        "state-render",
+        "--root",
+        "<root>"
+      ]
+    ],
+    "facts": {
+      "transition": "finish",
+      "from": "ACTIVE",
+      "to": "DONE",
+      "checks": {
+        "declared": 1,
+        "selected": 1,
+        "passed": 1,
+        "failed": 0,
+        "timed_out": 0,
+        "spawn_failed": 0,
+        "interrupted": 0,
+        "not_run": 0
+      },
+      "audit": "clean",
+      "changed_files": [
+        {
+          "path": "src/admin.js",
+          "category": "declared"
+        },
+        {
+          "path": "src/own.js",
+          "category": "declared"
+        }
+      ],
+      "closure": "appended",
+      "lease": {
+        "holder": null,
+        "released": false
+      }
+    }
+  },
+  {
+    "step": "reopen",
+    "exit_code": 0,
+    "status": "ok",
+    "kind": "road_lifecycle",
+    "findings": [],
+    "next": [
+      [
+        "road-check",
+        "R-P6-1",
+        "--root",
+        "<root>"
+      ]
+    ],
+    "facts": {
+      "transition": "reopen",
+      "from": "DONE",
+      "to": "QUEUED",
+      "checks": null,
+      "audit": null,
+      "changed_files": [],
+      "closure": null,
+      "lease": {
+        "holder": null,
+        "released": false
+      }
+    }
+  },
+  {
+    "step": "activate",
+    "exit_code": 0,
+    "status": "ok",
+    "kind": "road_lifecycle",
+    "findings": [],
+    "next": [
+      [
+        "road-details",
+        "R-P6-1",
+        "--role",
+        "worker",
+        "--root",
+        "<root>"
+      ]
+    ],
+    "facts": {
+      "transition": "activate",
+      "from": "QUEUED",
+      "to": "ACTIVE",
+      "checks": null,
+      "audit": null,
+      "changed_files": [],
+      "closure": null,
+      "lease": null
+    }
+  },
+  {
+    "step": "finish_again",
+    "exit_code": 0,
+    "status": "ok",
+    "kind": "road_lifecycle",
+    "findings": [],
+    "next": [
+      [
+        "state-render",
+        "--root",
+        "<root>"
+      ]
+    ],
+    "facts": {
+      "transition": "finish",
+      "from": "ACTIVE",
+      "to": "DONE",
+      "checks": {
+        "declared": 1,
+        "selected": 1,
+        "passed": 1,
+        "failed": 0,
+        "timed_out": 0,
+        "spawn_failed": 0,
+        "interrupted": 0,
+        "not_run": 0
+      },
+      "audit": "clean",
+      "changed_files": [
+        {
+          "path": "akrs/log/0001.jsonl",
+          "category": "workflow"
+        },
+        {
+          "path": "src/admin.js",
+          "category": "declared"
+        },
+        {
+          "path": "src/own.js",
+          "category": "declared"
+        }
+      ],
+      "closure": "already_recorded",
+      "lease": {
+        "holder": null,
+        "released": false
+      }
+    }
+  }
+]
