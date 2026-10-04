@@ -12,9 +12,14 @@ import { createIdempotencyWorkflow, startWorker } from '../idempotency/support.j
 import { cli, createRepo, listLog, logBytes, seedSegment } from '../log/support.js';
 
 const SLOW = { timeout: 240_000 };
-const append = (repo, subject, deviations = null) => cli(repo, [
-  'log', 'append', '--kind', 'road', '--subject', subject, '--outcome', 'DONE', ...(deviations === null ? [] : ['--deviations', deviations]), '--json',
-]);
+// A contender that outlives the lock wait budget gets the documented `blocked` / repository_lock packet and writes nothing;
+// the packet's own next command is "run it again", so a busy runner is retried exactly as an agent would.
+const append = async (repo, subject, deviations = null) => {
+  const argv = ['log', 'append', '--kind', 'road', '--subject', subject, '--outcome', 'DONE', ...(deviations === null ? [] : ['--deviations', deviations]), '--json'];
+  let run = await cli(repo, argv);
+  for (let attempt = 0; attempt < 8 && /"reason": "repository_lock"/.test(run.stdout); attempt += 1) run = await cli(repo, argv);
+  return run;
+};
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
 
 test('gate 4+5+7: unique and duplicate appends and the rotation boundary across processes lose nothing; archived segments stay byte-identical', SLOW, async (t) => {
