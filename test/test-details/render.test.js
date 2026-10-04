@@ -3,9 +3,11 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { renderTestDetailsHuman, renderTestDetailsPrompt } from '../../lib/renderers/test-details.js';
+import { commandManifest } from '../../lib/commands/manifest.js';
 import { KNOWN_COMMANDS } from '../road/support.js';
 import { details, runCommand, setExecutorFor, testerWorld } from './support.js';
 
+const commandTokens = new Map(commandManifest.commands.map(({ id, tokens }) => [id, tokens]));
 const view = (repo, flag) => runCommand(repo, ['test-details', 'P6', ...(flag === null ? [] : [flag])], { providers: repo.providers });
 
 test('the CLI prompt and human outputs are exactly the pure renderers of the --json packet', async (t) => {
@@ -14,8 +16,8 @@ test('the CLI prompt and human outputs are exactly the pure renderers of the --j
   const prompt = await view(repo, '--prompt');
   const human = await view(repo, null);
   const strip = (text) => text.replace(/^- Run ID.*$/m, '');
-  assert.equal(strip(prompt.stdout), strip(renderTestDetailsPrompt({ ...packet, root: packet.root }, { knownCommands: KNOWN_COMMANDS })));
-  assert.equal(human.stdout, renderTestDetailsHuman({ ...packet }, { knownCommands: KNOWN_COMMANDS }).replace(/^Run:.*\n/m, (line) => line));
+  assert.equal(strip(prompt.stdout), strip(renderTestDetailsPrompt({ ...packet, root: packet.root }, { knownCommands: KNOWN_COMMANDS, commandTokens })));
+  assert.equal(human.stdout, renderTestDetailsHuman({ ...packet }, { knownCommands: KNOWN_COMMANDS, commandTokens }).replace(/^Run:.*\n/m, (line) => line));
 });
 
 test('the prompt carries every fact of the packet and the no-product-edit rule, and invents no verdict', async (t) => {

@@ -1,0 +1,11 @@
+import './policy.test.js';
+import './http.test.js';
+import './steps.test.js';
+import './app.test.js';
+import './driver.test.js';
+import './record.test.js';
+import './run.test.js';
+import './cli.test.js';
+import './events.test.js';
+import './render.test.js';
+import './smoke.test.js';
