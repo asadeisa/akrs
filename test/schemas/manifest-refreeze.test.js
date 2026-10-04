@@ -144,6 +144,9 @@ const P0_COMMANDS = {
   // P1-W11: the canonical State and its disposable render (A1 6.2: akrs_write state_set).
   'state-set': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'state_set'], dry_run: true },
   'state-render': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: [null, null], dry_run: true },
+  // P1-W12: report-only git queries (not in the A1 6.2 MCP tool table).
+  audit: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
+  doctor: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
   template: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_road', 'template'], dry_run: false },
 };
 
