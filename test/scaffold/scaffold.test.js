@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
 import { commandManifest } from '../../lib/commands/manifest.js';
 import { buildScaffold } from '../../lib/store/scaffold/index.js';
@@ -144,11 +145,11 @@ test('the packaged examples/minimal is exactly the scaffold plus two explicit ex
   if (process.env.AKRS_REGENERATE_EXAMPLE === '1') {
     await rm(example, { recursive: true, force: true });
     for (const [path, content] of Object.entries(generated)) {
-      await mkdir(dirname(new URL(path, example).pathname), { recursive: true });
+      await mkdir(dirname(fileURLToPath(new URL(path, example))), { recursive: true });
       await writeFile(new URL(path, example), content);
     }
   }
-  assert.deepEqual(await treeOf(example.pathname), generated, 'examples/minimal/akrs drifted from the scaffold; run with AKRS_REGENERATE_EXAMPLE=1');
+  assert.deepEqual(await treeOf(fileURLToPath(example)), generated, 'examples/minimal/akrs drifted from the scaffold; run with AKRS_REGENERATE_EXAMPLE=1');
   const readme = await readFile(new URL('../../examples/minimal/README.md', import.meta.url), 'utf8');
   assert.match(readme, /init --scaffold/);
 });
