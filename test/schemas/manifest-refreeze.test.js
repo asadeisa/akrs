@@ -129,6 +129,8 @@ const P0_COMMANDS = {
   'task-new': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'task_new'], dry_run: true },
   // P1-W08: the Memory writer (append, revalidated under the lock), A1 6.2 MCP mapping.
   'memory-add': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'memory_add'], dry_run: true },
+  // P1-W09: the closure ledger writer (append, revalidated under the lock), A1 6.2 MCP mapping.
+  'log-append': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'log_append'], dry_run: true },
   template: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_road', 'template'], dry_run: false },
 };
 

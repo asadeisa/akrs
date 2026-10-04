@@ -19,7 +19,7 @@ const validManifest = JSON.parse(await readFile(fixtureUrl, 'utf8'));
 
 test('F2 enables only commands whose owning packet delivered complete handlers', () => {
   assert.deepEqual(commandManifest.commands.map(({ id }) => id), [
-    'help', 'version', 'validate', 'explain', 'init', 'sync', 'postinstall', 'road-new', 'task-new', 'memory-add', 'template',
+    'help', 'version', 'validate', 'explain', 'init', 'sync', 'postinstall', 'road-new', 'task-new', 'memory-add', 'log-append', 'template',
   ]);
   assert.equal(validateCommandManifest(commandManifest).ok, true);
 });
