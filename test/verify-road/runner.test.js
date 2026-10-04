@@ -29,7 +29,7 @@ const run = async (argv, extra = {}) => {
   try {
     return await runCheck({ argv, cwd, timeoutMs: 10_000, env: process.env, graceMs: 300, ...extra });
   } finally {
-    await rm(cwd, { recursive: true, force: true });
+    await rm(cwd, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
   }
 };
 
