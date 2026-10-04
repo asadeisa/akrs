@@ -62,7 +62,8 @@ test('memory-add is transactional and nowhere else; the other Phase 1 writers ke
   assert.equal(TRANSACTIONAL_COMMANDS.includes('memory-add'), true);
   assert.equal(TRANSACTION_NON_MUTATIONS.includes('memory-add'), false);
   assert.deepEqual(COMMAND_SNAPSHOT_TABLE['memory-add'], { target: 'none', inputs: ['memory'], lease_guard: null });
-  assert.deepEqual(commandManifest.commands.map(({ id }) => id).slice(-5), ['road-new', 'task-new', 'memory-add', 'log-append', 'template']);
+  assert.deepEqual(commandManifest.commands.map(({ id }) => id).slice(-11), ['road-new', 'task-new', 'memory-add', 'log-append', 'road-update', 'road-move',
+    'scope-request', 'scope-approve', 'scope-reject', 'scope-list', 'template']);
 });
 
 test('the permanent finding codes: M001 exists, M002 (pointer) and M003 (file) are new, with closed detail shapes', () => {

@@ -130,7 +130,14 @@ const P0_COMMANDS = {
   // P1-W08: the Memory writer (append, revalidated under the lock), A1 6.2 MCP mapping.
   'memory-add': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'memory_add'], dry_run: true },
   // P1-W09: the closure ledger writer (append, revalidated under the lock), A1 6.2 MCP mapping.
-  'log-append': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'log_append'], dry_run: true },
+  'log-append': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: [null, null], dry_run: true },
+  // P1-W07: Road changes and the scope loop (A1 6.2: akrs_write road_update, akrs_scope request|approve|reject|list).
+  'road-update': { idempotency: 'journal', expected_snapshot: 'required', mcp: ['akrs_write', 'road_update'], dry_run: true },
+  'road-move': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: [null, null], dry_run: true },
+  'scope-request': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_scope', 'request'], dry_run: true },
+  'scope-approve': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_scope', 'approve'], dry_run: true },
+  'scope-reject': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_scope', 'reject'], dry_run: true },
+  'scope-list': { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_scope', 'list'], dry_run: false },
   template: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_road', 'template'], dry_run: false },
 };
 
@@ -176,7 +183,18 @@ test('F2 re-freeze: the A1 command classes (page, test run, verify) are expressi
 });
 
 // ---- item 7: reserved (frozen, not yet dispatched) scope commands --------------------------------------------
-const reservedBase = () => structuredClone(commandManifest.reserved_commands[0]);
+// P1-W07 moved the four scope commands into `commands`, so the reserved-entry validator is exercised with the frozen
+// F14 shape of the first reserved entry (it is no longer present in the live manifest).
+const reservedBase = () => ({
+  id: 'scope-request',
+  tokens: ['scope', 'request'],
+  owner_packet: 'P1-W07',
+  mutability: 'mutation',
+  positionals: [],
+  flags: [{ name: '--input', value_type: 'path', required: true, repeatable: false }, ...structuredClone(OUTPUT_FORMAT_FLAGS)],
+  input_schema: 'akrs.scope-request/v1',
+  store: 'scope/{road}.jsonl',
+});
 const withReserved = (...entries) => ({ ...structuredClone(base), reserved_commands: entries });
 const reservedOk = (...entries) => validateCommandManifest(withReserved(...entries)).ok;
 const reservedCodes = (...entries) => validateCommandManifest(withReserved(...entries)).issues.map(({ code }) => code);
@@ -232,18 +250,21 @@ test('F14 the manifest gains a closed top-level reserved_commands key after comm
   assert.equal(reservedOk(), true);
 });
 
-test('F14 the four scope commands are frozen exactly as decided (names, owner, input, flags, store)', () => {
-  assert.deepEqual(commandManifest.reserved_commands.map(({ id }) => id), Object.keys(RESERVED));
-  for (const entry of commandManifest.reserved_commands) {
-    const expected = RESERVED[entry.id];
-    assert.deepEqual(Object.keys(entry), RESERVED_COMMAND_KEYS, entry.id);
-    assert.deepEqual(entry.tokens, expected.tokens, entry.id);
-    assert.equal(entry.owner_packet, 'P1-W07', entry.id);
-    assert.equal(entry.mutability, expected.mutability, entry.id);
-    assert.deepEqual(entry.positionals, expected.positionals, entry.id);
-    assert.deepEqual(entry.flags, expected.flags, entry.id);
-    assert.equal(entry.input_schema, expected.input_schema, entry.id);
-    assert.equal(entry.store, 'scope/{road}.jsonl', entry.id);
+test('F14 the four scope commands keep their decided names, tokens, mutability, positionals and flags (now live in commands)', () => {
+  assert.deepEqual(commandManifest.reserved_commands, [], 'P1-W07 moved every reserved command into commands');
+  for (const [id, expected] of Object.entries(RESERVED)) {
+    const entry = commandManifest.commands.find((command) => command.id === id);
+    assert.notEqual(entry, undefined, id);
+    assert.deepEqual(entry.tokens, expected.tokens, id);
+    assert.equal(entry.mutability, expected.mutability, id);
+    assert.deepEqual(entry.positionals, expected.positionals, id);
+    for (const frozen of expected.flags) {
+      const live = entry.flags.find(({ name }) => name === frozen.name);
+      assert.notEqual(live, undefined, `${id} ${frozen.name}`);
+      assert.equal(live.value_type, frozen.value_type, `${id} ${frozen.name}`);
+      // --input was frozen as required while no stdin channel existed; the live entry accepts --json - as well
+      if (frozen.name !== '--input') assert.equal(live.required, frozen.required, `${id} ${frozen.name}`);
+    }
   }
   assert.equal(validateCommandManifest(commandManifest).ok, true);
 });
@@ -304,25 +325,15 @@ test('F14 ids and token sets are unique across commands and reserved_commands to
   assert.equal(reservedOk(reservedBase(), { ...reservedBase(), id: 'scope-other', tokens: ['scope', 'other'] }), true);
 });
 
-test('F14 every non-null reserved input_schema is a registered artifact schema', () => {
-  const schemas = commandManifest.reserved_commands.map(({ input_schema: schema }) => schema).filter((schema) => schema !== null);
-  assert.deepEqual(schemas, ['akrs.scope-request/v1']);
-  for (const schema of schemas) assert.equal(Object.hasOwn(SCHEMA_REGISTRY, schema), true, schema);
+test('F14 the scope request input schema is a registered artifact schema', () => {
+  assert.equal(Object.hasOwn(SCHEMA_REGISTRY, 'akrs.scope-request/v1'), true);
 });
 
-test('F14 reserved commands are not dispatched or listed: the CLI answers akrs scope list with the unknown-command finding', async () => {
-  for (const args of [['scope', 'list'], ['scope', 'request'], ['scope', 'approve', 'R-1'], ['scope', 'reject', 'R-1']]) {
-    const result = await runCli([...args, '--json']);
-    assert.equal(result.exitCode, 2, args.join(' '));
-    const packet = JSON.parse(result.stdout);
-    assert.equal(packet.status, 'error', args.join(' '));
-    assert.equal(packet.findings[0].code, 'AKRS-C001', args.join(' '));
-  }
-  const plain = await runCli(['scope', 'list']);
-  assert.equal(plain.exitCode, 2);
-  assert.equal(plain.stdout, '');
-  assert.match(plain.stderr, /AKRS-C001/);
+test('F14 the scope commands are dispatched and listed once P1-W07 delivered them', async () => {
+  const list = await runCli(['scope', 'list', '--json']);
+  assert.notEqual(list.exitCode, 2, list.stderr);
   const help = await runCli(['--help']);
-  assert.equal(help.stdout.includes('scope'), false);
-  assert.deepEqual(commandManifest.commands.map(({ id }) => id).filter((id) => id.startsWith('scope')), []);
+  assert.equal(help.stdout.includes('scope'), true);
+  assert.deepEqual(commandManifest.commands.map(({ id }) => id).filter((id) => id.startsWith('scope')),
+    ['scope-request', 'scope-approve', 'scope-reject', 'scope-list']);
 });
