@@ -22,7 +22,7 @@ test('the manifest entry is a read-only query with the frozen flags, snapshot pr
   const entry = commandManifest.commands.find(({ id }) => id === 'road-details');
   assert.deepEqual(entry.tokens, ['road-details']);
   assert.deepEqual(entry.positionals, [{ name: 'id', required: true, variadic: false }]);
-  assert.deepEqual(entry.flags.map(({ name }) => name), ['--role', '--include-reads', '--no-include-reads', '--full', '--max-tokens', '--root', '--workflow-root', '--json', '--jsonl', '--prompt']);
+  assert.deepEqual(entry.flags.map(({ name }) => name), ['--role', '--include-reads', '--no-include-reads', '--full', '--reuse', '--max-tokens', '--root', '--workflow-root', '--json', '--jsonl', '--prompt']);
   assert.equal(entry.mutability, 'query');
   assert.equal(entry.required_role, 'any');
   assert.equal(entry.idempotency, 'not_applicable');

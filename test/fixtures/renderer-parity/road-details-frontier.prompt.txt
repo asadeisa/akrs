@@ -1,0 +1,39 @@
+# AKRS Road R-P6-1 (worker)
+
+- Packet `akrs.road-details/v2` status `ok`
+- Road status: `ACTIVE`; plan `P6`; class `frontier`
+- Snapshot: `sha256:91ce265b2a7a05418895b33dde45be098e4f8d415521f375c67fff708e09124d`
+
+## Task
+
+- `T-P6-1` at `akrs/tasks/T-P6-1.md`
+
+## Reads (2/2 resolved, pointers only)
+
+1. `SOT/09-use-cases.md` lines 28-41 — canonical paid-state rule
+2. `app/config/payment-status.ts` lines 12-25 — existing payment-status adapter
+
+## Allowed writes
+
+- create `src/admin.js` (does not exist yet)
+- modify `src/own.js` (exists)
+
+## Forbidden
+
+- `server/**`
+
+## Boundaries
+
+- No backend route change.
+
+## Acceptance
+
+- The declared user path works from the committed build.
+
+## Checks
+
+- unit: `["npm","test","--","admin.spec.ts"]` (timeout 120000 ms)
+
+## Next commands
+
+- `akrs audit --git --road R-P6-1 --root <root>`

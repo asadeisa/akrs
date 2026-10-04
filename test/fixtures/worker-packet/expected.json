@@ -422,7 +422,7 @@
         "read_files": 2,
         "read_bytes": 446,
         "estimated_tokens": 113,
-        "packet_tokens": 454,
+        "packet_tokens": 477,
         "max_tokens": null
       },
       "coverage": {
@@ -441,6 +441,13 @@
         "violations": []
       },
       "needs_split": false,
+      "audit": {
+        "posture": "not_git",
+        "status": "skipped",
+        "reason": "not_git",
+        "counts": null
+      },
+      "stale": [],
       "envelope": {
         "policy": {
           "auto_reads": [],
@@ -587,7 +594,7 @@
         "read_files": 2,
         "read_bytes": 446,
         "estimated_tokens": 113,
-        "packet_tokens": 570,
+        "packet_tokens": 593,
         "max_tokens": null
       },
       "coverage": {
@@ -606,6 +613,13 @@
         "violations": []
       },
       "needs_split": false,
+      "audit": {
+        "posture": "not_git",
+        "status": "skipped",
+        "reason": "not_git",
+        "counts": null
+      },
+      "stale": [],
       "envelope": {
         "policy": {
           "auto_reads": [],

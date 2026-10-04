@@ -1,0 +1,63 @@
+AKRS road-details R-P6-1 (worker)
+
+  - Packet akrs.road-details/v2 status ok
+  - Road status: ACTIVE; plan P6; class medium
+  - Snapshot: sha256:e4790b2698c491c39e9c3f9ac9651085f0a762875f74ca23ce68b7867703dd72
+
+Task:
+  - T-P6-1 at akrs/tasks/T-P6-1.md
+
+Reads (2/2 resolved, bodies inlined):
+  1. SOT/09-use-cases.md lines 28-41 — canonical paid-state rule
+      | use-case line 28
+      | use-case line 29
+      | use-case line 30
+      | use-case line 31
+      | use-case line 32
+      | use-case line 33
+      | use-case line 34
+      | use-case line 35
+      | use-case line 36
+      | use-case line 37
+      | use-case line 38
+      | use-case line 39
+      | use-case line 40
+      | use-case line 41
+  2. app/config/payment-status.ts lines 12-25 — existing payment-status adapter
+      | status line 12
+      | status line 13
+      | status line 14
+      | status line 15
+      | status line 16
+      | status line 17
+      | status line 18
+      | status line 19
+      | status line 20
+      | status line 21
+      | status line 22
+      | status line 23
+      | status line 24
+      | status line 25
+
+Allowed writes:
+  - create src/admin.js (does not exist yet)
+  - modify src/own.js (exists)
+
+Forbidden:
+  - server/**
+
+Boundaries:
+  - No backend route change.
+
+Acceptance:
+  - The declared user path works from the committed build.
+
+Checks:
+  - unit: ["npm","test","--","admin.spec.ts"] (timeout 120000 ms)
+
+Steps:
+  1. Create app/pages/admin.vue with the admin route.
+  2. Run the unit check.
+
+Next commands:
+  - akrs audit --git --road R-P6-1 --root <root>
