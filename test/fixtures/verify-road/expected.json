@@ -2,8 +2,8 @@
   "dry_run": {
     "status": "ok",
     "snapshot": {
-      "before": "sha256:4d549a0d2dac21108ef9617d078f5437cf400a8d30e23d20e79d749c352c06cc",
-      "after": "sha256:4d549a0d2dac21108ef9617d078f5437cf400a8d30e23d20e79d749c352c06cc"
+      "before": "sha256:378a22e27932fadc146141bb0cf465095e0a4091b0ff471645b33fccc2ec2e60",
+      "after": "sha256:378a22e27932fadc146141bb0cf465095e0a4091b0ff471645b33fccc2ec2e60"
     },
     "data": {
       "kind": "verify_road",
@@ -46,7 +46,7 @@
         {
           "name": "unit",
           "argv": [
-            "<node>",
+            "node",
             "-e",
             "process.stdout.write(\"12 passed\")"
           ],
@@ -64,7 +64,7 @@
         {
           "name": "lint",
           "argv": [
-            "<node>",
+            "node",
             "-e",
             "process.stderr.write(\"lint: 2 problems\"); process.exit(4)"
           ],
@@ -114,8 +114,8 @@
   "run": {
     "status": "error",
     "snapshot": {
-      "before": "sha256:4d549a0d2dac21108ef9617d078f5437cf400a8d30e23d20e79d749c352c06cc",
-      "after": "sha256:4d549a0d2dac21108ef9617d078f5437cf400a8d30e23d20e79d749c352c06cc"
+      "before": "sha256:378a22e27932fadc146141bb0cf465095e0a4091b0ff471645b33fccc2ec2e60",
+      "after": "sha256:378a22e27932fadc146141bb0cf465095e0a4091b0ff471645b33fccc2ec2e60"
     },
     "data": {
       "kind": "verify_road",
@@ -158,7 +158,7 @@
         {
           "name": "unit",
           "argv": [
-            "<node>",
+            "node",
             "-e",
             "process.stdout.write(\"12 passed\")"
           ],
@@ -186,7 +186,7 @@
         {
           "name": "lint",
           "argv": [
-            "<node>",
+            "node",
             "-e",
             "process.stderr.write(\"lint: 2 problems\"); process.exit(4)"
           ],
@@ -287,8 +287,8 @@
   "single_passed": {
     "status": "ok",
     "snapshot": {
-      "before": "sha256:4d549a0d2dac21108ef9617d078f5437cf400a8d30e23d20e79d749c352c06cc",
-      "after": "sha256:4d549a0d2dac21108ef9617d078f5437cf400a8d30e23d20e79d749c352c06cc"
+      "before": "sha256:378a22e27932fadc146141bb0cf465095e0a4091b0ff471645b33fccc2ec2e60",
+      "after": "sha256:378a22e27932fadc146141bb0cf465095e0a4091b0ff471645b33fccc2ec2e60"
     },
     "data": {
       "kind": "verify_road",
@@ -331,7 +331,7 @@
         {
           "name": "unit",
           "argv": [
-            "<node>",
+            "node",
             "-e",
             "process.stdout.write(\"12 passed\")"
           ],

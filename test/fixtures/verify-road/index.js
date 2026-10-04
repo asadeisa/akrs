@@ -1,15 +1,18 @@
 // P2-W03 golden: the dry-run, failing and passing `verify --road` data of a fixed world, byte-compared to committed JSON.
-// Machine-dependent values (the node path, inherited environment names, durations) are replaced by placeholders.
+// Machine-dependent values (inherited environment names, durations) are replaced by placeholders.
 // Regenerate with AKRS_REGENERATE_VERIFY_ROAD=1 only after reviewing why the contract changed.
 import assert from 'node:assert/strict';
 import { readFile, writeFile } from 'node:fs/promises';
 import { test } from 'node:test';
-import { nodeCheck, verify, verifyWorld } from '../../verify-road/support.js';
+import { verify, verifyWorld } from '../../verify-road/support.js';
+
+// `node` through PATH, never an absolute path: the Road's content (and so its snapshot) must not depend on the machine.
+const nodeCheck = (name, script, args = [], timeout_ms = 10_000) => ({ name, argv: ['node', '-e', script, ...args], timeout_ms });
 
 const GOLDEN = new URL('./expected.json', import.meta.url);
 const normalized = (packet, repo) => JSON.parse(JSON.stringify({
   status: packet.status, snapshot: packet.snapshot, data: packet.data, findings: packet.findings, next_commands: packet.next_commands,
-}).replaceAll(JSON.stringify(process.execPath).slice(1, -1), '<node>').replaceAll(JSON.stringify(repo.root).slice(1, -1), '<root>'), (key, value) => {
+}).replaceAll(JSON.stringify(repo.root).slice(1, -1), '<root>'), (key, value) => {
   if (key === 'inherited' && Array.isArray(value)) return ['<machine-dependent names>'];
   if (key === 'duration_ms' && typeof value === 'number') return '<ms>';
   return value;
