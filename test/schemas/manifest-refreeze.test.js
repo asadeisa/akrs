@@ -141,6 +141,9 @@ const P0_COMMANDS = {
   // P1-W10: the Tester sources (A1 6.2: akrs_write verification_define, akrs_test handoff).
   'test-define': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'verification_define'], dry_run: true },
   'test-handoff': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_test', 'handoff'], dry_run: true },
+  // P1-W11: the canonical State and its disposable render (A1 6.2: akrs_write state_set).
+  'state-set': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'state_set'], dry_run: true },
+  'state-render': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: [null, null], dry_run: true },
   template: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_road', 'template'], dry_run: false },
 };
 
