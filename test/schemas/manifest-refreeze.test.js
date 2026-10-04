@@ -138,6 +138,9 @@ const P0_COMMANDS = {
   'scope-approve': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_scope', 'approve'], dry_run: true },
   'scope-reject': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_scope', 'reject'], dry_run: true },
   'scope-list': { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_scope', 'list'], dry_run: false },
+  // P1-W10: the Tester sources (A1 6.2: akrs_write verification_define, akrs_test handoff).
+  'test-define': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'verification_define'], dry_run: true },
+  'test-handoff': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_test', 'handoff'], dry_run: true },
   template: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_road', 'template'], dry_run: false },
 };
 

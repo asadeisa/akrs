@@ -35,10 +35,10 @@ async function validate(root, format = '--json') {
   });
 }
 
-test('manifest enables only complete P0-W03, P0-W04, P0-W06, P1-W06, P1-W08, P1-W09, and P1-W07 commands', () => {
+test('manifest enables only complete P0-W03, P0-W04, P0-W06, P1-W06, P1-W08, P1-W09, P1-W07, and P1-W10 commands', () => {
   assert.deepEqual(commandManifest.commands.map(({ id }) => id), [
     'help', 'version', 'validate', 'explain', 'init', 'sync', 'postinstall', 'road-new', 'task-new', 'memory-add', 'log-append', 'road-update', 'road-move',
-    'scope-request', 'scope-approve', 'scope-reject', 'scope-list', 'template',
+    'scope-request', 'scope-approve', 'scope-reject', 'scope-list', 'test-define', 'test-handoff', 'template',
   ]);
 });
 
