@@ -159,6 +159,8 @@ const P0_COMMANDS = {
   'road-finish': { idempotency: 'journal', expected_snapshot: 'required', mcp: [null, null], dry_run: true },
   'road-reopen': { idempotency: 'journal', expected_snapshot: 'required', mcp: [null, null], dry_run: true },
   'lease-release': { idempotency: 'journal', expected_snapshot: 'not_applicable', mcp: ['akrs_write', 'lease_release'], dry_run: true },
+  // P2-W06: the Plan Tester packet (A1 6.2: akrs_test details).
+  'test-details': { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_test', 'details'], dry_run: false },
   // P1-W12: report-only git queries (not in the A1 6.2 MCP tool table).
   audit: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
   doctor: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
