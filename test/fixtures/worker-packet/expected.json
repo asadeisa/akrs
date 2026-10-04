@@ -1,0 +1,630 @@
+{
+  "worker": {
+    "status": "ok",
+    "snapshot": {
+      "before": "sha256:aa077134504f2e19a96a001a850ed424a86fd45418acec3865f296ae172c9989",
+      "after": "sha256:aa077134504f2e19a96a001a850ed424a86fd45418acec3865f296ae172c9989"
+    },
+    "data": {
+      "kind": "road_details",
+      "packet_version": "akrs.road-details/v2",
+      "role": "worker",
+      "road": {
+        "id": "R-P6-1",
+        "plan": "P6",
+        "task": "T-P6-1",
+        "status": "ACTIVE",
+        "contract": "declared",
+        "executor_class": "weak",
+        "path": "akrs/roads/P6/R-P6-1.json"
+      },
+      "task": {
+        "id": "T-P6-1",
+        "path": "akrs/tasks/T-P6-1.md",
+        "exists": true
+      },
+      "reads": [
+        {
+          "index": 0,
+          "path": "SOT/09-use-cases.md",
+          "window": {
+            "lines": [
+              28,
+              41
+            ]
+          },
+          "kind": "window",
+          "status": "ok",
+          "bytes": 237,
+          "line_count": 50,
+          "why": "canonical paid-state rule",
+          "declared_by": null,
+          "text": "use-case line 28\nuse-case line 29\nuse-case line 30\nuse-case line 31\nuse-case line 32\nuse-case line 33\nuse-case line 34\nuse-case line 35\nuse-case line 36\nuse-case line 37\nuse-case line 38\nuse-case line 39\nuse-case line 40\nuse-case line 41"
+        },
+        {
+          "index": 1,
+          "path": "app/config/payment-status.ts",
+          "window": {
+            "lines": [
+              12,
+              25
+            ]
+          },
+          "kind": "window",
+          "status": "ok",
+          "bytes": 209,
+          "line_count": 30,
+          "why": "existing payment-status adapter",
+          "declared_by": null,
+          "text": "status line 12\nstatus line 13\nstatus line 14\nstatus line 15\nstatus line 16\nstatus line 17\nstatus line 18\nstatus line 19\nstatus line 20\nstatus line 21\nstatus line 22\nstatus line 23\nstatus line 24\nstatus line 25"
+        }
+      ],
+      "writes": [
+        {
+          "path": "src/admin.js",
+          "class": "file",
+          "action": "create",
+          "exists": false
+        },
+        {
+          "path": "src/own.js",
+          "class": "file",
+          "action": "modify",
+          "exists": true
+        }
+      ],
+      "forbidden": [
+        "server/**"
+      ],
+      "deps": [
+        {
+          "id": "R-P5-6",
+          "status": "DONE"
+        }
+      ],
+      "checks": [
+        {
+          "name": "unit",
+          "argv": [
+            "npm",
+            "test",
+            "--",
+            "admin.spec.ts"
+          ],
+          "timeout_ms": 120000
+        }
+      ],
+      "acceptance": [
+        "The declared user path works from the committed build."
+      ],
+      "boundaries": [
+        "No backend route change."
+      ],
+      "steps": [
+        "Create app/pages/admin.vue with the admin route.",
+        "Run the unit check."
+      ],
+      "reuse": [],
+      "conventions": [],
+      "collisions": [],
+      "recent": [],
+      "scope_requests": [],
+      "delivery": {
+        "class": "weak",
+        "reads": "inlined",
+        "reason": "class_profile",
+        "read_budget_tokens": 6000
+      },
+      "lease": {
+        "holder": null,
+        "caller": null,
+        "state": "none"
+      },
+      "budget": {
+        "read_files": 2,
+        "read_bytes": 446,
+        "estimated_tokens": 113,
+        "packet_tokens": 519,
+        "max_tokens": null
+      },
+      "coverage": {
+        "declared": 2,
+        "resolved": 2,
+        "reads": "2/2",
+        "unresolved": []
+      }
+    },
+    "findings": [],
+    "next_commands": [
+      {
+        "command": "audit",
+        "args": [
+          "--git",
+          "--road",
+          "R-P6-1",
+          "--root",
+          "<root>"
+        ]
+      }
+    ]
+  },
+  "worker_pointers": {
+    "status": "ok",
+    "snapshot": {
+      "before": "sha256:aa077134504f2e19a96a001a850ed424a86fd45418acec3865f296ae172c9989",
+      "after": "sha256:aa077134504f2e19a96a001a850ed424a86fd45418acec3865f296ae172c9989"
+    },
+    "data": {
+      "kind": "road_details",
+      "packet_version": "akrs.road-details/v2",
+      "role": "worker",
+      "road": {
+        "id": "R-P6-1",
+        "plan": "P6",
+        "task": "T-P6-1",
+        "status": "ACTIVE",
+        "contract": "declared",
+        "executor_class": "weak",
+        "path": "akrs/roads/P6/R-P6-1.json"
+      },
+      "task": {
+        "id": "T-P6-1",
+        "path": "akrs/tasks/T-P6-1.md",
+        "exists": true
+      },
+      "reads": [
+        {
+          "index": 0,
+          "path": "SOT/09-use-cases.md",
+          "window": {
+            "lines": [
+              28,
+              41
+            ]
+          },
+          "kind": "window",
+          "status": "ok",
+          "bytes": 237,
+          "line_count": 50,
+          "why": "canonical paid-state rule",
+          "declared_by": null,
+          "text": null
+        },
+        {
+          "index": 1,
+          "path": "app/config/payment-status.ts",
+          "window": {
+            "lines": [
+              12,
+              25
+            ]
+          },
+          "kind": "window",
+          "status": "ok",
+          "bytes": 209,
+          "line_count": 30,
+          "why": "existing payment-status adapter",
+          "declared_by": null,
+          "text": null
+        }
+      ],
+      "writes": [
+        {
+          "path": "src/admin.js",
+          "class": "file",
+          "action": "create",
+          "exists": false
+        },
+        {
+          "path": "src/own.js",
+          "class": "file",
+          "action": "modify",
+          "exists": true
+        }
+      ],
+      "forbidden": [
+        "server/**"
+      ],
+      "deps": [
+        {
+          "id": "R-P5-6",
+          "status": "DONE"
+        }
+      ],
+      "checks": [
+        {
+          "name": "unit",
+          "argv": [
+            "npm",
+            "test",
+            "--",
+            "admin.spec.ts"
+          ],
+          "timeout_ms": 120000
+        }
+      ],
+      "acceptance": [
+        "The declared user path works from the committed build."
+      ],
+      "boundaries": [
+        "No backend route change."
+      ],
+      "steps": [
+        "Create app/pages/admin.vue with the admin route.",
+        "Run the unit check."
+      ],
+      "reuse": [],
+      "conventions": [],
+      "collisions": [],
+      "recent": [],
+      "scope_requests": [],
+      "delivery": {
+        "class": "weak",
+        "reads": "pointers",
+        "reason": "explicit_flag",
+        "read_budget_tokens": 6000
+      },
+      "lease": {
+        "holder": null,
+        "caller": null,
+        "state": "none"
+      },
+      "budget": {
+        "read_files": 2,
+        "read_bytes": 446,
+        "estimated_tokens": 113,
+        "packet_tokens": 402,
+        "max_tokens": null
+      },
+      "coverage": {
+        "declared": 2,
+        "resolved": 2,
+        "reads": "2/2",
+        "unresolved": []
+      }
+    },
+    "findings": [],
+    "next_commands": [
+      {
+        "command": "audit",
+        "args": [
+          "--git",
+          "--road",
+          "R-P6-1",
+          "--root",
+          "<root>"
+        ]
+      }
+    ]
+  },
+  "leader": {
+    "status": "ok",
+    "snapshot": {
+      "before": "sha256:aa077134504f2e19a96a001a850ed424a86fd45418acec3865f296ae172c9989",
+      "after": "sha256:aa077134504f2e19a96a001a850ed424a86fd45418acec3865f296ae172c9989"
+    },
+    "data": {
+      "kind": "road_details",
+      "packet_version": "akrs.road-details/v2",
+      "role": "leader",
+      "road": {
+        "id": "R-P6-1",
+        "plan": "P6",
+        "task": "T-P6-1",
+        "status": "ACTIVE",
+        "contract": "declared",
+        "executor_class": "weak",
+        "path": "akrs/roads/P6/R-P6-1.json"
+      },
+      "task": {
+        "id": "T-P6-1",
+        "path": "akrs/tasks/T-P6-1.md",
+        "exists": true
+      },
+      "reads": [
+        {
+          "index": 0,
+          "path": "SOT/09-use-cases.md",
+          "window": {
+            "lines": [
+              28,
+              41
+            ]
+          },
+          "kind": "window",
+          "status": "ok",
+          "bytes": 237,
+          "line_count": null,
+          "why": "canonical paid-state rule",
+          "declared_by": null,
+          "text": null
+        },
+        {
+          "index": 1,
+          "path": "app/config/payment-status.ts",
+          "window": {
+            "lines": [
+              12,
+              25
+            ]
+          },
+          "kind": "window",
+          "status": "ok",
+          "bytes": 209,
+          "line_count": null,
+          "why": "existing payment-status adapter",
+          "declared_by": null,
+          "text": null
+        }
+      ],
+      "writes": [
+        {
+          "path": "src/admin.js",
+          "class": "file",
+          "action": "create",
+          "exists": false
+        },
+        {
+          "path": "src/own.js",
+          "class": "file",
+          "action": "modify",
+          "exists": true
+        }
+      ],
+      "forbidden": [
+        "server/**"
+      ],
+      "deps": [
+        {
+          "id": "R-P5-6",
+          "status": "DONE"
+        }
+      ],
+      "checks": [
+        {
+          "name": "unit",
+          "argv": [
+            "npm",
+            "test",
+            "--",
+            "admin.spec.ts"
+          ],
+          "timeout_ms": 120000
+        }
+      ],
+      "acceptance": [
+        "The declared user path works from the committed build."
+      ],
+      "boundaries": [
+        "No backend route change."
+      ],
+      "steps": [
+        "Create app/pages/admin.vue with the admin route.",
+        "Run the unit check."
+      ],
+      "reuse": [],
+      "conventions": [],
+      "collisions": [],
+      "recent": [],
+      "scope_requests": [],
+      "delivery": {
+        "class": "weak",
+        "reads": "pointers",
+        "reason": "leader_view",
+        "read_budget_tokens": 6000
+      },
+      "lease": {
+        "holder": null,
+        "caller": null,
+        "state": "none"
+      },
+      "budget": {
+        "read_files": 2,
+        "read_bytes": 446,
+        "estimated_tokens": 113,
+        "packet_tokens": 454,
+        "max_tokens": null
+      },
+      "coverage": {
+        "declared": 2,
+        "resolved": 2,
+        "reads": "2/2",
+        "unresolved": []
+      },
+      "readiness": {
+        "ready": true,
+        "blockers": []
+      },
+      "class_fit": {
+        "verdict": "fits",
+        "class": "weak",
+        "violations": []
+      },
+      "needs_split": false,
+      "envelope": {
+        "policy": {
+          "auto_reads": [],
+          "auto_writes": []
+        },
+        "grants": 0,
+        "grant_cap": 3
+      }
+    },
+    "findings": [],
+    "next_commands": [
+      {
+        "command": "road-fit",
+        "args": [
+          "R-P6-1",
+          "--root",
+          "<root>"
+        ]
+      }
+    ]
+  },
+  "leader_full": {
+    "status": "ok",
+    "snapshot": {
+      "before": "sha256:aa077134504f2e19a96a001a850ed424a86fd45418acec3865f296ae172c9989",
+      "after": "sha256:aa077134504f2e19a96a001a850ed424a86fd45418acec3865f296ae172c9989"
+    },
+    "data": {
+      "kind": "road_details",
+      "packet_version": "akrs.road-details/v2",
+      "role": "leader",
+      "road": {
+        "id": "R-P6-1",
+        "plan": "P6",
+        "task": "T-P6-1",
+        "status": "ACTIVE",
+        "contract": "declared",
+        "executor_class": "weak",
+        "path": "akrs/roads/P6/R-P6-1.json"
+      },
+      "task": {
+        "id": "T-P6-1",
+        "path": "akrs/tasks/T-P6-1.md",
+        "exists": true
+      },
+      "reads": [
+        {
+          "index": 0,
+          "path": "SOT/09-use-cases.md",
+          "window": {
+            "lines": [
+              28,
+              41
+            ]
+          },
+          "kind": "window",
+          "status": "ok",
+          "bytes": 237,
+          "line_count": 50,
+          "why": "canonical paid-state rule",
+          "declared_by": null,
+          "text": "use-case line 28\nuse-case line 29\nuse-case line 30\nuse-case line 31\nuse-case line 32\nuse-case line 33\nuse-case line 34\nuse-case line 35\nuse-case line 36\nuse-case line 37\nuse-case line 38\nuse-case line 39\nuse-case line 40\nuse-case line 41"
+        },
+        {
+          "index": 1,
+          "path": "app/config/payment-status.ts",
+          "window": {
+            "lines": [
+              12,
+              25
+            ]
+          },
+          "kind": "window",
+          "status": "ok",
+          "bytes": 209,
+          "line_count": 30,
+          "why": "existing payment-status adapter",
+          "declared_by": null,
+          "text": "status line 12\nstatus line 13\nstatus line 14\nstatus line 15\nstatus line 16\nstatus line 17\nstatus line 18\nstatus line 19\nstatus line 20\nstatus line 21\nstatus line 22\nstatus line 23\nstatus line 24\nstatus line 25"
+        }
+      ],
+      "writes": [
+        {
+          "path": "src/admin.js",
+          "class": "file",
+          "action": "create",
+          "exists": false
+        },
+        {
+          "path": "src/own.js",
+          "class": "file",
+          "action": "modify",
+          "exists": true
+        }
+      ],
+      "forbidden": [
+        "server/**"
+      ],
+      "deps": [
+        {
+          "id": "R-P5-6",
+          "status": "DONE"
+        }
+      ],
+      "checks": [
+        {
+          "name": "unit",
+          "argv": [
+            "npm",
+            "test",
+            "--",
+            "admin.spec.ts"
+          ],
+          "timeout_ms": 120000
+        }
+      ],
+      "acceptance": [
+        "The declared user path works from the committed build."
+      ],
+      "boundaries": [
+        "No backend route change."
+      ],
+      "steps": [
+        "Create app/pages/admin.vue with the admin route.",
+        "Run the unit check."
+      ],
+      "reuse": [],
+      "conventions": [],
+      "collisions": [],
+      "recent": [],
+      "scope_requests": [],
+      "delivery": {
+        "class": "weak",
+        "reads": "inlined",
+        "reason": "explicit_flag",
+        "read_budget_tokens": 6000
+      },
+      "lease": {
+        "holder": null,
+        "caller": null,
+        "state": "none"
+      },
+      "budget": {
+        "read_files": 2,
+        "read_bytes": 446,
+        "estimated_tokens": 113,
+        "packet_tokens": 570,
+        "max_tokens": null
+      },
+      "coverage": {
+        "declared": 2,
+        "resolved": 2,
+        "reads": "2/2",
+        "unresolved": []
+      },
+      "readiness": {
+        "ready": true,
+        "blockers": []
+      },
+      "class_fit": {
+        "verdict": "fits",
+        "class": "weak",
+        "violations": []
+      },
+      "needs_split": false,
+      "envelope": {
+        "policy": {
+          "auto_reads": [],
+          "auto_writes": []
+        },
+        "grants": 0,
+        "grant_cap": 3
+      }
+    },
+    "findings": [],
+    "next_commands": [
+      {
+        "command": "road-fit",
+        "args": [
+          "R-P6-1",
+          "--root",
+          "<root>"
+        ]
+      }
+    ]
+  }
+}
