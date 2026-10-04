@@ -10,6 +10,13 @@ import { verifyWorld } from '../../verify-road/support.js';
 const GOLDEN = new URL('./expected.json', import.meta.url);
 // `node` through PATH, never an absolute path: the Road's content (and so its snapshot) must not depend on the machine.
 const nodeCheck = (name, script, args = [], timeout_ms = 30_000) => ({ name, argv: ['node', '-e', script, ...args], timeout_ms });
+// The root appears with either separator and, on Windows, with a short 8.3 name: whatever precedes the temp directory's
+// own name is machine-dependent, so the whole path becomes a placeholder.
+const ROOT = /(?:[A-Za-z]:)?[\\/][^"\s]*akrs-road-[A-Za-z0-9_-]+/g;
+const normalize = (key, value) => {
+  if (key === 'inherited' && Array.isArray(value)) return ['<machine-dependent names>'];
+  return typeof value === 'string' ? value.replace(ROOT, '<root>') : value;
+};
 const providers = () => {
   let tick = 0;
   return { ...fakeProviders(), monotonic: () => { tick += 5; return tick; } };
@@ -23,9 +30,8 @@ async function produce(t) {
   const out = {};
   for (const [name, args] of [['run', ['--jsonl']], ['dry_run', ['--jsonl', '--dry-run']], ['blocked', ['--jsonl', '--check', 'nope']], ['plain_json', ['--json']]]) {
     const result = await runCommand(repo, ['verify', '--road', 'R-P6-1', ...args], { providers: providers() });
-    const text = result.stdout.replaceAll(JSON.stringify(repo.root).slice(1, -1), '<root>');
-    const parsed = args.includes('--jsonl') ? text.trimEnd().split('\n').map((line) => JSON.parse(line)) : JSON.parse(text);
-    out[name] = JSON.parse(JSON.stringify({ exit_code: result.exitCode, output: parsed }, (key, value) => (key === 'inherited' && Array.isArray(value) ? ['<machine-dependent names>'] : value)));
+    const parsed = args.includes('--jsonl') ? result.stdout.trimEnd().split('\n').map((line) => JSON.parse(line)) : JSON.parse(result.stdout);
+    out[name] = JSON.parse(JSON.stringify({ exit_code: result.exitCode, output: parsed }, normalize));
   }
   return out;
 }
