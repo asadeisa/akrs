@@ -2,6 +2,7 @@ import { CliUsageError, WorkflowNotFoundError } from '../lib/core/errors.js';
 import { createCompleteEvent, createPacket } from '../lib/core/packet.js';
 import { createDefaultProviders } from '../lib/core/providers.js';
 import { normalizeAbsolutePath } from '../lib/core/roots.js';
+import { createEventStream } from '../lib/core/event-stream.js';
 import { renderHuman } from '../lib/renderers/human.js';
 import { renderJson } from '../lib/renderers/json.js';
 import { renderJsonl } from '../lib/renderers/jsonl.js';
@@ -186,11 +187,16 @@ function packetExitCode(packet, command) {
   return 1;
 }
 
-function renderResult({ packet, events, format, exitCode, providers, manifest }) {
+function renderResult({ packet, events, stream = null, format, exitCode, providers, manifest }) {
   const options = { knownCommands: knownCommands(manifest) };
   const textOptions = { ...options, commandTokens: new Map(manifest.commands.map(({ id, tokens }) => [id, tokens])) };
   if (format === 'json') {
     return { stdout: renderJson(packet, options), stderr: '' };
+  }
+  if (format === 'jsonl' && stream?.active) {
+    // the events were produced while the command ran; the packet closes the stream with the one complete event
+    if (!stream.completed) stream.complete(packet);
+    return { stdout: stream.flush(), stderr: '' };
   }
   if (format === 'jsonl') {
     const outputEvents = events ?? [createCompleteEvent({
@@ -229,6 +235,7 @@ export async function runCliAdapter({
   providers = createDefaultProviders(),
   resolveContext = defaultResolveContext,
   readStdin = defaultReadStdin,
+  write = null,
 }) {
   const manifestResult = validateCommandManifest(manifest);
   if (!manifestResult.ok) throw new ContractValidationError('command manifest', manifestResult.issues);
@@ -237,11 +244,14 @@ export async function runCliAdapter({
   let packet;
   let events;
   let exitCode;
+  let stream = null;
 
   try {
     if (!command) throw new CliUsageError(`unknown command: ${argv[0] ?? ''}`);
     const input = parseCommandInput(argv, command);
     format = input.format;
+    // a streaming command gets an event stream that writes through `write` the moment an event exists
+    if (format === 'jsonl') stream = createEventStream({ providers, knownCommands: knownCommands(manifest), write });
     const context = {
       cwd: normalizeAbsolutePath(cwd),
       ...await resolveContext({ command, cwd, input }),
@@ -250,7 +260,7 @@ export async function runCliAdapter({
     if (typeof handler !== 'function') {
       throw new TypeError(`no handler registered for command: ${command.id}`);
     }
-    const result = await handler({ command, context, input, manifest, providers, readStdin });
+    const result = await handler({ command, context, input, manifest, providers, readStdin, stream });
     packet = result?.packet ?? result;
     events = result?.packet ? result.events : undefined;
     const validation = validatePacket(packet, { knownCommands: knownCommands(manifest) });
@@ -277,14 +287,14 @@ export async function runCliAdapter({
       cwd,
       kind,
       message: error instanceof Error ? error.message : 'internal error',
-      providers,
+      providers: stream?.active ? stream.finalProviders() : providers,
       manifest,
     });
     events = undefined;
   }
 
   try {
-    const rendered = renderResult({ packet, events, format, exitCode, providers, manifest });
+    const rendered = renderResult({ packet, events, stream, format, exitCode, providers, manifest });
     return { exitCode, packet, ...rendered };
   } catch (error) {
     packet = diagnosticPacket({
@@ -294,13 +304,14 @@ export async function runCliAdapter({
       cwd,
       kind: 'internal',
       message: error instanceof Error ? error.message : 'internal error',
-      providers,
+      providers: stream?.active ? stream.finalProviders() : providers,
       manifest,
     });
     exitCode = alwaysSucceeds(command) ? 0 : 4;
     const rendered = renderResult({
       packet,
       events: undefined,
+      stream,
       format,
       exitCode,
       providers,

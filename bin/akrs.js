@@ -16,6 +16,8 @@ async function main(argv) {
     cwd: process.cwd(),
     manifest: commandManifest,
     handlers: commandHandlers,
+    // streamed events leave the process the moment they exist
+    write: (text) => process.stdout.write(text),
   });
 
   if (result.stdout) process.stdout.write(result.stdout);

@@ -15,11 +15,11 @@ import { nodeCheck, verify, verifyWorld } from './support.js';
 const exists = (path) => stat(path).then(() => true, () => false);
 const MARK = 'require("node:fs").writeFileSync(process.argv[1], "ran")';
 
-test('the manifest entry is a no-write execution with the frozen flags, snapshot projection and no streaming yet', () => {
+test('the manifest entry is a no-write execution with the frozen flags, snapshot projection and JSONL streaming', () => {
   const entry = commandManifest.commands.find(({ id }) => id === 'verify');
   assert.deepEqual(entry.tokens, ['verify']);
   assert.deepEqual(entry.flags.map(({ name }) => name), ['--road', '--check', '--dry-run', '--if-snapshot', '--root', '--workflow-root', '--json', '--jsonl', '--prompt']);
-  assert.deepEqual({ mutability: entry.mutability, streaming: entry.streaming, idempotency: entry.idempotency, role: entry.required_role }, { mutability: 'query', streaming: 'none', idempotency: 'not_applicable', role: 'any' });
+  assert.deepEqual({ mutability: entry.mutability, streaming: entry.streaming, idempotency: entry.idempotency, role: entry.required_role }, { mutability: 'query', streaming: 'jsonl', idempotency: 'not_applicable', role: 'any' });
   assert.deepEqual(entry.statuses, ['ok', 'warning', 'error', 'blocked']);
 });
 

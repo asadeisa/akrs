@@ -1,0 +1,681 @@
+{
+  "run": {
+    "exit_code": 1,
+    "output": [
+      {
+        "schema_version": "akrs.event/v1",
+        "run_id": "01ARZ3NDEKTSV4RRFFQ6001001",
+        "sequence": 1,
+        "timestamp": "2026-10-03T10:00:01.000Z",
+        "type": "started",
+        "data": {
+          "kind": "verify_started",
+          "road": "R-P6-1",
+          "mode": "mechanical",
+          "dry_run": false,
+          "checks": [
+            {
+              "index": 0,
+              "name": "unit",
+              "argv": [
+                "node",
+                "-e",
+                "process.stdout.write(\"12 passed\")"
+              ],
+              "timeout_ms": 30000
+            },
+            {
+              "index": 1,
+              "name": "lint",
+              "argv": [
+                "node",
+                "-e",
+                "process.stderr.write(\"lint: 2 problems\"); process.exit(4)"
+              ],
+              "timeout_ms": 30000
+            }
+          ],
+          "limits": {
+            "stream_cap_bytes": 65536,
+            "head_bytes": 32768,
+            "tail_bytes": 32768,
+            "grace_ms": 2000,
+            "wait_after_kill_ms": 5000
+          }
+        }
+      },
+      {
+        "schema_version": "akrs.event/v1",
+        "run_id": "01ARZ3NDEKTSV4RRFFQ6001001",
+        "sequence": 2,
+        "timestamp": "2026-10-03T10:00:02.000Z",
+        "type": "progress",
+        "data": {
+          "kind": "verify_progress",
+          "phase": "check_started",
+          "index": 0,
+          "name": "unit",
+          "status": null,
+          "reason": null,
+          "exit_code": null,
+          "signal": null,
+          "duration_ms": null
+        }
+      },
+      {
+        "schema_version": "akrs.event/v1",
+        "run_id": "01ARZ3NDEKTSV4RRFFQ6001001",
+        "sequence": 3,
+        "timestamp": "2026-10-03T10:00:03.000Z",
+        "type": "evidence",
+        "data": {
+          "kind": "verify_output",
+          "index": 0,
+          "name": "unit",
+          "stream": "stdout",
+          "total_bytes": 9,
+          "truncated": false,
+          "text": "12 passed",
+          "tail": null
+        }
+      },
+      {
+        "schema_version": "akrs.event/v1",
+        "run_id": "01ARZ3NDEKTSV4RRFFQ6001001",
+        "sequence": 4,
+        "timestamp": "2026-10-03T10:00:04.000Z",
+        "type": "progress",
+        "data": {
+          "kind": "verify_progress",
+          "phase": "check_finished",
+          "index": 0,
+          "name": "unit",
+          "status": "passed",
+          "reason": null,
+          "exit_code": 0,
+          "signal": null,
+          "duration_ms": 5
+        }
+      },
+      {
+        "schema_version": "akrs.event/v1",
+        "run_id": "01ARZ3NDEKTSV4RRFFQ6001001",
+        "sequence": 5,
+        "timestamp": "2026-10-03T10:00:05.000Z",
+        "type": "progress",
+        "data": {
+          "kind": "verify_progress",
+          "phase": "check_started",
+          "index": 1,
+          "name": "lint",
+          "status": null,
+          "reason": null,
+          "exit_code": null,
+          "signal": null,
+          "duration_ms": null
+        }
+      },
+      {
+        "schema_version": "akrs.event/v1",
+        "run_id": "01ARZ3NDEKTSV4RRFFQ6001001",
+        "sequence": 6,
+        "timestamp": "2026-10-03T10:00:06.000Z",
+        "type": "evidence",
+        "data": {
+          "kind": "verify_output",
+          "index": 1,
+          "name": "lint",
+          "stream": "stderr",
+          "total_bytes": 16,
+          "truncated": false,
+          "text": "lint: 2 problems",
+          "tail": null
+        }
+      },
+      {
+        "schema_version": "akrs.event/v1",
+        "run_id": "01ARZ3NDEKTSV4RRFFQ6001001",
+        "sequence": 7,
+        "timestamp": "2026-10-03T10:00:07.000Z",
+        "type": "progress",
+        "data": {
+          "kind": "verify_progress",
+          "phase": "check_finished",
+          "index": 1,
+          "name": "lint",
+          "status": "failed",
+          "reason": null,
+          "exit_code": 4,
+          "signal": null,
+          "duration_ms": 5
+        }
+      },
+      {
+        "schema_version": "akrs.event/v1",
+        "run_id": "01ARZ3NDEKTSV4RRFFQ6001001",
+        "sequence": 8,
+        "timestamp": "2026-10-03T10:00:08.000Z",
+        "type": "finding",
+        "data": {
+          "kind": "verify_finding",
+          "finding": {
+            "code": "AKRS-R023",
+            "severity": "error",
+            "file": null,
+            "line": null,
+            "message": "The declared check \"lint\" of R-P6-1 did not pass: failed (exit 4).",
+            "detail": {
+              "check": "lint",
+              "exit_code": 4,
+              "road": "R-P6-1",
+              "signal": null,
+              "status": "failed"
+            }
+          }
+        }
+      },
+      {
+        "schema_version": "akrs.event/v1",
+        "run_id": "01ARZ3NDEKTSV4RRFFQ6001001",
+        "sequence": 9,
+        "timestamp": "2026-10-03T10:00:09.000Z",
+        "type": "complete",
+        "data": {
+          "packet": {
+            "schema_version": "akrs.packet/v2",
+            "command": "verify",
+            "run_id": "01ARZ3NDEKTSV4RRFFQ6001001",
+            "request_id": null,
+            "timestamp": "2026-10-03T10:00:00.000Z",
+            "status": "error",
+            "root": "<root>",
+            "snapshot": {
+              "before": "sha256:bb59ae288ffc15046f6c3d2c7dd72781ec6277986914c82c0e3ed3042d7329ff",
+              "after": "sha256:bb59ae288ffc15046f6c3d2c7dd72781ec6277986914c82c0e3ed3042d7329ff"
+            },
+            "data": {
+              "kind": "verify_road",
+              "mode": "mechanical",
+              "road": {
+                "id": "R-P6-1",
+                "status": "ACTIVE",
+                "contract": "declared"
+              },
+              "dry_run": false,
+              "outcome": "failed",
+              "note": "Mechanical verification: the declared commands, how each ended and what it printed. It is not a Tester verdict and says nothing about acceptance.",
+              "risk": "verify --road executes the argv arrays declared in this repository's Road files with your permissions. Run it only on workflows you trust.",
+              "limits": {
+                "stream_cap_bytes": 65536,
+                "head_bytes": 32768,
+                "tail_bytes": 32768,
+                "grace_ms": 2000,
+                "wait_after_kill_ms": 5000
+              },
+              "env": {
+                "inherited": [
+                  "<machine-dependent names>"
+                ],
+                "set": {
+                  "NO_COLOR": "1"
+                }
+              },
+              "summary": {
+                "declared": 2,
+                "selected": 2,
+                "passed": 1,
+                "failed": 1,
+                "timed_out": 0,
+                "spawn_failed": 0,
+                "interrupted": 0,
+                "not_run": 0
+              },
+              "checks": [
+                {
+                  "name": "unit",
+                  "argv": [
+                    "node",
+                    "-e",
+                    "process.stdout.write(\"12 passed\")"
+                  ],
+                  "cwd": ".",
+                  "timeout_ms": 30000,
+                  "status": "passed",
+                  "exit_code": 0,
+                  "signal": null,
+                  "duration_ms": 5,
+                  "termination": "none",
+                  "error": null,
+                  "stdout": {
+                    "text": "12 passed",
+                    "tail": null,
+                    "total_bytes": 9,
+                    "truncated": false
+                  },
+                  "stderr": {
+                    "text": "",
+                    "tail": null,
+                    "total_bytes": 0,
+                    "truncated": false
+                  }
+                },
+                {
+                  "name": "lint",
+                  "argv": [
+                    "node",
+                    "-e",
+                    "process.stderr.write(\"lint: 2 problems\"); process.exit(4)"
+                  ],
+                  "cwd": ".",
+                  "timeout_ms": 30000,
+                  "status": "failed",
+                  "exit_code": 4,
+                  "signal": null,
+                  "duration_ms": 5,
+                  "termination": "none",
+                  "error": null,
+                  "stdout": {
+                    "text": "",
+                    "tail": null,
+                    "total_bytes": 0,
+                    "truncated": false
+                  },
+                  "stderr": {
+                    "text": "lint: 2 problems",
+                    "tail": null,
+                    "total_bytes": 16,
+                    "truncated": false
+                  }
+                }
+              ]
+            },
+            "findings": [
+              {
+                "code": "AKRS-R023",
+                "severity": "error",
+                "file": null,
+                "line": null,
+                "message": "The declared check \"lint\" of R-P6-1 did not pass: failed (exit 4).",
+                "detail": {
+                  "check": "lint",
+                  "exit_code": 4,
+                  "road": "R-P6-1",
+                  "signal": null,
+                  "status": "failed"
+                }
+              }
+            ],
+            "changed": [],
+            "next_commands": [
+              {
+                "command": "road-details",
+                "args": [
+                  "R-P6-1",
+                  "--root",
+                  "<root>"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "dry_run": {
+    "exit_code": 0,
+    "output": [
+      {
+        "schema_version": "akrs.event/v1",
+        "run_id": "01ARZ3NDEKTSV4RRFFQ6001001",
+        "sequence": 1,
+        "timestamp": "2026-10-03T10:00:01.000Z",
+        "type": "started",
+        "data": {
+          "kind": "verify_started",
+          "road": "R-P6-1",
+          "mode": "mechanical",
+          "dry_run": true,
+          "checks": [
+            {
+              "index": 0,
+              "name": "unit",
+              "argv": [
+                "node",
+                "-e",
+                "process.stdout.write(\"12 passed\")"
+              ],
+              "timeout_ms": 30000
+            },
+            {
+              "index": 1,
+              "name": "lint",
+              "argv": [
+                "node",
+                "-e",
+                "process.stderr.write(\"lint: 2 problems\"); process.exit(4)"
+              ],
+              "timeout_ms": 30000
+            }
+          ],
+          "limits": {
+            "stream_cap_bytes": 65536,
+            "head_bytes": 32768,
+            "tail_bytes": 32768,
+            "grace_ms": 2000,
+            "wait_after_kill_ms": 5000
+          }
+        }
+      },
+      {
+        "schema_version": "akrs.event/v1",
+        "run_id": "01ARZ3NDEKTSV4RRFFQ6001001",
+        "sequence": 2,
+        "timestamp": "2026-10-03T10:00:02.000Z",
+        "type": "complete",
+        "data": {
+          "packet": {
+            "schema_version": "akrs.packet/v2",
+            "command": "verify",
+            "run_id": "01ARZ3NDEKTSV4RRFFQ6001001",
+            "request_id": null,
+            "timestamp": "2026-10-03T10:00:00.000Z",
+            "status": "ok",
+            "root": "<root>",
+            "snapshot": {
+              "before": "sha256:bb59ae288ffc15046f6c3d2c7dd72781ec6277986914c82c0e3ed3042d7329ff",
+              "after": "sha256:bb59ae288ffc15046f6c3d2c7dd72781ec6277986914c82c0e3ed3042d7329ff"
+            },
+            "data": {
+              "kind": "verify_road",
+              "mode": "mechanical",
+              "road": {
+                "id": "R-P6-1",
+                "status": "ACTIVE",
+                "contract": "declared"
+              },
+              "dry_run": true,
+              "outcome": "dry_run",
+              "note": "Mechanical verification: the declared commands, how each ended and what it printed. It is not a Tester verdict and says nothing about acceptance.",
+              "risk": "verify --road executes the argv arrays declared in this repository's Road files with your permissions. Run it only on workflows you trust.",
+              "limits": {
+                "stream_cap_bytes": 65536,
+                "head_bytes": 32768,
+                "tail_bytes": 32768,
+                "grace_ms": 2000,
+                "wait_after_kill_ms": 5000
+              },
+              "env": {
+                "inherited": [
+                  "<machine-dependent names>"
+                ],
+                "set": {
+                  "NO_COLOR": "1"
+                }
+              },
+              "summary": {
+                "declared": 2,
+                "selected": 2,
+                "passed": 0,
+                "failed": 0,
+                "timed_out": 0,
+                "spawn_failed": 0,
+                "interrupted": 0,
+                "not_run": 2
+              },
+              "checks": [
+                {
+                  "name": "unit",
+                  "argv": [
+                    "node",
+                    "-e",
+                    "process.stdout.write(\"12 passed\")"
+                  ],
+                  "cwd": ".",
+                  "timeout_ms": 30000,
+                  "status": "not_run",
+                  "exit_code": null,
+                  "signal": null,
+                  "duration_ms": null,
+                  "termination": null,
+                  "error": null,
+                  "stdout": null,
+                  "stderr": null
+                },
+                {
+                  "name": "lint",
+                  "argv": [
+                    "node",
+                    "-e",
+                    "process.stderr.write(\"lint: 2 problems\"); process.exit(4)"
+                  ],
+                  "cwd": ".",
+                  "timeout_ms": 30000,
+                  "status": "not_run",
+                  "exit_code": null,
+                  "signal": null,
+                  "duration_ms": null,
+                  "termination": null,
+                  "error": null,
+                  "stdout": null,
+                  "stderr": null
+                }
+              ]
+            },
+            "findings": [],
+            "changed": [],
+            "next_commands": [
+              {
+                "command": "verify",
+                "args": [
+                  "--road",
+                  "R-P6-1",
+                  "--root",
+                  "<root>"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "blocked": {
+    "exit_code": 1,
+    "output": [
+      {
+        "schema_version": "akrs.event/v1",
+        "run_id": "01ARZ3NDEKTSV4RRFFQ6001001",
+        "sequence": 1,
+        "timestamp": "2026-10-03T10:00:01.000Z",
+        "type": "complete",
+        "data": {
+          "packet": {
+            "schema_version": "akrs.packet/v2",
+            "command": "verify",
+            "run_id": "01ARZ3NDEKTSV4RRFFQ6001001",
+            "request_id": null,
+            "timestamp": "2026-10-03T10:00:00.000Z",
+            "status": "blocked",
+            "root": "<root>",
+            "snapshot": {
+              "before": null,
+              "after": null
+            },
+            "data": {
+              "kind": "verify_road_blocked",
+              "mode": "mechanical",
+              "road": "R-P6-1",
+              "reason": "check_unknown",
+              "subject": "nope",
+              "note": "Mechanical verification: the declared commands, how each ended and what it printed. It is not a Tester verdict and says nothing about acceptance.",
+              "risk": "verify --road executes the argv arrays declared in this repository's Road files with your permissions. Run it only on workflows you trust."
+            },
+            "findings": [
+              {
+                "code": "AKRS-R024",
+                "severity": "error",
+                "message": "Road R-P6-1 declares no check named \"nope\"; only declared checks can run.",
+                "file": null,
+                "line": null,
+                "detail": {
+                  "reason": "check_unknown",
+                  "road": "R-P6-1",
+                  "subject": "nope"
+                }
+              }
+            ],
+            "changed": [],
+            "next_commands": [
+              {
+                "command": "validate",
+                "args": [
+                  "--root",
+                  "<root>"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "plain_json": {
+    "exit_code": 1,
+    "output": {
+      "schema_version": "akrs.packet/v2",
+      "command": "verify",
+      "run_id": "01ARZ3NDEKTSV4RRFFQ6001001",
+      "request_id": null,
+      "timestamp": "2026-10-03T10:00:00.000Z",
+      "status": "error",
+      "root": "<root>",
+      "snapshot": {
+        "before": "sha256:bb59ae288ffc15046f6c3d2c7dd72781ec6277986914c82c0e3ed3042d7329ff",
+        "after": "sha256:bb59ae288ffc15046f6c3d2c7dd72781ec6277986914c82c0e3ed3042d7329ff"
+      },
+      "data": {
+        "kind": "verify_road",
+        "mode": "mechanical",
+        "road": {
+          "id": "R-P6-1",
+          "status": "ACTIVE",
+          "contract": "declared"
+        },
+        "dry_run": false,
+        "outcome": "failed",
+        "note": "Mechanical verification: the declared commands, how each ended and what it printed. It is not a Tester verdict and says nothing about acceptance.",
+        "risk": "verify --road executes the argv arrays declared in this repository's Road files with your permissions. Run it only on workflows you trust.",
+        "limits": {
+          "stream_cap_bytes": 65536,
+          "head_bytes": 32768,
+          "tail_bytes": 32768,
+          "grace_ms": 2000,
+          "wait_after_kill_ms": 5000
+        },
+        "env": {
+          "inherited": [
+            "<machine-dependent names>"
+          ],
+          "set": {
+            "NO_COLOR": "1"
+          }
+        },
+        "summary": {
+          "declared": 2,
+          "selected": 2,
+          "passed": 1,
+          "failed": 1,
+          "timed_out": 0,
+          "spawn_failed": 0,
+          "interrupted": 0,
+          "not_run": 0
+        },
+        "checks": [
+          {
+            "name": "unit",
+            "argv": [
+              "node",
+              "-e",
+              "process.stdout.write(\"12 passed\")"
+            ],
+            "cwd": ".",
+            "timeout_ms": 30000,
+            "status": "passed",
+            "exit_code": 0,
+            "signal": null,
+            "duration_ms": 5,
+            "termination": "none",
+            "error": null,
+            "stdout": {
+              "text": "12 passed",
+              "tail": null,
+              "total_bytes": 9,
+              "truncated": false
+            },
+            "stderr": {
+              "text": "",
+              "tail": null,
+              "total_bytes": 0,
+              "truncated": false
+            }
+          },
+          {
+            "name": "lint",
+            "argv": [
+              "node",
+              "-e",
+              "process.stderr.write(\"lint: 2 problems\"); process.exit(4)"
+            ],
+            "cwd": ".",
+            "timeout_ms": 30000,
+            "status": "failed",
+            "exit_code": 4,
+            "signal": null,
+            "duration_ms": 5,
+            "termination": "none",
+            "error": null,
+            "stdout": {
+              "text": "",
+              "tail": null,
+              "total_bytes": 0,
+              "truncated": false
+            },
+            "stderr": {
+              "text": "lint: 2 problems",
+              "tail": null,
+              "total_bytes": 16,
+              "truncated": false
+            }
+          }
+        ]
+      },
+      "findings": [
+        {
+          "code": "AKRS-R023",
+          "severity": "error",
+          "file": null,
+          "line": null,
+          "message": "The declared check \"lint\" of R-P6-1 did not pass: failed (exit 4).",
+          "detail": {
+            "check": "lint",
+            "exit_code": 4,
+            "road": "R-P6-1",
+            "signal": null,
+            "status": "failed"
+          }
+        }
+      ],
+      "changed": [],
+      "next_commands": [
+        {
+          "command": "road-details",
+          "args": [
+            "R-P6-1",
+            "--root",
+            "<root>"
+          ]
+        }
+      ]
+    }
+  }
+}
