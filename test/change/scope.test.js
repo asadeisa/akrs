@@ -191,3 +191,22 @@ test('scope list shows every request with its state through the real adapter (a 
   assert.equal(one.data.requests.length, 0);
   assert.equal(text.length >= 0 && codesOf(packet).length === 0, true);
 });
+
+test('a retry of a committed approval with the same request ID replays as a noop (and a different input conflicts) instead of finding nothing pending', async (t) => {
+  const repo = await seeded(t);
+  await request(repo, { road: ID, add_reads: [readEntry('app/config/payment-status.ts')] });
+  const requestId = '01ARZ3NDEKTSV4RRFFQ6007777';
+  const first = await resolve(repo, 'approve', ID, { reason: 'Agreed.', requestId });
+  assert.equal(first.outcome, 'committed');
+  const afterFirst = await everything(repo);
+  const again = await resolve(repo, 'approve', ID, { reason: 'Agreed.', requestId });
+  assert.equal(again.outcome, 'replayed');
+  assert.equal(again.packet.status, 'noop');
+  assert.equal(again.packet.request_id, requestId);
+  assert.deepEqual(await everything(repo), afterFirst, 'a replay writes nothing');
+  const different = await resolve(repo, 'approve', ID, { reason: 'Another reason.', requestId });
+  assert.equal(different.outcome, 'conflict');
+  assert.deepEqual(await everything(repo), afterFirst);
+  const unrelated = await resolve(repo, 'approve', ID, { reason: 'Agreed.' });
+  assert.deepEqual(reasons(unrelated.packet), ['no_pending'], 'without a request ID nothing is pending any more');
+});

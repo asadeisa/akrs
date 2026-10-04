@@ -1,0 +1,28 @@
+{
+  "snapshots": {
+    "road-new": "sha256:8286e16f7dabaaf9fab07e40eafc31e2fb58aba7c8f372697d6192e893d1235a",
+    "task-new": "sha256:3de5c463d7b269a956496feb039fb3cd9597f0e996250cfaccbf5741d2b97f53",
+    "road-update": "sha256:91869c84fa9d9349417e3ed5060a7933fa69eb6c7a82a3717e7b6c17fa68b1ac",
+    "road-move": "sha256:8f079574fcad932064959fe037f48624895385b15918ad7eebc79a5153bc6c77",
+    "scope-request": "sha256:360d291fa84c9e4ad675b8f826ff726ec046d4e90fd53ff587367406e597bffc",
+    "scope-approve": "sha256:91869c84fa9d9349417e3ed5060a7933fa69eb6c7a82a3717e7b6c17fa68b1ac",
+    "scope-reject": "sha256:cd1b4da1a704c099c8381ebc0e8d389c9295a54dc81ab323d3342ae1b64262c6",
+    "scope-list": "sha256:05d9dd237565d390b490459ca29911de16b2a1cc67f5633b5d6e06479000830e",
+    "memory-add": "sha256:1839c0ff5a7a4642d202eec0378aa02507c70f0ccedf631d15a53d78bde9bf0c",
+    "log-append": "sha256:25092619563792115c78ef52af5c2a76d7883e68b0386bcd3f5ca7d78e08a743",
+    "state-set": "sha256:85a947daf8c51a3610094ecf20553ecdd58b6398eff87817aca70782e96a1645",
+    "state-render": "sha256:11cff0d19d1ff2a93baa369b227b13be6047a2338db7b0a4e9e3e06c35c24817",
+    "executor-set": "sha256:a652b3c16b00de44dc2d9f26baf508cc7dc5a661adcd83ce5c7b1360f328dea5",
+    "road-fit": "sha256:a11bb770797149f49145199cebc7d6639adf5ab49db0c5c3fa2d1fb1957b4832",
+    "validate": "sha256:7a90c1c4d212f6ce523ecef2d13e28d855e9cb3bcc9d4df62d99ca5304c4c75d"
+  },
+  "example_files": {
+    "README.md": "sha256:1cb9fa74b4cdb9a64cb21f9e0670657b47a21c6e526fe687e87063764b782e67",
+    "akrs/STATE.md": "sha256:1fe71c9afa2bb3aaf2721487a8a15f2394abead43f0259ee555b82930095a78b",
+    "akrs/executors.json": "sha256:81298109b3a8fc331f35693474e57841e43f98aee0a506635d28c8f013972727",
+    "akrs/roads/R1.json": "sha256:f6ea73211e1c116ae7feb9b2c64d9305cec648b518531cd16dbeaf9b7953bfe3",
+    "akrs/state.json": "sha256:5a5768ff0206ca0d5e250b705ab463ab2ede83e577c726f4082b18fd75c21e81",
+    "akrs/tasks/T1.md": "sha256:a72eb07e5c3ccb67d74b753e1896c69ed7e172b2dda237e0ef3c0d59fc9b3010",
+    "akrs/verifications/R1/contract.json": "sha256:4b992dd851216efe084d8cf30a0dac56f9ac55e58f3c1670086f4885382d70d5"
+  }
+}
