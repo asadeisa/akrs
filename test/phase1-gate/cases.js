@@ -12,6 +12,10 @@ import { setExecutor } from '../../lib/store/executors/index.js';
 import { scaffoldWorkflow } from '../../lib/store/scaffold/index.js';
 import { appendHandoff, defineVerification } from '../../lib/store/verification/index.js';
 import { appendResult } from '../../lib/store/test-result/index.js';
+import { finishPlan } from '../../lib/store/plan-finish/index.js';
+import { PLAN_SCHEMA, PLAN_SPEC } from '../../lib/schemas/plan.js';
+import { canonicalizeJson, storedSpec, withMeta } from '../../lib/store/canonical/index.js';
+import { commandSnapshot } from '../../lib/store/snapshots/index.js';
 import { moveRoad } from '../../lib/store/roads/move.js';
 import { updateRoad } from '../../lib/store/roads/update.js';
 import { requestScope, resolveScope } from '../../lib/store/scope/writer.js';
@@ -135,6 +139,29 @@ export const CASES = Object.freeze({
       });
     },
     run: (repo, extra) => appendResult({ ...gateOptions(repo, extra), key: 'P6', flat: { verdict: 'fail', because: 'The page does not list reservations.' } }),
+  },
+  // P2-W08: the Plan close is one transaction over the Plan file and the closure ledger
+  'plan-finish': {
+    command: 'plan finish',
+    seed: async (repo) => {
+      await seedPlan(repo, 'P6');
+      await repo.write('SOT/10-budgets.md', 'frame budget 16ms\n');
+      const plan = withMeta({ schema: PLAN_SCHEMA, id: 'P6', title: 'Plan P6', questions: [], seams: [], findings: [], closure: { status: 'open', at: null, operation: null } },
+        { schema: PLAN_SCHEMA, generator: 'akrs/2.0.0-alpha.0', spec: PLAN_SPEC });
+      await repo.write('akrs/plans/P6.json', canonicalizeJson(plan, storedSpec(PLAN_SPEC)));
+      await seedRoad(repo, { id: 'R-P6-1', plan: 'P6' }, { folder: 'roads/P6', status: 'DONE' });
+      const verification = { ...(await contract(['R-P6-1'])), policy: 'checks', launch: null, setup: [], teardown: [], measurements: [], scenario: [], evidence_types: [] };
+      await defineVerification({ ...authoringOptions(repo, { providers: providersOf(repo) }), key: 'P6', channel: stdin(verification) });
+      await appendHandoff({
+        ...authoringOptions(repo, { providers: providersOf(repo) }), key: 'P6',
+        channel: stdin({ schema: 'akrs.handoff/v1', road: 'R-P6-1', result: 'The admin page is reachable.', reach: ['Open /admin'], expect: 'The page lists reservations.' }),
+      });
+      const recorded = await appendResult({ ...authoringOptions(repo, { providers: providersOf(repo) }), key: 'P6', flat: { verdict: 'pass', because: 'The page lists reservations.' } });
+      if (recorded.outcome !== 'committed') throw new Error(`the pass was not recorded: ${JSON.stringify(recorded.packet.findings)}`);
+    },
+    // the snapshot the Leader read: a retry must send the same one, so it is computed once from the seeded state
+    prepare: async (repo) => ({ expectedSnapshot: (await commandSnapshot('plan-finish', { ...repo.options, target: { plan: 'P6' } })).snapshot }),
+    run: (repo, extra) => finishPlan({ ...gateOptions(repo, extra), key: 'P6' }),
   },
   'state-set': {
     command: 'state set',
