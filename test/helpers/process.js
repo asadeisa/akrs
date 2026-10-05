@@ -1,6 +1,9 @@
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
+// Hang guard only (never an assertion): generous so a loaded Windows runner does not kill a slow but healthy child.
+export const CHILD_PROCESS_TIMEOUT_MS = 30_000;
+
 const cliPath = fileURLToPath(new URL('../../bin/akrs.js', import.meta.url));
 
 export function injectedEnvironment(overrides = {}) {
@@ -29,7 +32,7 @@ export function runProcess(command, args = [], options = {}) {
     const timer = setTimeout(() => {
       timedOut = true;
       child.kill();
-    }, options.timeoutMs ?? 10_000);
+    }, options.timeoutMs ?? CHILD_PROCESS_TIMEOUT_MS);
 
     child.stdout.on('data', (chunk) => stdout.push(chunk));
     child.stderr.on('data', (chunk) => stderr.push(chunk));
