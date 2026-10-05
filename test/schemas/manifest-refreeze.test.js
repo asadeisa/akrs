@@ -184,6 +184,8 @@ const P0_COMMANDS = {
   audit: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
   doctor: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
   template: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_road', 'template'], dry_run: false },
+  // P2-W15: the MCP stdio server; it projects the other entries into tools and has no tool of its own (its one write is an oversized result in .cache/mcp).
+  mcp: { idempotency: 'none', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
 };
 
 test('Q16 the shipped P0 manifest carries the re-frozen capability values', () => {

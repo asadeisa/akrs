@@ -1,0 +1,832 @@
+[
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "server/discover",
+      "params": {
+        "_meta": {
+          "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+          "io.modelcontextprotocol/clientCapabilities": {}
+        }
+      }
+    },
+    "responses": [
+      {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+          "resultType": "complete",
+          "supportedVersions": [
+            "2026-07-28"
+          ],
+          "capabilities": {
+            "tools": {
+              "listChanged": false
+            }
+          },
+          "instructions": "AKRS workflow tools. Each call returns the same packet as the akrs CLI with --json: read status, findings and next_commands, then do the next command. Worker: akrs_work work -> edit only the declared writes -> akrs_work done. Tester: akrs_test details -> run -> result. Leader: akrs_status boot, then akrs_write / akrs_scope. Never pass hashes, snapshots or request IDs. Structured input: write JSON to akrs/drafts/<name>.json, pass input_path. A large result names a file under akrs/.cache/mcp/ to read.",
+          "ttlMs": 3600000,
+          "cacheScope": "public",
+          "_meta": {
+            "io.modelcontextprotocol/serverInfo": {
+              "name": "akrs",
+              "version": "2.0.0-alpha.0"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/list",
+      "params": {
+        "_meta": {
+          "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+          "io.modelcontextprotocol/clientCapabilities": {}
+        }
+      }
+    },
+    "responses": [
+      {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "result": {
+          "resultType": "complete",
+          "tools": [
+            {
+              "name": "akrs_status",
+              "description": "Workflow state: status, next commands, validation, finding explanations, graph and the Leader boot packet.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "validate",
+                      "explain",
+                      "status",
+                      "next",
+                      "graph",
+                      "boot"
+                    ],
+                    "description": "The action to run."
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "CLI <code> (explain)"
+                  },
+                  "executor": {
+                    "type": "string",
+                    "description": "CLI --executor (next)"
+                  },
+                  "touches": {
+                    "type": "string",
+                    "description": "CLI --touches (graph)"
+                  }
+                },
+                "required": [
+                  "action"
+                ],
+                "additionalProperties": false
+              }
+            },
+            {
+              "name": "akrs_write",
+              "description": "Leader writes: Roads, Tasks, Memory, State, executors, verification contracts, activation and Plan close.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "road_new",
+                      "task_new",
+                      "memory_add",
+                      "road_update",
+                      "verification_define",
+                      "state_set",
+                      "executor_set",
+                      "activate",
+                      "lease_release",
+                      "plan_finish"
+                    ],
+                    "description": "The action to run."
+                  },
+                  "input_path": {
+                    "type": "string",
+                    "description": "CLI --input (road_new, task_new, memory_add, road_update, verification_define)"
+                  },
+                  "dry_run": {
+                    "type": "boolean",
+                    "description": "CLI --dry-run (road_new, task_new, memory_add, road_update, verification_define, state_set, executor_set, activate, lease_release, plan_finish)"
+                  },
+                  "if_snapshot": {
+                    "type": "string",
+                    "description": "CLI --if-snapshot (road_new, task_new, memory_add, road_update, verification_define, state_set, executor_set, activate, plan_finish)"
+                  },
+                  "again": {
+                    "type": "boolean",
+                    "description": "CLI --again (memory_add)"
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "CLI <id> / <plan> / <road> (road_update, verification_define, executor_set, activate, lease_release, plan_finish)"
+                  },
+                  "patch": {
+                    "type": "boolean",
+                    "description": "CLI --patch (road_update)"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "CLI --reason (road_update)"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "description": "CLI --mode (state_set)"
+                  },
+                  "role": {
+                    "type": "string",
+                    "description": "CLI --role (state_set, executor_set)"
+                  },
+                  "plan": {
+                    "type": "string",
+                    "description": "CLI --plan (state_set)"
+                  },
+                  "phase": {
+                    "type": "string",
+                    "description": "CLI --phase (state_set)"
+                  },
+                  "task": {
+                    "type": "string",
+                    "description": "CLI --task (state_set)"
+                  },
+                  "next": {
+                    "type": "string",
+                    "description": "CLI --next (state_set)"
+                  },
+                  "clear": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "CLI --clear (state_set)"
+                  },
+                  "by": {
+                    "type": "string",
+                    "description": "CLI --by (state_set)"
+                  },
+                  "class": {
+                    "type": "string",
+                    "description": "CLI --class (executor_set)"
+                  },
+                  "label": {
+                    "type": "string",
+                    "description": "CLI --label (executor_set)"
+                  },
+                  "answer": {
+                    "type": "string",
+                    "description": "CLI --answer (executor_set)"
+                  },
+                  "override": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "CLI --override (executor_set)"
+                  },
+                  "clear_override": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "CLI --clear-override (executor_set)"
+                  }
+                },
+                "required": [
+                  "action"
+                ],
+                "additionalProperties": false
+              }
+            },
+            {
+              "name": "akrs_scope",
+              "description": "Scope requests: ask for more reads or writes, approve, reject or list them.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "request",
+                      "approve",
+                      "reject",
+                      "list"
+                    ],
+                    "description": "The action to run."
+                  },
+                  "input_path": {
+                    "type": "string",
+                    "description": "CLI --input (request)"
+                  },
+                  "dry_run": {
+                    "type": "boolean",
+                    "description": "CLI --dry-run (request, approve, reject)"
+                  },
+                  "if_snapshot": {
+                    "type": "string",
+                    "description": "CLI --if-snapshot (request, approve, reject)"
+                  },
+                  "request": {
+                    "type": "string",
+                    "description": "CLI <target> (approve, reject)"
+                  },
+                  "road": {
+                    "type": "string",
+                    "description": "CLI <target> / <road> (approve, reject, list)"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "CLI --reason (approve, reject)"
+                  }
+                },
+                "required": [
+                  "action"
+                ],
+                "additionalProperties": false
+              }
+            },
+            {
+              "name": "akrs_test",
+              "description": "Tester loop: the Plan Tester packet, the scenario run, the result and Worker handoffs.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "handoff",
+                      "details",
+                      "run",
+                      "result"
+                    ],
+                    "description": "The action to run."
+                  },
+                  "plan": {
+                    "type": "string",
+                    "description": "CLI <plan> (handoff, details, run, result)"
+                  },
+                  "input_path": {
+                    "type": "string",
+                    "description": "CLI --input (handoff, result)"
+                  },
+                  "road": {
+                    "type": "string",
+                    "description": "CLI --road (handoff)"
+                  },
+                  "result": {
+                    "type": "string",
+                    "description": "CLI --result (handoff)"
+                  },
+                  "reach": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "CLI --reach (handoff)"
+                  },
+                  "expect": {
+                    "type": "string",
+                    "description": "CLI --expect (handoff)"
+                  },
+                  "again": {
+                    "type": "boolean",
+                    "description": "CLI --again (handoff, result)"
+                  },
+                  "dry_run": {
+                    "type": "boolean",
+                    "description": "CLI --dry-run (handoff, result)"
+                  },
+                  "if_snapshot": {
+                    "type": "string",
+                    "description": "CLI --if-snapshot (handoff, result)"
+                  },
+                  "executor": {
+                    "type": "string",
+                    "description": "CLI --executor (run)"
+                  },
+                  "verdict": {
+                    "type": "string",
+                    "description": "CLI --verdict (result)"
+                  },
+                  "because": {
+                    "type": "string",
+                    "description": "CLI --because (result)"
+                  }
+                },
+                "required": [
+                  "action",
+                  "plan"
+                ],
+                "additionalProperties": false
+              }
+            },
+            {
+              "name": "akrs_road",
+              "description": "Road queries: the Worker or Leader packet, route fit, templates, checks and readiness.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "fit",
+                      "details",
+                      "verify",
+                      "check",
+                      "template"
+                    ],
+                    "description": "The action to run."
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "CLI <id> (fit, details, check)"
+                  },
+                  "input_path": {
+                    "type": "string",
+                    "description": "CLI --input (fit)"
+                  },
+                  "class": {
+                    "type": "string",
+                    "description": "CLI --class (fit, template)"
+                  },
+                  "write_drafts": {
+                    "type": "boolean",
+                    "description": "CLI --write-drafts (fit)"
+                  },
+                  "role": {
+                    "type": "string",
+                    "description": "CLI --role (details)"
+                  },
+                  "include_reads": {
+                    "type": "boolean",
+                    "description": "CLI --include-reads (details)"
+                  },
+                  "no_include_reads": {
+                    "type": "boolean",
+                    "description": "CLI --no-include-reads (details)"
+                  },
+                  "full": {
+                    "type": "boolean",
+                    "description": "CLI --full (details)"
+                  },
+                  "reuse": {
+                    "type": "boolean",
+                    "description": "CLI --reuse (details)"
+                  },
+                  "max_tokens": {
+                    "type": "string",
+                    "description": "CLI --max-tokens (details)"
+                  },
+                  "road": {
+                    "type": "string",
+                    "description": "CLI --road (verify)"
+                  },
+                  "check": {
+                    "type": "string",
+                    "description": "CLI --check (verify)"
+                  },
+                  "dry_run": {
+                    "type": "boolean",
+                    "description": "CLI --dry-run (verify)"
+                  },
+                  "if_snapshot": {
+                    "type": "string",
+                    "description": "CLI --if-snapshot (verify)"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "description": "CLI <kind> (template)"
+                  },
+                  "to_draft": {
+                    "type": "string",
+                    "description": "CLI --to-draft (template)"
+                  }
+                },
+                "required": [
+                  "action"
+                ],
+                "additionalProperties": false
+              }
+            },
+            {
+              "name": "akrs_work",
+              "description": "Worker loop: claim a Road (work), finish it in one call (done) or give it back (yield).",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "work",
+                      "done",
+                      "yield"
+                    ],
+                    "description": "The action to run."
+                  },
+                  "road": {
+                    "type": "string",
+                    "description": "CLI <road> (work, done, yield)"
+                  },
+                  "executor": {
+                    "type": "string",
+                    "description": "CLI --executor (work, done, yield)"
+                  },
+                  "takeover": {
+                    "type": "boolean",
+                    "description": "CLI --takeover (work)"
+                  },
+                  "result": {
+                    "type": "string",
+                    "description": "CLI --result (done)"
+                  },
+                  "reach": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "CLI --reach (done)"
+                  },
+                  "expect": {
+                    "type": "string",
+                    "description": "CLI --expect (done)"
+                  },
+                  "handoff": {
+                    "type": "string",
+                    "description": "CLI --handoff (done)"
+                  },
+                  "deviations": {
+                    "type": "string",
+                    "description": "CLI --deviations (done)"
+                  },
+                  "pre_existing": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "CLI --pre-existing (done)"
+                  },
+                  "dry_run": {
+                    "type": "boolean",
+                    "description": "CLI --dry-run (done, yield)"
+                  },
+                  "if_snapshot": {
+                    "type": "string",
+                    "description": "CLI --if-snapshot (done, yield)"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "CLI --reason (yield)"
+                  }
+                },
+                "required": [
+                  "action"
+                ],
+                "additionalProperties": false
+              }
+            },
+            {
+              "name": "akrs_page",
+              "description": "Read a running web page through an installed browser (untrusted data).",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "read"
+                    ],
+                    "description": "The action to run."
+                  },
+                  "url": {
+                    "type": "string",
+                    "description": "CLI <url> (read)"
+                  },
+                  "text": {
+                    "type": "boolean",
+                    "description": "CLI --text (read)"
+                  },
+                  "a11y": {
+                    "type": "boolean",
+                    "description": "CLI --a11y (read)"
+                  },
+                  "console": {
+                    "type": "boolean",
+                    "description": "CLI --console (read)"
+                  },
+                  "network": {
+                    "type": "boolean",
+                    "description": "CLI --network (read)"
+                  },
+                  "screenshot": {
+                    "type": "boolean",
+                    "description": "CLI --screenshot (read)"
+                  },
+                  "viewport": {
+                    "type": "string",
+                    "description": "CLI --viewport (read)"
+                  },
+                  "wait_for": {
+                    "type": "string",
+                    "description": "CLI --wait-for (read)"
+                  },
+                  "timeout_ms": {
+                    "type": "integer",
+                    "description": "CLI --timeout-ms (read)"
+                  },
+                  "evidence_dir": {
+                    "type": "string",
+                    "description": "CLI --evidence-dir (read)"
+                  }
+                },
+                "required": [
+                  "action",
+                  "url"
+                ],
+                "additionalProperties": false
+              }
+            }
+          ],
+          "ttlMs": 3600000,
+          "cacheScope": "public",
+          "_meta": {
+            "io.modelcontextprotocol/serverInfo": {
+              "name": "akrs",
+              "version": "2.0.0-alpha.0"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "tools/call",
+      "params": {
+        "name": "akrs_status",
+        "arguments": {
+          "action": "explain",
+          "id": "AKRS-C001"
+        },
+        "_meta": {
+          "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+          "io.modelcontextprotocol/clientCapabilities": {}
+        }
+      }
+    },
+    "responses": [
+      {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "result": {
+          "resultType": "complete",
+          "content": [
+            {
+              "type": "text",
+              "text": "# AKRS packet: explain\n\n- Status: `ok`\n- Root: `<root>`\n- Run ID: `01ARZ3NDEKTSV4RRFFQ6007001`\n\n## Data\n\n```json\n{\n  \"kind\": \"finding_explanation\",\n  \"finding\": {\n    \"code\": \"AKRS-C001\",\n    \"category\": \"command\",\n    \"severity\": \"error\",\n    \"rationale\": \"The command line does not match the closed command manifest.\",\n    \"data_schema\": {\n      \"type\": \"object\",\n      \"required\": [\n        \"reason\"\n      ],\n      \"properties\": {\n        \"reason\": {\n          \"type\": \"string\"\n        }\n      },\n      \"additionalProperties\": false\n    },\n    \"remediation\": \"Correct the command or arguments shown by manifest-backed help and retry.\"\n  }\n}\n```\n"
+            }
+          ],
+          "structuredContent": {
+            "schema_version": "akrs.packet/v2",
+            "command": "explain",
+            "run_id": "01ARZ3NDEKTSV4RRFFQ6007001",
+            "request_id": null,
+            "timestamp": "2026-10-03T10:00:00.000Z",
+            "status": "ok",
+            "root": "<root>",
+            "snapshot": {
+              "before": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "after": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "data": {
+              "kind": "finding_explanation",
+              "finding": {
+                "code": "AKRS-C001",
+                "category": "command",
+                "severity": "error",
+                "rationale": "The command line does not match the closed command manifest.",
+                "data_schema": {
+                  "type": "object",
+                  "required": [
+                    "reason"
+                  ],
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "remediation": "Correct the command or arguments shown by manifest-backed help and retry."
+              }
+            },
+            "findings": [],
+            "changed": [],
+            "next_commands": []
+          },
+          "isError": false,
+          "_meta": {
+            "io.modelcontextprotocol/serverInfo": {
+              "name": "akrs",
+              "version": "2.0.0-alpha.0"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "tools/call",
+      "params": {
+        "name": "akrs_road",
+        "arguments": {
+          "action": "template",
+          "kind": "scope"
+        },
+        "_meta": {
+          "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+          "io.modelcontextprotocol/clientCapabilities": {}
+        }
+      }
+    },
+    "responses": [
+      {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "result": {
+          "resultType": "complete",
+          "content": [
+            {
+              "type": "text",
+              "text": "# AKRS packet: template\n\n- Status: `ok`\n- Root: `<root>`\n- Run ID: `01ARZ3NDEKTSV4RRFFQ6007002`\n\n## Data\n\n```json\n{\n  \"kind\": \"template\",\n  \"template\": {\n    \"kind\": \"scope\",\n    \"schema\": \"akrs.scope-request/v1\",\n    \"skeleton\": {\n      \"schema\": \"akrs.scope-request/v1\",\n      \"road\": null,\n      \"add_reads\": [],\n      \"add_writes\": [],\n      \"reason\": null,\n      \"blocking\": null\n    },\n    \"guide\": [\n      {\n        \"pointer\": \"/add_reads\",\n        \"description\": \"Extra reads, same entry shape as a Road read; at least one of add_reads/add_writes is needed.\"\n      },\n      {\n        \"pointer\": \"/add_reads/0\",\n        \"description\": \"The first extra read (or fill add_writes instead).\"\n      },\n      {\n        \"pointer\": \"/add_writes\",\n        \"description\": \"Extra writes, same entry shape as a Road write.\"\n      },\n      {\n        \"pointer\": \"/blocking\",\n        \"description\": \"true when the Worker cannot continue without the answer.\"\n      },\n      {\n        \"pointer\": \"/reason\",\n        \"description\": \"Why the declared scope is not enough.\"\n      },\n      {\n        \"pointer\": \"/road\",\n        \"description\": \"The Road asking for more scope.\"\n      },\n      {\n        \"pointer\": \"/schema\",\n        \"description\": \"Fixed schema ID; leave as is.\"\n      }\n    ]\n  },\n  \"class\": null,\n  \"class_applied\": false,\n  \"draft\": null\n}\n```\n"
+            }
+          ],
+          "structuredContent": {
+            "schema_version": "akrs.packet/v2",
+            "command": "template",
+            "run_id": "01ARZ3NDEKTSV4RRFFQ6007002",
+            "request_id": null,
+            "timestamp": "2026-10-03T10:00:01.000Z",
+            "status": "ok",
+            "root": "<root>",
+            "snapshot": {
+              "before": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "after": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "data": {
+              "kind": "template",
+              "template": {
+                "kind": "scope",
+                "schema": "akrs.scope-request/v1",
+                "skeleton": {
+                  "schema": "akrs.scope-request/v1",
+                  "road": null,
+                  "add_reads": [],
+                  "add_writes": [],
+                  "reason": null,
+                  "blocking": null
+                },
+                "guide": [
+                  {
+                    "pointer": "/add_reads",
+                    "description": "Extra reads, same entry shape as a Road read; at least one of add_reads/add_writes is needed."
+                  },
+                  {
+                    "pointer": "/add_reads/0",
+                    "description": "The first extra read (or fill add_writes instead)."
+                  },
+                  {
+                    "pointer": "/add_writes",
+                    "description": "Extra writes, same entry shape as a Road write."
+                  },
+                  {
+                    "pointer": "/blocking",
+                    "description": "true when the Worker cannot continue without the answer."
+                  },
+                  {
+                    "pointer": "/reason",
+                    "description": "Why the declared scope is not enough."
+                  },
+                  {
+                    "pointer": "/road",
+                    "description": "The Road asking for more scope."
+                  },
+                  {
+                    "pointer": "/schema",
+                    "description": "Fixed schema ID; leave as is."
+                  }
+                ]
+              },
+              "class": null,
+              "class_applied": false,
+              "draft": null
+            },
+            "findings": [],
+            "changed": [],
+            "next_commands": []
+          },
+          "isError": false,
+          "_meta": {
+            "io.modelcontextprotocol/serverInfo": {
+              "name": "akrs",
+              "version": "2.0.0-alpha.0"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "tools/list",
+      "params": {
+        "_meta": {
+          "io.modelcontextprotocol/protocolVersion": "2025-06-18",
+          "io.modelcontextprotocol/clientCapabilities": {}
+        }
+      }
+    },
+    "responses": [
+      {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "error": {
+          "code": -32022,
+          "message": "Unsupported protocol version",
+          "data": {
+            "supported": [
+              "2026-07-28"
+            ],
+            "requested": "2025-06-18"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "tools/list"
+    },
+    "responses": [
+      {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "error": {
+          "code": -32022,
+          "message": "Unsupported protocol version",
+          "data": {
+            "supported": [
+              "2026-07-28"
+            ],
+            "requested": null
+          }
+        }
+      }
+    ]
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "ping",
+      "params": {
+        "_meta": {
+          "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+          "io.modelcontextprotocol/clientCapabilities": {}
+        }
+      }
+    },
+    "responses": [
+      {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "error": {
+          "code": -32601,
+          "message": "Method not found: ping"
+        }
+      }
+    ]
+  }
+]

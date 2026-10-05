@@ -7,8 +7,26 @@ import {
   refusalExitCode,
 } from './node-guard.js';
 
+// `akrs mcp` serves MCP over stdio (stdout carries protocol frames only); with an output format flag it is an ordinary packet command.
+const OUTPUT_FORMATS = ['--json', '--jsonl', '--prompt'];
+
 async function main(argv) {
   const { commandHandlers, commandManifest } = await import('../lib/core/index.js');
+  if (argv[0] === 'mcp' && !argv.some((token) => OUTPUT_FORMATS.includes(token))) {
+    const { runMcpCommand } = await import('../lib/mcp/stdio.js');
+    const { createDefaultProviders } = await import('../lib/core/providers.js');
+    process.exitCode = await runMcpCommand({
+      argv,
+      cwd: process.cwd(),
+      stdin: process.stdin,
+      stdout: process.stdout,
+      stderr: process.stderr,
+      manifest: commandManifest,
+      handlers: commandHandlers,
+      providers: createDefaultProviders(),
+    });
+    return;
+  }
   const { runCliAdapter } = await import('./cli-adapter.js');
 
   const result = await runCliAdapter({
