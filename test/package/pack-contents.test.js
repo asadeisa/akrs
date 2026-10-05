@@ -28,7 +28,7 @@ test('npm pack --dry-run ships the runtime and excludes development material', a
 
   for (const required of [
     'package.json', 'README.md', 'LICENSE', 'CHANGELOG.md', 'VERSIONING.md', 'GETTING_STARTED.md',
-    'bin/akrs.js', 'bin/node-guard.js', 'bin/cli-adapter.js',
+    'bin/akrs.js', 'bin/akrs-guard.js', 'bin/node-guard.js', 'bin/cli-adapter.js',
     'lib/core/index.js', 'lib/commands/meta.js',
     'docs/framework/01-Constitution.md',
     'examples/minimal/README.md', 'examples/minimal/akrs/roads/R1.json', 'examples/minimal/akrs/state.json', 'examples/minimal/akrs/STATE.md',

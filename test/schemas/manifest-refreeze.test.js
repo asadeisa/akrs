@@ -171,6 +171,13 @@ const P0_COMMANDS = {
   graph: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_status', 'graph'], dry_run: false },
   stale: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
   log: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
+  // P2-W12: the intents (A1 6.2: akrs_work work|done|yield; boot rides akrs_status). work is a claim (no journal, lease-guarded), done is lease-implied,
+  // yield is an append that re-validates under the lock (it never waits on a stale lease); guard is the hook query.
+  boot: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_status', 'boot'], dry_run: false },
+  work: { idempotency: 'none', expected_snapshot: 'lease', mcp: ['akrs_work', 'work'], dry_run: false },
+  done: { idempotency: 'journal', expected_snapshot: 'lease', mcp: ['akrs_work', 'done'], dry_run: true },
+  yield: { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_work', 'yield'], dry_run: true },
+  guard: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
   // P2-W13: a derived_write (the screenshot is the only write): no journal, no snapshot guard (A1 7.2: akrs_page read).
   page: { idempotency: 'none', expected_snapshot: 'not_applicable', mcp: ['akrs_page', 'read'], dry_run: false },
   // P1-W12: report-only git queries (not in the A1 6.2 MCP tool table).

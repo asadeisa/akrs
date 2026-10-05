@@ -1,0 +1,10 @@
+import './guard.test.js';
+import './work.test.js';
+import './done.test.js';
+import './yield.test.js';
+import './boot.test.js';
+import './policy.test.js';
+import './parity.test.js';
+import './lease.test.js';
+import './schema.test.js';
+import './render.test.js';

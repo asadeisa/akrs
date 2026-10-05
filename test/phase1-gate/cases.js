@@ -13,6 +13,7 @@ import { scaffoldWorkflow } from '../../lib/store/scaffold/index.js';
 import { appendHandoff, defineVerification } from '../../lib/store/verification/index.js';
 import { appendResult } from '../../lib/store/test-result/index.js';
 import { finishPlan } from '../../lib/store/plan-finish/index.js';
+import { doneIntent, workIntent, yieldIntent } from '../../lib/store/intents/index.js';
 import { PLAN_SCHEMA, PLAN_SPEC } from '../../lib/schemas/plan.js';
 import { canonicalizeJson, storedSpec, withMeta } from '../../lib/store/canonical/index.js';
 import { commandSnapshot } from '../../lib/store/snapshots/index.js';
@@ -139,6 +140,30 @@ export const CASES = Object.freeze({
       });
     },
     run: (repo, extra) => appendResult({ ...gateOptions(repo, extra), key: 'P6', flat: { verdict: 'fail', because: 'The page does not list reservations.' } }),
+  },
+  // P2-W12: the Worker's finish (handoff, DONE status and closure) and its yield (the ledger record) are one transaction each; the lease
+  // lives under .ops, outside the digest, and never joins the request, so a retry after the commit replays
+  'done': {
+    command: 'done',
+    seed: async (repo) => {
+      await setExecutor({ ...authoringOptions(repo, { providers: providersOf(repo) }), executor: { id: 'flash', role: 'worker', class: 'weak', label: 'Flash', user_answer: 'weak' }, setOverrides: [], clearOverrides: [] });
+      await seedRoad(repo, { id: 'R-GATE', plan: null, task: null, writes: [fileWrite('src/own.js')], checks: [{ name: 'unit', argv: ['node', '-e', 'process.exit(0)'], timeout_ms: 30000 }] }, { status: 'ACTIVE' });
+      const claimed = await workIntent({ ...authoringOptions(repo, { providers: providersOf(repo) }), road: 'R-GATE', executorFlag: 'flash' });
+      if (claimed.packet.status !== 'ok') throw new Error(`the gate lease was not claimed: ${claimed.packet.status}`);
+    },
+    run: (repo, extra) => doneIntent({
+      ...gateOptions(repo, extra), road: 'R-GATE', executorFlag: 'flash', baton: { result: 'The own file is ready.', reach: ['Open it'], expect: 'The change.' },
+    }),
+  },
+  'yield': {
+    command: 'yield',
+    seed: async (repo) => {
+      await setExecutor({ ...authoringOptions(repo, { providers: providersOf(repo) }), executor: { id: 'flash', role: 'worker', class: 'weak', label: 'Flash', user_answer: 'weak' }, setOverrides: [], clearOverrides: [] });
+      await seedRoad(repo, { id: 'R-GATE', plan: null, task: null, writes: [fileWrite('src/own.js')] }, { status: 'ACTIVE' });
+      const claimed = await workIntent({ ...authoringOptions(repo, { providers: providersOf(repo) }), road: 'R-GATE', executorFlag: 'flash' });
+      if (claimed.packet.status !== 'ok') throw new Error(`the gate lease was not claimed: ${claimed.packet.status}`);
+    },
+    run: (repo, extra) => yieldIntent({ ...gateOptions(repo, extra), road: 'R-GATE', executorFlag: 'flash', reason: 'The Road is too big for its class.' }),
   },
   // P2-W08: the Plan close is one transaction over the Plan file and the closure ledger
   'plan-finish': {
