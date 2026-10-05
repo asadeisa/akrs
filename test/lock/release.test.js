@@ -76,6 +76,78 @@ test('release when the lock was already removed reports not_owner without throwi
   assert.equal(await readFile(workflow.ownerFile, 'utf8'), 'garbage');
 });
 
+// A read of owner.json can fail for a moment while it is replaced or scanned (Windows rename window, sharing violation,
+// partial read). The injected reader fails `failures` times with `fail()`, then reads the real file.
+function flakyOwnerRead(failures, fail) {
+  const calls = { count: 0 };
+  const readOwnerFile = async (path, encoding) => {
+    calls.count += 1;
+    if (calls.count <= failures) return fail();
+    return readFile(path, encoding);
+  };
+  return { calls, readOwnerFile };
+}
+
+const failure = (code) => () => { throw Object.assign(new Error(code), { code }); };
+
+for (const [label, fail] of [
+  ['ENOENT during a rename window', failure('ENOENT')],
+  ['an EPERM sharing violation', failure('EPERM')],
+  ['an EBUSY sharing violation', failure('EBUSY')],
+  ['an EACCES sharing violation', failure('EACCES')],
+  ['a partial read', async () => '{"schema": "akrs.lock-ow'],
+]) {
+  test(`release retries a transient owner read (${label}) and still releases`, async (t) => {
+    const workflow = await createLockWorkflow(t);
+    const environment = fakeEnvironment();
+    const flaky = flakyOwnerRead(2, fail);
+    const acquired = await acquireRepositoryLock(lockOptions(workflow, environment, {
+      testHooks: { readOwnerFile: flaky.readOwnerFile },
+    }));
+    assert.equal(acquired.status, 'acquired');
+
+    assert.deepEqual(await acquired.handle.release(), { released: true });
+    assert.equal(flaky.calls.count, 3, 'two transient failures, then the real read');
+    assert.equal(environment.sleeps.length, 2, 'it backed off between reads');
+    assert.deepEqual(await listDirectory(workflow.opsDir), []);
+  });
+}
+
+test('release does not retry when another owner is really there and leaves its lock alone', async (t) => {
+  const workflow = await createLockWorkflow(t);
+  const environment = fakeEnvironment();
+  const flaky = flakyOwnerRead(0, failure('EPERM'));
+  const acquired = await acquireRepositoryLock(lockOptions(workflow, environment, {
+    testHooks: { readOwnerFile: flaky.readOwnerFile },
+  }));
+  await writeFile(workflow.ownerFile, `${JSON.stringify(validOwner({ run_id: ulid(321) }), null, 2)}
+`);
+  const bytes = await readFile(workflow.ownerFile, 'utf8');
+  const sleepsBefore = environment.sleeps.length;
+
+  assert.deepEqual(await acquired.handle.release(), { released: false, reason: 'not_owner' });
+  assert.equal(flaky.calls.count, 1, 'a valid foreign owner is decided on the first read');
+  assert.equal(environment.sleeps.length, sleepsBefore, 'no backoff for a real owner');
+  assert.equal(await readFile(workflow.ownerFile, 'utf8'), bytes);
+  assert.deepEqual(await listDirectory(workflow.opsDir), ['lock']);
+});
+
+test('release gives up after a bounded number of unreadable owner reads and answers not_owner', async (t) => {
+  const workflow = await createLockWorkflow(t);
+  const environment = fakeEnvironment();
+  const flaky = flakyOwnerRead(Infinity, failure('EBUSY'));
+  const acquired = await acquireRepositoryLock(lockOptions(workflow, environment, {
+    testHooks: { readOwnerFile: flaky.readOwnerFile },
+  }));
+  const sleepsBefore = environment.sleeps.length;
+
+  assert.deepEqual(await acquired.handle.release(), { released: false, reason: 'not_owner' });
+  assert.equal(flaky.calls.count, 6, 'one read plus five retries');
+  assert.equal(environment.sleeps.length - sleepsBefore, 5);
+  assert.ok(environment.sleeps.slice(sleepsBefore).reduce((sum, ms) => sum + ms, 0) <= 1000, 'the total backoff stays small');
+  assert.deepEqual(await listDirectory(workflow.opsDir), ['lock'], 'an unproven lock is never removed');
+});
+
 test('withRepositoryLock runs the critical section under the lock and releases after success', async (t) => {
   const workflow = await createLockWorkflow(t);
   const environment = fakeEnvironment();
