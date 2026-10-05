@@ -165,6 +165,12 @@ const P0_COMMANDS = {
   'test-run': { idempotency: 'none', expected_snapshot: 'lease', mcp: ['akrs_test', 'run'], dry_run: false },
   'test-result': { idempotency: 'journal', expected_snapshot: 'lease', mcp: ['akrs_test', 'result'], dry_run: true },
   'plan-finish': { idempotency: 'journal', expected_snapshot: 'required', mcp: ['akrs_write', 'plan_finish'], dry_run: true },
+  status: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_status', 'status'], dry_run: false },
+  next: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_status', 'next'], dry_run: false },
+  where: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
+  graph: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_status', 'graph'], dry_run: false },
+  stale: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
+  log: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
   // P2-W13: a derived_write (the screenshot is the only write): no journal, no snapshot guard (A1 7.2: akrs_page read).
   page: { idempotency: 'none', expected_snapshot: 'not_applicable', mcp: ['akrs_page', 'read'], dry_run: false },
   // P1-W12: report-only git queries (not in the A1 6.2 MCP tool table).
