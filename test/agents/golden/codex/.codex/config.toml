@@ -1,0 +1,5 @@
+# akrs:begin mcp-akrs sha256=072f2ac828d6f07ce6962650463259c356aa19ecfab2d372afbfd1065d546453
+[mcp_servers.akrs]
+command = "node"
+args = ["/akrs-fixture/pkg/bin/akrs.js", "mcp"]
+# akrs:end mcp-akrs

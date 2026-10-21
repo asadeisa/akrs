@@ -186,6 +186,10 @@ const P0_COMMANDS = {
   template: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_road', 'template'], dry_run: false },
   // P2-W15: the MCP stdio server; it projects the other entries into tools and has no tool of its own (its one write is an oversized result in .cache/mcp).
   mcp: { idempotency: 'none', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
+  // P2-W16: the agent adapters; setup writes managed config files (the agent_config exception), doctor and list are queries.
+  'agents-setup': { idempotency: 'none', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: true },
+  'agents-doctor': { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
+  'agents-list': { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
 };
 
 test('Q16 the shipped P0 manifest carries the re-frozen capability values', () => {

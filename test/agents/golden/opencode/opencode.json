@@ -1,0 +1,13 @@
+{
+  "mcp": {
+    "akrs": {
+      "type": "local",
+      "command": [
+        "node",
+        "/akrs-fixture/pkg/bin/akrs.js",
+        "mcp"
+      ],
+      "enabled": true
+    }
+  }
+}
