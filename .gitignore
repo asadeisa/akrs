@@ -28,6 +28,9 @@ Thumbs.db
 
 # Claude Code internals
 .claude/
+# ...except the agent-adapter golden tree, which is a test fixture
+!test/agents/golden/claude/.claude/
+!test/agents/golden/claude/.claude/settings.local.json
 
 # Local planning / scratch (kept in repo root, never published or committed)
 PACKAGE-BUILD-PLAN.md
