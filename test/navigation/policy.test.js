@@ -9,7 +9,7 @@ import { NAVIGATION_NEXT_COMMAND_BUILDERS } from '../../lib/store/navigation/nex
 
 const byId = Object.fromEntries(commandManifest.commands.map((entry) => [entry.id, entry]));
 const QUERIES = {
-  status: { tokens: ['status'], mcp: ['akrs_status', 'status'], positionals: [], flags: [] },
+  status: { tokens: ['status'], mcp: ['akrs_status', 'status'], positionals: [], flags: ['--all-projects'] },
   next: { tokens: ['next'], mcp: ['akrs_status', 'next'], positionals: [], flags: ['--executor'] },
   where: { tokens: ['where'], mcp: [null, null], positionals: [{ name: 'path', required: true, variadic: false }], flags: [] },
   graph: { tokens: ['graph'], mcp: ['akrs_status', 'graph'], positionals: [], flags: ['--touches'] },

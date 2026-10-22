@@ -190,6 +190,12 @@ const P0_COMMANDS = {
   'agents-setup': { idempotency: 'none', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: true },
   'agents-doctor': { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
   'agents-list': { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
+  // P2-W17: desktop readiness; the registry writers are idempotent by nature (no journal), view is a derived_write cache, the rest are queries.
+  'projects-add': { idempotency: 'none', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: true },
+  'projects-remove': { idempotency: 'none', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: true },
+  'projects-list': { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
+  view: { idempotency: 'none', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
+  watch: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },
 };
 
 test('Q16 the shipped P0 manifest carries the re-frozen capability values', () => {

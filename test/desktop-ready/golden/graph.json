@@ -1,0 +1,209 @@
+{
+  "kind": "graph",
+  "packet_version": "akrs.graph/v1",
+  "touches": null,
+  "nodes": [
+    {
+      "id": "P1",
+      "type": "plan",
+      "status": "unverified",
+      "class": null,
+      "lease": null,
+      "needs_split": null,
+      "plan": null,
+      "tester": "unverified"
+    },
+    {
+      "id": "P9",
+      "type": "plan",
+      "status": "unverified",
+      "class": null,
+      "lease": null,
+      "needs_split": null,
+      "plan": null,
+      "tester": "unverified"
+    },
+    {
+      "id": "R-A-1",
+      "type": "road",
+      "status": "QUEUED",
+      "class": "medium",
+      "lease": null,
+      "needs_split": false,
+      "plan": "P1",
+      "tester": null
+    },
+    {
+      "id": "R-B-1",
+      "type": "road",
+      "status": "QUEUED",
+      "class": "medium",
+      "lease": null,
+      "needs_split": false,
+      "plan": "P1",
+      "tester": null
+    },
+    {
+      "id": "R-M-1",
+      "type": "road",
+      "status": "QUEUED",
+      "class": "medium",
+      "lease": null,
+      "needs_split": false,
+      "plan": "P9",
+      "tester": null
+    },
+    {
+      "id": "R-Z-1",
+      "type": "road",
+      "status": "QUEUED",
+      "class": "medium",
+      "lease": null,
+      "needs_split": false,
+      "plan": "P9",
+      "tester": null
+    },
+    {
+      "id": "T-A-1",
+      "type": "task",
+      "status": null,
+      "class": null,
+      "lease": null,
+      "needs_split": null,
+      "plan": "P1",
+      "tester": null
+    },
+    {
+      "id": "T-B-1",
+      "type": "task",
+      "status": null,
+      "class": null,
+      "lease": null,
+      "needs_split": null,
+      "plan": "P1",
+      "tester": null
+    },
+    {
+      "id": "T-M-1",
+      "type": "task",
+      "status": null,
+      "class": null,
+      "lease": null,
+      "needs_split": null,
+      "plan": "P9",
+      "tester": null
+    },
+    {
+      "id": "T-Z-1",
+      "type": "task",
+      "status": null,
+      "class": null,
+      "lease": null,
+      "needs_split": null,
+      "plan": "P9",
+      "tester": null
+    },
+    {
+      "id": "T-orphan",
+      "type": "task",
+      "status": null,
+      "class": null,
+      "lease": null,
+      "needs_split": null,
+      "plan": null,
+      "tester": null
+    }
+  ],
+  "edges": [
+    {
+      "from": "R-A-1",
+      "to": "R-M-1",
+      "type": "block",
+      "certainty": null
+    },
+    {
+      "from": "R-Z-1",
+      "to": "R-A-1",
+      "type": "block",
+      "certainty": null
+    },
+    {
+      "from": "R-Z-1",
+      "to": "R-M-1",
+      "type": "block",
+      "certainty": null
+    },
+    {
+      "from": "R-M-1",
+      "to": "R-Z-1",
+      "type": "collision",
+      "certainty": "overlap"
+    },
+    {
+      "from": "R-A-1",
+      "to": "R-Z-1",
+      "type": "dep",
+      "certainty": null
+    },
+    {
+      "from": "R-M-1",
+      "to": "R-A-1",
+      "type": "dep",
+      "certainty": null
+    },
+    {
+      "from": "R-M-1",
+      "to": "R-Z-1",
+      "type": "dep",
+      "certainty": null
+    },
+    {
+      "from": "P1",
+      "to": "R-A-1",
+      "type": "touch",
+      "certainty": null
+    },
+    {
+      "from": "P1",
+      "to": "R-B-1",
+      "type": "touch",
+      "certainty": null
+    },
+    {
+      "from": "P9",
+      "to": "R-M-1",
+      "type": "touch",
+      "certainty": null
+    },
+    {
+      "from": "P9",
+      "to": "R-Z-1",
+      "type": "touch",
+      "certainty": null
+    },
+    {
+      "from": "R-A-1",
+      "to": "T-A-1",
+      "type": "touch",
+      "certainty": null
+    },
+    {
+      "from": "R-B-1",
+      "to": "T-B-1",
+      "type": "touch",
+      "certainty": null
+    },
+    {
+      "from": "R-M-1",
+      "to": "T-M-1",
+      "type": "touch",
+      "certainty": null
+    },
+    {
+      "from": "R-Z-1",
+      "to": "T-Z-1",
+      "type": "touch",
+      "certainty": null
+    }
+  ]
+}

@@ -88,6 +88,10 @@
                     "type": "string",
                     "description": "CLI <code> (explain)"
                   },
+                  "all_projects": {
+                    "type": "boolean",
+                    "description": "CLI --all-projects (status)"
+                  },
                   "executor": {
                     "type": "string",
                     "description": "CLI --executor (next)"
