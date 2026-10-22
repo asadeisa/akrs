@@ -43,7 +43,8 @@ test('work, edit, done: the handoff, the status and the closure are written toge
   assert.deepEqual([handoff.road, handoff.result, handoff.reach, handoff.expect, handoff.ready], [ROAD, 'the admin page is ready', ['open /admin'], 'a table of users', true]);
   assert.match(handoff.snapshot, /^sha256:[0-9a-f]{64}$/);
   assert.deepEqual([packet.data.handoff.id, packet.data.handoff.hash, packet.data.handoff.line], [handoff.id, handoff.hash, 1]);
-  assert.deepEqual(packet.next_commands.map(({ command }) => command), ['state-render']);
+  // a Worker is never sent to Leader housekeeping (`state render`): its only next step is its own next Road
+  assert.deepEqual(packet.next_commands.map(({ command, args }) => [command, ...args.slice(0, 2)]), [['next', '--executor', 'flash']]);
   assertFindingsMatchCatalog(packet);
 });
 

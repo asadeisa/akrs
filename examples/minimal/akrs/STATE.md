@@ -14,7 +14,7 @@ Updated: 2026-10-03T10:00:00.000Z by akrs/2.0.0-alpha.0
 -
 
 ## Next
-> Review the Road R1, then classify the executors with executor set.
+> Activate Road R1 (akrs road activate R1).
 
 ## Ready
 - R1 (plan -)

@@ -71,6 +71,21 @@ test('the Tester has no product-code write permission; only evidence and the res
   assert.deepEqual((await details(bare)).packet.data.boundaries, ['Never edit product code.']);
 });
 
+test('a contract boundary that restates or extends the no-product-edit rule replaces the fixed one instead of repeating it', async (t) => {
+  const boundariesOf = async (boundaries) => (await details(await testerWorld(t, { contract: { boundaries } }))).packet.data.boundaries;
+  assert.deepEqual(await boundariesOf(['never edit product code', 'Be kind.']), ['Never edit product code.', 'Be kind.'], 'a same-meaning restatement collapses into the fixed text');
+  assert.deepEqual(
+    await boundariesOf(['Never change the launch command.', 'Never edit product code or README.md.']),
+    ['Never edit product code or README.md.', 'Never change the launch command.'],
+    'the extension leads and is kept verbatim; the fixed text is not repeated',
+  );
+  assert.deepEqual(
+    await boundariesOf(['Never edit product code or README.md.', 'Never edit product code.']),
+    ['Never edit product code or README.md.'],
+    'a plain restatement after the extension is dropped',
+  );
+});
+
 test('the Tester source files are unchanged by repeated reads and the packet is deterministic', async (t) => {
   const repo = await testerWorld(t);
   const first = await details(repo);

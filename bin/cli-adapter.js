@@ -31,6 +31,13 @@ function selectCommand(argv, manifest) {
     .sort((left, right) => right.tokens.length - left.tokens.length)[0] ?? null;
 }
 
+// `akrs <command> --help` (or `-h`): the manifest help of that one command; derived once here, never per command.
+const HELP_REQUEST_FLAGS = Object.freeze(['--help', '-h']);
+
+function helpRequested(argv, command) {
+  return command !== null && command.id !== 'help' && argv.slice(command.tokens.length).some((token) => HELP_REQUEST_FLAGS.includes(token));
+}
+
 function inferFormat(argv) {
   const formats = Object.entries(FORMAT_FLAGS)
     .filter(([flag]) => argv.includes(flag))
@@ -248,19 +255,24 @@ export async function runCliAdapter({
 
   try {
     if (!command) throw new CliUsageError(`unknown command: ${argv[0] ?? ''}`);
-    const input = parseCommandInput(argv, command);
+    const helpOnly = helpRequested(argv, command);
+    const input = helpOnly ? { flags: {}, positionals: {}, format: inferFormat(argv), stdin: false } : parseCommandInput(argv, command);
     format = input.format;
+    if (format === 'jsonl' && command.streaming !== 'jsonl' && helpOnly) format = 'human';
     // a streaming command gets an event stream that writes through `write` the moment an event exists
     if (format === 'jsonl') stream = createEventStream({ providers, knownCommands: knownCommands(manifest), write });
     const context = {
       cwd: normalizeAbsolutePath(cwd),
       ...await resolveContext({ command, cwd, input }),
     };
-    const handler = handlers[command.id];
+    const handler = helpOnly ? handlers.help : handlers[command.id];
     if (typeof handler !== 'function') {
       throw new TypeError(`no handler registered for command: ${command.id}`);
     }
-    const result = await handler({ command, context, input, manifest, providers, readStdin, stream });
+    const result = await handler({
+      command: helpOnly ? manifest.commands.find(({ id }) => id === 'help') : command, context, input, manifest, providers, readStdin, stream,
+      helpFor: helpOnly ? command.id : undefined,
+    });
     packet = result?.packet ?? result;
     events = result?.packet ? result.events : undefined;
     const validation = validatePacket(packet, { knownCommands: knownCommands(manifest) });

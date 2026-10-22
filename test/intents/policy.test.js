@@ -97,6 +97,9 @@ test('the builders are pure and every command they name is a manifest command', 
     assert.ok(args.every((argument) => typeof argument === 'string' && argument !== ''));
   }
   assert.deepEqual(INTENT_NEXT_COMMAND_BUILDERS.done({ phase: 'rejected', id: 'R-1', rootArgs: roots }), [{ command: 'verify', args: ['--road', 'R-1', '--root', '/r'] }]);
+  assert.deepEqual(INTENT_NEXT_COMMAND_BUILDERS.work({ phase: 'claimed', road: 'R-1', rootArgs: roots }), []);
+  assert.deepEqual(INTENT_NEXT_COMMAND_BUILDERS.done({ phase: 'done', executor: 'a', rootArgs: roots }), [{ command: 'next', args: ['--executor', 'a', '--root', '/r'] }]);
+  assert.deepEqual(INTENT_NEXT_COMMAND_BUILDERS.done({ phase: 'done', rootArgs: roots }), [{ command: 'next', args: ['--root', '/r'] }]);
   assert.throws(() => INTENT_NEXT_COMMAND_BUILDERS.work({ phase: 'nope' }), /unknown next-command phase/);
 });
 

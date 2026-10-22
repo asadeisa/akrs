@@ -66,6 +66,11 @@ test('F6 verification: policy enum and the keys each policy requires (live/measu
   assert.equal(validateVerification(checks, stored).ok, true);
   const live = setAt(clone(none), 'policy', 'live');
   expectIssue(validateVerification(live, stored), 'invalid_value', '$.launch');
+  // the Tester packet blocks a live/measured contract without an evidence type (AKRS-T003), so define and validate refuse it too
+  for (const policy of ['live', 'measured']) {
+    expectIssue(validateVerification(setAt(setAt(clone(full), 'policy', policy), 'evidence_types', []), stored), 'invalid_value', '$.evidence_types');
+  }
+  assert.equal(validateVerification(setAt(clone(none), 'evidence_types', []), stored).ok, true, 'none and checks need no evidence type');
   const measuredNoMeasurement = setAt(clone(full), 'measurements', []);
   expectIssue(validateVerification(measuredNoMeasurement, stored), 'invalid_value', '$.measurements');
   expectIssue(validateVerification(setAt(clone(full), 'policy', 'none'), stored), 'invalid_value', '$.launch');

@@ -25,7 +25,9 @@ test('the work prompt is the Worker packet under a claim header, with the guard 
   assert.match(prompt, /## Forbidden \(repeated\)\n\n- `server\/\*\*`/, 'the weak shape repeats forbidden at the end');
   assert.match(prompt, /akrs done R-P6-1 --result "<what is ready>" --reach "<step to reach it>" --expect "<what to see>"/);
   assert.match(prompt, /If done is refused 2 times, run: akrs yield R-P6-1/);
-  assert.equal((prompt.match(/## Next commands/g) ?? []).length, 1, 'the next commands are listed once');
+  // `done` runs the checks itself: the claim lists no next commands (above all not `verify`); the finish instruction above is the next step
+  assert.equal((prompt.match(/## Next commands/g) ?? []).length, 0, 'no next commands are listed');
+  assert.equal(prompt.includes('akrs verify'), false);
   const human = await shown(repo, ['work', '--executor', 'flash'], '');
   assert.match(human, /^AKRS work R-P6-1 \[noop\]\n/);
 });

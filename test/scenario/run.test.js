@@ -10,6 +10,8 @@ import { TESTER_LEASE_PROJECTION } from '../../lib/store/snapshots/projections.j
 import { commandSnapshot, computeSnapshot } from '../../lib/store/snapshots/index.js';
 import { treeDigest } from '../road/support.js';
 import { setExec } from '../road-details/support.js';
+import { renderTestDetailsHuman, renderTestDetailsPrompt } from '../../lib/renderers/test-details.js';
+import { KNOWN_COMMANDS } from '../road/support.js';
 import { details } from '../test-details/support.js';
 import { APP, ULID_RE, evidenceDir, freePort, runWorld, testRun } from './support.js';
 import { define } from '../tester/support.js';
@@ -251,6 +253,24 @@ test('test-details shows the latest runs in its runs slot, and a run is no longe
   assert.deepEqual((await details(repo, 'P6')).packet.data.runs.map(({ id }) => id), [second.packet.data.run.id, first.packet.data.run.id]);
   await repo.write('SOT/10-budgets.md', 'frame budget 15ms\n');
   assert.equal((await details(repo, 'P6')).packet.data.runs[0].current, false);
+});
+
+test('once a run exists for the current state the Tester packet stops offering test run and names the exact test result form', async (t) => {
+  const repo = await runWorld(t);
+  const before = await details(repo, 'P6');
+  assert.deepEqual(before.packet.next_commands.map(({ command }) => command), ['test-run']);
+  assert.equal(renderTestDetailsPrompt(before.packet, { knownCommands: KNOWN_COMMANDS }).includes('--verdict'), false, 'no run yet: nothing to record');
+  await testRun(repo);
+  const after = await details(repo, 'P6');
+  assert.deepEqual(after.packet.next_commands, [], 'a current run is not repeated');
+  for (const render of [renderTestDetailsPrompt, renderTestDetailsHuman]) {
+    const text = render(after.packet, { knownCommands: KNOWN_COMMANDS });
+    assert.match(text, /akrs test result P6 --verdict <pass\|fail\|blocked> --because "<why>"/);
+    // the run records the Tester-lease snapshot, the result the test-details snapshot: they differ by design
+    assert.match(text, /different projections of the same state, so they differ by design/);
+  }
+  await repo.write('SOT/10-budgets.md', 'frame budget 15ms\n');
+  assert.deepEqual((await details(repo, 'P6')).packet.next_commands.map(({ command }) => command), ['test-run'], 'a run for an older state is not current: run again');
 });
 
 test('a workflow with an unreadable run directory still gives a packet, with the problem named', async (t) => {

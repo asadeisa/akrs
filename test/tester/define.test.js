@@ -57,6 +57,18 @@ test('a live or measured policy missing required fields writes nothing', async (
   }
 });
 
+test('a live or measured contract that names no evidence type is refused before any write, like test-details would block it', async (t) => {
+  for (const policy of ['live', 'measured']) {
+    const repo = await planWorld(t);
+    const before = await strict(repo);
+    const result = await define(repo, 'P6', await contractInput('valid/full', { plan: 'P6', roads: ['R-P6-1'], policy, evidence_types: [] }));
+    assert.equal(result.outcome, 'rejected', policy);
+    assert.equal(result.packet.data.kind, 'usage', policy);
+    assert.equal(result.packet.findings.some(({ message }) => message.includes('evidence type')), true, policy);
+    assert.deepEqual(await strict(repo), before, policy);
+  }
+});
+
 test('identity and sources are judged before any write: unknown Plan, missing or foreign Road, unresolved read', async (t) => {
   const repo = await planWorld(t);
   await seedRoad(repo, { id: 'R-OTHER', plan: 'P9' }, { folder: 'roads/P9', status: 'ACTIVE' });

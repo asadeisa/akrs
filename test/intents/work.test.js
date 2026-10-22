@@ -30,7 +30,8 @@ test('work claims the Road, writes the allowlist and returns the Worker packet, 
   const direct = await buildRoadDetails({ ...repo.options, id: ROAD, role: 'worker', holder: 'flash' });
   assert.deepEqual(details, direct.data);
   assert.equal(await everything(repo), before, 'no workflow artifact was written (only .ops)');
-  assert.deepEqual(packet.next_commands.map(({ command }) => command), ['verify']);
+  // `done` runs the declared checks itself, so the claim does not offer `verify`; the finish instruction names `done` with the baton
+  assert.deepEqual(packet.next_commands, []);
   assertFindingsMatchCatalog(packet);
 });
 
