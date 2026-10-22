@@ -1,6 +1,6 @@
 // P2-W17: `status --all-projects` reads the registered roots read-only and never writes to them, whatever state they are in.
 import assert from 'node:assert/strict';
-import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, realpath, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { validateStatusAllProjects } from '../../lib/schemas/desktop.js';
@@ -25,8 +25,10 @@ test('every registered project appears with exactly the status its own `status -
   assert.deepEqual([all.packet.command, all.packet.status, all.packet.data.kind, all.packet.data.packet_version], ['status', 'ok', 'status_all_projects', 'akrs.status-all/v1']);
   assert.equal(validateStatusAllProjects(all.packet.data).ok, true, JSON.stringify(validateStatusAllProjects(all.packet.data).issues));
   assert.equal(all.packet.data.projects.length, 2);
+  // the registry stores the physical root (Windows 8.3 short names expanded), so compare against it
+  const physical = new Map(await Promise.all([first, second].map(async (repo) => [repo, (await realpath(repo.root)).replaceAll('\\', '/').toLowerCase()])));
   for (const entry of all.packet.data.projects) {
-    const repo = [first, second].find(({ root }) => entry.root.toLowerCase() === root.replaceAll('\\', '/').toLowerCase());
+    const repo = [first, second].find((candidate) => entry.root.toLowerCase() === physical.get(candidate));
     assert.ok(repo !== undefined, entry.root);
     const own = await world.json(['status'], { cwd: repo.root, extraContext: {} });
     const direct = (await world.json(['status', '--root', repo.root])).packet;

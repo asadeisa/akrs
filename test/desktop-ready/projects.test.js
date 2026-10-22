@@ -59,7 +59,9 @@ test('the same project through different spellings is listed once, as a noop', a
   const repo = await world.project();
   await add(world, repo.root);
   const first = await registryText(world);
-  for (const spelling of [`${repo.root}/`, `${repo.root}/akrs/..`, repo.root.replaceAll('/', '\\')]) {
+  // a backslash is a separator only on Windows; elsewhere it is an ordinary file name character
+  const spellings = [`${repo.root}/`, `${repo.root}/akrs/..`, ...(process.platform === 'win32' ? [repo.root.replaceAll('/', '\\')] : [])];
+  for (const spelling of spellings) {
     const again = await add(world, spelling);
     assert.deepEqual([again.packet.status, again.packet.data.outcome], ['noop', 'noop'], spelling);
   }
