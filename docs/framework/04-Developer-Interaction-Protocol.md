@@ -1,4 +1,4 @@
-# AKRS Developer Interaction Protocol (v1, revised v1.3)
+# AKRS Developer Interaction Protocol (v2)
 
 ### How the Leader interacts with the Developer
 
@@ -6,7 +6,7 @@ This protocol defines a predictable conversation that minimizes developer effort
 ensuring the correct AKRS workflow is generated and maintained. It governs **interaction
 only** — not workflow generation or execution.
 
-v1 turns v0's principles into **operational, repeatable behavior**: structured
+The protocol turns principles into **operational, repeatable behavior**: structured
 recommended-first options, one decision at a time, and a guided next step on every turn.
 
 ---
@@ -27,7 +27,7 @@ recommended-first options, one decision at a time, and a guided next step on eve
 
 ---
 
-## 2. Operational rules (v1)
+## 2. Operational rules
 
 These make the principles executable:
 
@@ -35,8 +35,8 @@ These make the principles executable:
 Every decision point offers **2–4 concrete options**. The recommended option is **first and
 labeled `(Recommended)`**. Each option states its implication in one line.
 
-> In Claude Code this maps to `AskUserQuestion`. In plain CLIs, degrade gracefully to a
-> numbered list with the default marked `← default`.
+> Where the agent has a structured-question facility, use it. Otherwise degrade gracefully to
+> a numbered list with the default marked `← default`.
 
 Example:
 
@@ -64,13 +64,20 @@ explicit approval (see §5, §6).
 
 ### 2.6 Owner decisions are asked the same turn (never parked)
 Any item that is an **owner/developer decision** is **ASKED in-chat the same turn it is
-raised** — as a structured question (§2.1): 2–4 options, recommended-first. `STATE.md` records
-only the **answer**, never the unasked question. An owner decision left sitting in STATE
-("owner decision pending", "awaiting the developer") is a defect the validate CLI warns on
-(`bin/akrs.js`; `07-State-And-Sync-Specification.md §6`). In the whole v1.2 run neither Leader
-nor Worker asked the developer anything — decisions sat silently in STATE; this rule ends that.
-(Genuine *Unknowns* that cannot be decided yet are different: they park as Open questions owned
-by a Plan and expire at its close-out — `10-Verification-Specification.md §7`.)
+raised** — as a structured question (§2.1): 2–4 options, recommended-first. State
+(`state set --next`, `--phase`) records only the **answer**, never the unasked question. An owner
+decision left sitting in State ("owner decision pending", "awaiting the developer") is a defect.
+In a live field run neither Leader nor Worker asked the developer anything — decisions sat
+silently in the save-point; this rule ends that. (Genuine *Unknowns* that cannot be decided yet
+are different: they park as open questions owned by a Plan and expire at its close-out —
+`10-Verification-Specification.md §7`.)
+
+### 2.7 Executors are classified by the user, once
+The Leader asks — as one structured question — which model(s) will execute the work as Worker and
+as Tester and how the **user** classifies each (weak, medium or frontier), then records the
+answer verbatim with `akrs executor set`. It never infers a class from a model's name. `akrs boot`
+returns the question (`questions_for_user`) until it is answered; the flow is owned by the
+`akrs-classify-executors` skill.
 
 ---
 
@@ -92,17 +99,20 @@ The Leader explains its Mode choice whenever the selected Mode significantly cha
 workflow.
 
 **Role convention.** A session's role can be declared in the prompt with
-`as leader: …` / `as worker: …` / `as tester: …`. When present it wins over STATE's `Role:`
-line at boot (`06-Runtime-Boot-Protocol.md §2`); when absent, STATE decides, else the session
-asks.
+`as leader: …` / `as worker: …` / `as tester: …`. When present it wins; when absent, the entry
+command decides (`akrs boot` is the Leader's, `akrs work` the Worker's, `akrs test-details` the
+Tester's — `06-Runtime-Boot-Protocol.md §2`), and the Leader-owned `role` in `state.json` is the
+fallback; otherwise the session asks.
 
 ---
 
 ## 4. Project & state detection
 
 The Leader determines whether this is a new project, an existing project without AKRS, or a
-project that already contains AKRS. When AKRS already exists, the Leader **reads `STATE.md`
-first** and offers to resume from the recorded save-point as the recommended next step.
+project that already contains AKRS. When AKRS already exists, the Leader runs **`akrs boot`
+first** (the compact Leader kernel, the workflow in counts, the questions for the user and the
+legal next commands) and offers to resume from the recorded save-point as the recommended next
+step.
 
 ---
 

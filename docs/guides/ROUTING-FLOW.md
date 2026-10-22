@@ -66,8 +66,8 @@ flowchart TD
   Mode 0 is the escape hatch: name the sources, read no workflow.
 - **Mode 2** executes an existing Road.
 - **Mode 3** is planning: the Leader generates one Task + one Road — or **batches** a plan's
-  Roads at once, the first `ACTIVE` and the rest `QUEUED` (each re-validated before it
-  activates). Road status is `QUEUED → ACTIVE → DONE + superseded`.
+  Roads at once, activating the first and leaving the rest `QUEUED` (each re-validated before it
+  activates). Road status is `QUEUED → ACTIVE → DONE`, moved only by the lifecycle commands.
 - **Mode 4** is architecture / **change management**: Leader only (the change lane above).
 
 ---
@@ -78,8 +78,8 @@ The Worker asks itself **once**, before writing anything:
 
 ```mermaid
 flowchart LR
-    Q["Can I finish with ONLY<br/>the active Road?"] -- YES --> Exec[Execute]
-    Q -- NO --> Loop[Router → required Memory → back to Road]
+    Q["Can I finish with ONLY<br/>the packet?"] -- YES --> Exec[Execute]
+    Q -- NO --> Loop[akrs scope request → Leader grants → akrs work]
     Loop --> Exec
     Exec -.->|never| Guess[(guess / scan repo)]
 
@@ -89,7 +89,8 @@ flowchart LR
 
 Asked **once**. No recursive routing. No repo scanning. **Never guess.**
 A missing piece of required knowledge is a *routing* failure to be fixed in the
-Road — not something the Worker should improvise around.
+Road (a scope request the Leader grants, or the Road's own envelope) — not something the Worker
+should improvise around.
 
 ---
 
@@ -106,43 +107,49 @@ This is what stops a cheap model from drowning in a large codebase.
 
 ---
 
-## The Gate (v1.2 — every session is filtered)
+## The Gate (every session is filtered)
 
-Boot no longer loads one big Kernel. The **Gate** loads the shared `CORE.md` plus **exactly
-one role file**, so a session carries only its own role's rules:
+Boot does not load one big Kernel. The **Gate** loads the shared `CORE.md` plus **exactly one
+role file**, then the role runs one entry command that returns everything it needs in a single
+packet:
 
 ```mermaid
 flowchart LR
     E[AGENTS.md] --> Core[kernel/CORE.md]
-    Core --> S[read STATE.md]
-    S --> G{Gate: role?}
-    G -->|as leader| L[kernel/leader.md]
-    G -->|as worker| W[kernel/worker.md]
-    G -->|as tester| T[kernel/tester.md]
+    Core --> G{Gate: role?}
+    G -->|as leader| L[kernel/leader.md → akrs boot]
+    G -->|as worker| W[kernel/worker.md → akrs work]
+    G -->|as tester| T[kernel/tester.md → akrs test-details]
     L & W & T --> M[Select Mode → execute]
 
     classDef k fill:#1f6feb,stroke:#0b3d91,color:#fff;
-    class E,Core,S,G,L,W,T k;
+    class E,Core,G,L,W,T k;
 ```
 
-Role comes from the prompt convention (`as leader|worker|tester:`), else STATE's `Role:`, else
-the session asks. A stuck non-leader agent drops an `akrs/BLOCKED.md` flag, which the next
-session surfaces first.
+Role comes from the prompt convention (`as leader|worker|tester:`), else the entry command the
+agent was pointed at, else the session asks. A stuck Worker runs `akrs yield`, a Tester records a
+`blocked` result and a Worker needing more scope sends a scope request: all are canonical records
+that `akrs boot` and `akrs next` surface first.
 
-## The Tester lane (v1.2 — Done is proven, not asserted)
+## The Tester lane (Done is proven, not asserted)
 
-Verification attaches to the **idea/Plan**, not every Task. The Worker leaves a **handoff**
-baton; the Tester verifies the running product and deletes it on pass:
+Verification attaches to the **idea/Plan**, not every Task. The Worker's `done` leaves a **handoff**
+baton; the Tester reads one packet, the CLI runs the Leader-declared scenario, and the Tester records
+an append-only verdict:
 
 ```mermaid
 flowchart LR
-    Idea[Idea complete + runnable] --> H[Worker writes the handoff baton]
-    H --> V[Tester: Mirror Check + raw measurement<br/>+ 'as a user, acceptable?']
-    V -->|pass| D[delete the handoff]
-    V -->|bug| F[write findings → Leader routes fix → re-test]
+    Idea[Idea complete + runnable] --> H[Worker: akrs done leaves the baton]
+    H --> D[Tester: akrs test-details]
+    D --> R[akrs test run<br/>mechanical facts + evidence]
+    R --> V[Tester judges: raw measurement<br/>+ 'as a user, acceptable?']
+    V -->|pass| P[akrs test result --verdict pass]
+    V -->|bug| F[test result --verdict fail + findings → Leader routes fix → re-test]
 ```
 
-## The change lane (v1.2 — Mode 4, features change safely)
+A later relevant change makes a pass stale by itself; only `akrs plan finish` closes a Plan.
+
+## The change lane (Mode 4, features change safely)
 
 ```mermaid
 flowchart LR
@@ -159,11 +166,11 @@ always.
 
 ```mermaid
 flowchart TD
-    A[Phase A<br/>Generate skeleton once] --> K[Generate kernel/ folder<br/>CORE + role files]
-    K --> Entry[Create AGENTS.md entry]
-    Entry --> B[Phase B<br/>Generate 1 Task + 1 Road on demand]
-    B --> X[Worker executes the Road]
-    X --> C[Close-out:<br/>append LOG ledger line → rewrite STATE → reconcile Road + Memory → validate]
+    A[Phase A<br/>Classify executors, generate skeleton once] --> K[Generate kernel/ folder<br/>CORE + role files]
+    K --> Entry[akrs agents setup<br/>AGENTS.md + skills + MCP]
+    Entry --> B[Phase B<br/>Draft 1 Task + 1 Road on demand]
+    B --> X[Worker: akrs work → edit → akrs done]
+    X --> C[Close-out:<br/>Road DONE + ledger line written by done → state render → Memory → validate]
     C -->|next request| B
 
     classDef lead fill:#1f6feb,stroke:#0b3d91,color:#fff;

@@ -1,4 +1,4 @@
-# AKRS Generation Specification (v1, revised v1.3.1)
+# AKRS Generation Specification (v2)
 
 ### How a Leader generates an AKRS workflow
 
@@ -10,6 +10,12 @@ appears to contradict it, the Constitution wins.
 the same Source of Truth must produce **substantially equivalent** workflows. Naming and
 wording may differ; ownership, routing, planning structure, and execution architecture may
 not.
+
+**Content from the agent, form from the CLI.** The Leader decides *what* a Road, contract or
+Memory record says; the CLI (`akrs`) owns its form, validates it, hashes it and writes it in a
+transaction. Machine artifacts (Roads, State, executors, contracts, ledgers) are **never typed by
+hand into `akrs/`**; the Leader writes a *draft* (`akrs template <kind> --to-draft <name>`) and
+runs the writer command (`akrs-road-author` skill). The CLI never invents a value.
 
 ---
 
@@ -56,7 +62,7 @@ Assumptions never override authoritative knowledge.
 
 Pre-generated Tasks/Roads become stale the moment requirements change. On-demand generation
 is what keeps the workflow able to absorb change — so it is the **default**. The one
-sanctioned batch exception (§4) generates a whole plan's Roads at once but marks all but the
+sanctioned batch exception (§4) generates a whole plan's Roads at once but leaves all but the
 first `QUEUED` and re-validates each against reality before activation, which is exactly what
 keeps batching safe.
 
@@ -71,48 +77,55 @@ Confirm Source of Truth          (mandatory — §1)
   ↓
 Confirm acceptance + harness     (structured Phase-A question — 10 §8; never parked)
   ↓
+Classify the executors           (ask the user: weak / medium / frontier — akrs-classify-executors)
+  ↓
 Generate SoT Index               (MANDATORY checklist step — generate, or record a justified
                                   omission; never silently skipped — §3.1, 09)
   ↓
 Analyze Project                  (progressively, one domain at a time — 09 §4)
   ↓
-Identify Business Capabilities → Generate Plans
+Identify Business Capabilities → Plans
   ↓
-Identify Deliverables          → Generate Phases
+Identify Deliverables          → Phases
   ↓
-Extract Shared Knowledge       → Generate Memory
+Extract Shared Knowledge       → Memory     (akrs memory add — records, not prose files)
   ↓
-Generate Router
+Generate Router                (Markdown, routes only)
   ↓
-Generate Dependency Memory
+Create the workflow            (akrs init --scaffold [--plan <id>] — one transaction:
+                                State, first Road + Task, verification contract)
   ↓
-Generate STATE.md              (v1 — initial save-point)
-  ↓
-Generate package.json          (v1.3 — devDependency akrs-framework + validate scripts)
-  ↓
-Validate Skeleton
+Validate Skeleton              (akrs validate)
   ↓
 Skeleton Complete
 ```
 
-Phase A **never** generates Tasks and **never** generates Roads. The order is fixed.
+Phase A **never** generates further Tasks or Roads: the single Road/Task pair `init --scaffold`
+writes is a *starter* the Leader replaces in Phase B. The order is fixed.
+
+**Install first.** `npx akrs-framework init` copies the doctrine into `docs/akrs/`; the Leader
+reads it from there. Command examples in this document are written `akrs <command>`; run them as
+`npx akrs-framework <command>` unless the package is installed.
+
+**Classify the executors.** Before the first Road is written, the Leader asks the user which
+models will execute the work as Worker and as Tester and how strong each is, and records the
+answers (`akrs executor set`, `akrs-classify-executors` skill). The CLI never infers a class.
+`akrs boot` and `akrs validate` (`AKRS-S006`) remind the Leader until it is done.
 
 **Confirm acceptance + harness** is a mandatory Phase-A structured question: every SoT section
 must carry ≥ 1 measurable acceptance line, and the verification harness (minimum: a committed
-assert-script convention) is decided now — never parked to the last plan
-(`10-Verification-Specification.md §8–9`).
+assert-script convention, and for runtime-observable work a Plan verification contract) is
+decided now — never parked to the last plan (`10-Verification-Specification.md §2, §8–9`).
 
-`STATE.md` is initialized at the end of Phase A so the very first session has a resume
-point (active mode, no active Road yet, Next = "generate first Task on request"). See
-`07-State-And-Sync-Specification.md`.
+The State is initialized by `init --scaffold` (or `akrs state set`), so the very first session has
+a resume point; `akrs state render` writes the human-readable `STATE.md`
+(`07-State-And-Sync-Specification.md`).
 
-**Generated `package.json` (v1.3).** Phase A emits (or updates in place, preserving existing
-entries) the project's `package.json` with `"devDependencies": {"akrs-framework": "^<version>"}`
-and scripts `validate` (`akrs validate`), `validate:fix` (`akrs validate --fix`), and
-`validate:clean` (`akrs validate --clean`). A developer who has never seen the `npx` commands
-then just runs `npm run validate`. The workflow ships the tool; the workflow validates itself.
+**CI.** The workflow validates itself: run `akrs validate` (zero-dependency, one packet with
+`--json`) in CI and, optionally, a pre-commit hook. There is no project `package.json` to generate
+and no auto-fix flag: a finding is repaired by the writer command it names.
 
-### 3.1 The SoT Index is a mandatory Phase-A checklist item (v1.3.1)
+### 3.1 The SoT Index is a mandatory Phase-A checklist item
 
 Generating the **Source-of-Truth Index** is a **verifiable Phase-A step, not optional prose a
 weaker Leader can silently skip.** Before analysis begins, the Leader takes **exactly one** of
@@ -122,8 +135,7 @@ two *recorded* actions:
    ~2 pages **or** the project pre-exists (`09-Scale-And-Source-Index-Specification.md §2, §6`).
    Once it exists, Router / Memory / Roads cite index entries and never say "read `<file>`".
 2. **Record an explicit justification for omitting it** — legal **only** for a genuinely small,
-   single-source, single-page SoT. Write it as a full line in `CORE.md` (mirrored in STATE's
-   Phase-A record):
+   single-source, single-page SoT. Write it as a full line in `CORE.md`:
 
    ```
    SOT-INDEX: none — <one-line reason, e.g. "single 1-page spec, read whole per 09 §6">
@@ -145,29 +157,34 @@ Select the owning Plan and Phase
   ↓
 Identify the single Executable Objective
   ↓
-Generate one Task
+Draft the Road for the executor's class     (akrs template road --class <class> --to-draft <name>)
   ↓
-Generate exactly one Road for that Task   (Status: ACTIVE)
+Create the Road and its Task                (akrs road new / road update, akrs task new)
   ↓
-Validate the Task and its Road
+Check fit and readiness                     (akrs road fit, akrs road check)
   ↓
-Update STATE.md  (active task + active road + Next)
+Activate it                                 (akrs road activate --if-snapshot ...)
   ↓
-Hand to Worker
+Update State                                (akrs state set / state render)
+  ↓
+Hand to Worker                              (the Worker runs akrs work)
 ```
 
-Exactly one Road per Task. The Leader chooses the Road; Workers never choose a Road. Only
-the requested work is generated — on-demand is the default.
+Exactly one Road per Task. The Leader chooses the Road; Workers never choose a Road. Only the
+requested work is generated — on-demand is the default. A Road is written **for its executor's
+class** (`executor_class`): the class caps writes, directories and read budget and decides whether
+`steps` are required (`akrs-classify-executors`); `akrs road fit` reports `fits`,
+`split_required` or `reads_over_budget` before a Worker meets the Road.
 
 ### Sanctioned exception — Phase B-batch
 
 The Leader **MAY** generate all Task+Road pairs for **ONE plan** in a single pass, to
 amortize the expensive Leader session. When it does:
 
-- The first Road is `Status: ACTIVE`; **every Road beyond the first is `Status: QUEUED`**.
+- At most the first Road is activated; **every Road beyond the first stays `QUEUED`**.
 - **Activation of each `QUEUED` Road requires the staleness re-validation** of
-  `07-State-And-Sync-Specification.md §3`: before a `QUEUED` Road becomes `ACTIVE`, the
-  Leader re-checks it against Memory + STATE and refreshes it if reality has moved.
+  `07-State-And-Sync-Specification.md §3`: before a `QUEUED` Road becomes `ACTIVE`, the Leader
+  re-checks it against Memory + the SoT and refreshes it (`road update`) if reality has moved.
 
 This legalizes what best practice already does (batching a plan's Roads while the Leader has
 the whole plan in context); the staleness check is exactly what makes it safe. Batching is
@@ -189,30 +206,32 @@ redesigning architecture. They reference knowledge, never duplicate it, and are 
 only when requested.
 
 > **Granularity is a Leader decision made at request time.** If the requested work fits one
-> reliable Worker session, generate **ONE Task + ONE Road** — even if that covers an entire
-> small plan. Split into multiple pairs **only** when the work exceeds one session's reliable
-> scope. Never split for symmetry or folder structure.
+> reliable Worker session of the executor's class, generate **ONE Task + ONE Road** — even if
+> that covers an entire small plan. Split into multiple pairs **only** when the work exceeds one
+> session's reliable scope. Never split for symmetry or folder structure.
 
-> **Separation of concerns (kills Task/Road duplication).** A **Task** holds only: objective,
-> constraints, acceptance, an optional `Ticket:` (external tracker id), an optional `Verify:`
-> field (`none` | `idea` | `measured` — absent means `idea`;
-> `10-Verification-Specification.md §2`), an optional `Skills:` list (skill / MCP-tool names
-> the executor should use — zero, one, or many are all legal), and a `Road:` pointer.
-> Everything navigational — read order, expected files, boundaries, `Status`, `Deps` — lives
-> **only** in the **Road**. A fact restated in both a Task and its Road is a validation
-> failure.
+> **Separation of concerns (kills Task/Road duplication).** A **Task** (`tasks/<id>.md`,
+> scaffolded by `akrs task new`) holds only narrative: objective, constraints, approach, notes, and
+> a pointer to its Road. Everything executable — reads, writes, forbidden, checks, acceptance,
+> boundaries, ordered `steps`, `deps`, `status`, and the executor class — lives **only** in the
+> **Road** (`roads/<id>.json`). Whether and how the Plan is verified lives only in the **Plan's
+> verification contract** (`policy` none | checks | live | measured;
+> `10-Verification-Specification.md §2`). A fact restated in both a Task and its Road is a
+> validation failure.
 
 **Memory** exists only for **reusable** knowledge — knowledge multiple Tasks may need.
-Single-use knowledge stays inside its Task or Road. Memory is an index, never a wiki. Every
-fact a Memory records carries one epistemic label (§6).
+Single-use knowledge stays inside its Task or Road. Memory is an index, never a wiki. It is
+written with `akrs memory add --input <draft>`: one record per fact, carrying a topic, one
+epistemic label (§6) and evidence pointers; the CLI renders the Markdown. Every fact a Memory
+records carries one epistemic label.
 
 **Router** answers only *"Where should execution continue?"* It points; it never explains
 implementation, architecture, business logic, or design decisions.
 
-**Roads** are execution contracts: required knowledge, required reading order, execution
-boundaries, expected change scope, an optional `Deps:` field (Road IDs that must be `DONE`
-before this Road may activate), and a `Status` field. (Road shape, `Deps` gating, and
-close-out: `07-State-And-Sync-Specification.md`.)
+**Roads** are execution contracts: required knowledge as read windows, execution boundaries,
+expected change scope (`writes`), an optional `deps` list (Road IDs that must be `DONE` before
+this Road may activate), and a `status`. (Road shape, `deps` gating and close-out:
+`07-State-And-Sync-Specification.md`.)
 
 ---
 
@@ -231,45 +250,42 @@ close-out: `07-State-And-Sync-Specification.md`.)
 - **Confidence:** internally track confidence (High / Medium / Low / Unknown). Low triggers
   additional verification; Unknown triggers Developer clarification.
 - **Epistemic labels (standardized).** Every fact a Memory records carries exactly one label:
-  `Decided (by <plan/phase or developer>)` · `Assumption (High/Med/Low)` · `Unknown`. Unknowns
-  never silently harden into facts; the label is the record of how a fact is known.
+  `Decided (by <plan/road>)` · `Assumption (High/Med/Low)` · `Unknown`. Unknowns never silently
+  harden into facts; the label is the record of how a fact is known.
 - **Assumption aging.** An `Assumption` consumed by **≥ 3 landed Roads** must be escalated:
   confirmed by the Developer, or explicitly promoted to `Decided`-by-default with the
   promotion recorded in the owning Memory. Assumptions must not harden silently by attrition.
 - **Mid-project SoT change.** When the confirmed Source of Truth changes after generation has
   begun, do not edit in place and hope — run the **requirements-delta procedure**, whose sole
   owner is `11-Change-Management-Specification.md §5` (diff the SoT → list affected
-  Plans/Memories/QUEUED Roads → re-validate or regenerate → record the delta in STATE + LOG).
+  Plans/Memories/QUEUED Roads → re-validate or regenerate → record the delta with `state set` and
+  `log append`).
 
 ---
 
-## 7. Kernel generation (v1 — end of generation)
+## 7. Kernel generation (end of generation)
 
 After the workflow exists and validates, the Leader compiles the project's **kernel folder**
 (`akrs/kernel/` — `CORE.md` + one file per role) from `08-Kernel-Specification.md`, embedding
-this project's Router / STATE / Source-of-Truth paths and prompt→Mode hints. This is a
-**one-time, strong-model** step.
+this project's Router / State / Source-of-Truth paths and prompt→Mode hints. This is a
+**one-time, strong-model** step. `akrs boot` reads `kernel/CORE.md` and `kernel/leader.md`.
 
 ```
 Workflow validated
   ↓
 Generate akrs/kernel/         (CORE.md + worker/leader/tester/changer.md — 08 templates)
   ↓
-Instantiate akrs/skills/      (akrs-close-out.md + akrs-live-verify.md from docs/framework/skills/ — fill live-verify's slots)
-  ↓
-Generate Platform Adapters    (AGENTS.md canonical + thin pointers, incl. .claude/skills/<name>/SKILL.md — 05-...)
-  ↓
-Remove framework source docs from the target project   (only akrs/kernel/ + akrs/skills/ ship)
+Wire the agents               (akrs agents setup — instruction pointer, skill pointers, MCP, guard hook — 05)
   ↓
 Project ready to execute
 ```
 
-**Skill instantiation (v1.3).** Alongside the kernel, the Leader instantiates each framework
-skill (`docs/framework/skills/<name>.md`) as the project's canonical body at
-`akrs/skills/<name>.md` — the single owner of that procedure — completing any `<…>` slots
-(`akrs-live-verify` needs launch command, URL/port, evidence location, SoT budgets). The kernel
-and specs point to these bodies; the procedure never exists twice
-(`08-Kernel-Specification.md`, `05-Platform-Adapter-Specification.md`).
+**Skills.** The procedure bodies the kernel points to ship in `docs/framework/skills/` (copied to
+`docs/akrs/framework/skills/` by `init`). They need no fill-in slots: project specifics (launch
+command, URL, budgets, evidence types) live in the Plan's verification contract. A project may
+keep its own copy at `akrs/skills/<name>.md`, which then wins. The kernel and specs point to
+these bodies; the procedure never exists twice (`08-Kernel-Specification.md`,
+`05-Platform-Adapter-Specification.md`).
 
 > Generating an actual kernel folder is part of applying the framework to a real project. It
 > is **not** part of building this framework. The framework provides the specification and
@@ -280,8 +296,9 @@ and specs point to these bodies; the procedure never exists twice
 ## 8. Workflow output contract
 
 A generated workflow must contain: routing, memory, plans, phases, tasks, roads, **state**,
-the **kernel folder**, the **skill bodies** (`akrs/skills/`), a **`package.json`** wiring
-`npm run validate`, and validation. Concrete filenames may differ; responsibilities may not.
+**executors**, the **kernel folder**, the agent wiring (`akrs agents setup`), a verification
+contract per tested Plan, and a green `akrs validate`. Concrete filenames may differ;
+responsibilities may not.
 
 **Maximize:** execution predictability, routing precision, ownership uniqueness, navigation
 consistency, reusable knowledge.
@@ -294,16 +311,18 @@ ambiguity, blind assumptions.
 
 **Complete only if every answer is YES:** every concept has one owner; every Task belongs to
 one Phase; every Phase belongs to one Plan; every Task has one Road; every Road has clear
-boundaries and a `Status`; every Memory holds reusable knowledge only; every Router holds
+boundaries and a `status`; every Memory holds reusable knowledge only; every Router holds
 routing only; no duplicated knowledge; no unresolved Unknowns; every assumption justified;
-`STATE.md` exists and is current; **the SoT Index exists, or its omission is explicitly
-justified for a small single-page SoT (§3.1).**
+the executors are classified; `akrs validate` is green and `STATE.md` equals its render;
+**the SoT Index exists, or its omission is explicitly justified for a small single-page SoT
+(§3.1).**
 
 **Generation has failed if:** the Leader invents architecture; assumptions replace facts;
 duplicate ownership appears; routing becomes ambiguous; multiple Roads exist for one Task;
-Memory or Router becomes documentation; an unresolved Unknown is silently ignored; **a large or
-pre-existing SoT ships without a `SOT-INDEX.md`, or the index is silently omitted (a bare
-`none` with no justification — §3.1).** On failure, generation stops until corrected.
+Memory or Router becomes documentation; an unresolved Unknown is silently ignored; a canonical
+`akrs/` machine file is hand-edited; **a large or pre-existing SoT ships without a
+`SOT-INDEX.md`, or the index is silently omitted (a bare `none` with no justification — §3.1).**
+On failure, generation stops until corrected.
 
 ---
 

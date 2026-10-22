@@ -17,11 +17,10 @@ You need three things:
    steps — generating the workflow and compiling the first Kernel — use your
    strongest model and turn its reasoning up. That thinking happens once, and
    everything downstream rides on it, so it's worth the horsepower. (Day-to-day
-   execution can later run on a cheaper or faster model if you want — but that's
-   an optimization, not a requirement.)
-2. **The framework docs.** Drop them into your project with `npx akrs-framework init`
-   (they land in `docs/akrs/`). This is what the model reads to learn *how* to
-   build your workflow. See **Step 2**.
+   execution can later run on a cheaper or faster model — that is the point.)
+2. **Node.js 22.17 or newer.** AKRS is a zero-dependency CLI (`akrs`); you run it with
+   `npx akrs-framework <command>`, or `akrs <command>` once the package is installed. Every
+   command below is written `akrs …`.
 3. **Your Source of Truth.** The document(s) that actually describe what the
    project should be — requirements, architecture notes, the existing repo.
    This is the ground everything is built on. See **Step 1**.
@@ -61,18 +60,17 @@ to learn *how* to build your workflow:
 ```
 docs/akrs/
 ├── GETTING_STARTED.md   (this guide)
-└── framework/           (01..11 + skills/ — the specification)
+└── framework/           (01..11 + skills/ — the specification and the procedures)
 ```
 
 Nothing is buried in `node_modules`; the files live in your repo where you and
-the Leader can read them. Run `npx akrs-framework init --force` later to refresh them.
-(The human guides aren't copied — they're web-readable on GitHub; links are at the bottom.)
+the Leader can read them. Run `init --force` later to replace them, or `akrs sync` to refresh
+them while keeping your local edits. (The human guides aren't copied — they're web-readable on
+GitHub; links are at the bottom.)
 
-> Prefer a managed dependency? `npm install akrs-framework` (or `pnpm add` /
-> `yarn add`) works too — and since v1.3.1 a postinstall hook auto-copies the
-> framework out of `node_modules/` into `docs/akrs/` for you, so the workflow
-> reads local files just like `init` produces. (Opt out with
-> `AKRS_SKIP_POSTINSTALL=1`.) Or just clone the repo and read `docs/` directly.
+> Prefer a managed dependency? `npm install akrs-framework` (or `pnpm add` / `yarn add`) works
+> too — a postinstall hook copies the framework out of `node_modules/` into `docs/akrs/` without
+> overwriting your edits. (Opt out with `AKRS_SKIP_POSTINSTALL=1`.)
 
 ---
 
@@ -82,67 +80,82 @@ Open your **strong** model. Point it at the framework and your Source of Truth.
 A prompt like this works well:
 
 ```
-You are the AKRS Leader. Read the AKRS v1 framework in docs/framework/.
+You are the AKRS Leader. Read the AKRS framework in docs/akrs/framework/.
 
 My project's Source of Truth is: docs/app-info.md
 
 Do this:
 1. Confirm with me which documents are authoritative (Source of Truth).
-2. Run Phase A: generate the workflow skeleton only —
-   Router, Memory, Plans, Phases, and STATE.md.
-3. Then generate the project kernel folder (akrs/kernel/ — CORE.md + role files)
+2. Ask me which models will do the work (Worker and Tester) and how I classify
+   each: weak, medium or frontier. Record the answers with `akrs executor set`.
+3. Run Phase A: create the workflow skeleton with `akrs init --scaffold`,
+   then the Router and the Memory records.
+4. Generate the project kernel folder (akrs/kernel/ — CORE.md + role files)
    from 08-Kernel-Specification.md.
 
-Do NOT generate Tasks or Roads yet. Do NOT write application code yet.
+Do NOT generate more Tasks or Roads yet. Do NOT write application code yet.
+Never edit the files the akrs CLI writes; use the akrs commands.
 ```
+
+**Expect one question about your models.** The Leader must ask how *you* classify each model
+(weak, medium, frontier) — the CLI never guesses from a model's name. The class sets how big a
+piece of work that model is given and how much hand-holding its instructions contain. Answer in
+your own words; it is recorded verbatim.
 
 What you should get back (the **Phase A skeleton**):
 
 ```
 akrs/
-├── kernel/           ← the compiled operating files (Gate boots CORE + one role file)
-│   ├── CORE.md       ← shared ~1-page operating rules
-│   └── <role>.md     ← worker / leader / tester / changer
-├── skills/           ← akrs-close-out + akrs-live-verify (the procedure bodies)
+├── kernel/           ← the compiled operating files (CORE + one role file per session)
 ├── router.md         ← "where do I go next?"
-├── STATE.md          ← the portable save-point
-└── memory/           ← one file per reusable knowledge area
+├── memory/           ← reusable knowledge records, one file per topic
+├── executors.json    ← your models and the classes you gave them
+├── state.json        ← the canonical save-point
+├── STATE.md          ← the same, rendered for humans
+├── roads/R1.json, tasks/T1.md, verifications/R1/contract.json   ← the starter Road
+└── …
 ```
 
-> The Leader also generates a `package.json` wiring the validator, so you can run
-> **`npm run validate`** (see Step 7) without knowing the `npx` command.
+Check it yourself at any time:
+
+```bash
+akrs validate                     # nothing failed? the workflow agrees with itself
+akrs road-details R1 --role worker   # exactly what a Worker would be handed for Road R1
+akrs test-details R1              # exactly what a Tester would be handed (the scaffold's policy `none` needs no Tester pass)
+```
 
 > **Why no Tasks/Roads yet?** Pre-built tasks rot the moment requirements
 > change. AKRS generates a Task + Road **on demand**, one at a time (Phase B).
+>
+> **Don't edit `akrs/` files by hand** (only `kernel/`, `router.md`, `tasks/` text and
+> `SOT-INDEX.md` are Markdown the model writes). Roads, State, executors and ledgers are
+> written by `akrs …` commands; a hand-edited one is reported as *unverified*.
 
 ---
 
-## Step 4 — Make Sure There Is an Entry File
+## Step 4 — Wire Your Agents
 
-Every AI tool needs **one** file to boot from. AKRS standardizes on
-**`AGENTS.md`** at the project root, with thin pointer files for specific tools
-(`CLAUDE.md` → `@AGENTS.md`, etc.).
+Every AI tool needs one entry file to boot from. AKRS standardizes on **`AGENTS.md`**, with thin
+pointers for specific tools (`CLAUDE.md` → `@AGENTS.md`, etc.). One command writes them all, plus
+skill pointers and an MCP entry for the agents that support it:
 
-Check the project root. If you **do not** see `AGENTS.md` (or your tool's entry
-file such as `CLAUDE.md`), ask the Leader:
-
-```
-There is no AGENTS.md at the project root. Create the canonical AGENTS.md
-entry file per 05-Platform-Adapter-Specification.md. It must boot into
-akrs/kernel/CORE.md and then the role file (the Gate).
+```bash
+akrs agents setup --dry-run     # preview every file it would create or merge into
+akrs agents setup               # all nine agents, or: --agent claude
+akrs agents doctor              # what is current, missing or hand-modified, and the repair command
 ```
 
-A correct `AGENTS.md` is tiny — it just points the AI at the kernel folder:
+It only adds managed blocks and merged entries inside your repository and never overwrites your
+own content. A correct `AGENTS.md` block is tiny — it just points the AI at the CLI:
 
 ```markdown
-# AGENTS.md
-This project uses AKRS.
-Boot: read `akrs/kernel/CORE.md`, then declare your role and load `akrs/kernel/<role>.md`.
-Obey both. Do not execute before boot.
+## AKRS
+
+This project uses AKRS. Leaders start with `akrs boot`; Workers run `akrs work`, then `akrs done`.
 ```
 
-> This is a known, easy-to-miss step. If your first Worker run seems "lost,"
-> 90% of the time it's a missing or wrong entry file.
+> If your first Worker run seems "lost," 90% of the time it's a missing or wrong entry file:
+> run `akrs agents doctor`.
 
 ---
 
@@ -151,20 +164,32 @@ Obey both. Do not execute before boot.
 Now ask the Leader for the **first real piece of work** (Phase B, Mode 3):
 
 ```
-Generate the first Task and its Road for: "<the feature you want first>"
-One Task, one Road, Status: ACTIVE. Update STATE.md. Do not execute.
+Write the first Task and its Road for: "<the feature you want first>"
+One Task, one Road, sized for the Worker I classified. Check it with `akrs road fit`,
+then activate it. Do not execute.
+```
+
+The Leader writes a *draft* with its file tool and lets the CLI create the real files:
+
+```
+akrs template road --class weak --to-draft r2
+   … the Leader fills akrs/drafts/r2.json …
+akrs road new --input akrs/drafts/r2.json
+akrs road fit R2        # fits | split_required | reads_over_budget
+akrs road check R2      # readiness, and the snapshot the next command needs
+akrs road activate R2 --if-snapshot <snapshot from road check>
 ```
 
 You'll get:
 
 ```
 akrs/
-├── tasks/<your-task>.md   ← what to build
-└── roads/<your-task>.md   ← exactly what to read & change (Status: ACTIVE)
+├── tasks/<your-task>.md        ← what to build (narrative)
+└── roads/<your-task>.json      ← exactly what to read & change (status: ACTIVE)
 ```
 
-Skim the Road. It should name the files to read, the files to change, and
-explicit scope boundaries. If it does, you're ready to execute.
+Skim `akrs road-details <road>`. It should name the files to read (as line windows), the files
+to change, explicit boundaries, and the checks that prove the work. If it does, you're ready.
 
 ---
 
@@ -183,61 +208,66 @@ Whichever you pick, give it a *minimal* prompt — do **not** re-explain the
 project. The workflow already contains everything:
 
 ```
-Implement the active Road.
+Run `akrs work`, do what the packet says, then run `akrs done`.
 ```
 
 That's it. A correctly built workflow means the executor:
 
-- boots `AGENTS.md → kernel/CORE.md → its role file`,
-- finds the active Road from `STATE.md`,
-- reads only what the Road tells it to,
-- writes code inside the Road's scope,
-- and stops at the boundaries.
+- claims the Road with `akrs work` and receives one packet: the files to read (as windows), the
+  files it may write, what is forbidden, the checks, the steps and what "done" means,
+- writes code inside that scope (a pre-write hook, where the agent supports one, stops it
+  leaving),
+- and finishes with a single call:
+  `akrs done R2 --result "<what is ready>" --reach "<how to get there>" --expect "<what to see>"`.
+
+If it needs something the Road doesn't allow, it sends a scope request (`akrs scope request`) and
+you or the Leader decide; if the Road is too big for its class it runs `akrs yield` and the Leader
+splits it.
 
 > If it starts asking "what should I read?" or wanders the repo, that's a
-> **routing failure**, not a model failure. Fix the Road/Kernel, not the prompt.
+> **routing failure**, not a model failure. Fix the Road, not the prompt.
 
 ---
 
-## Step 7 — Close-Out (the system handles it — you just confirm)
+## Step 7 — Close-Out (the CLI handles it — you just confirm)
 
-When work lands, the workflow has to be reconciled with reality or it slowly
-drifts: the Road says one thing, the code says another. The good news is that
-**a well-built AKRS workflow does its own close-out.** After finishing the Road,
-a correct executor automatically:
+When work lands, the workflow has to be reconciled with reality or it slowly drifts. `akrs done`
+does it in **one transaction**: it runs the Road's declared checks and a git audit, records the
+baton for the Tester, marks the Road `DONE`, writes its closure to the ledger and releases the
+lease. If anything is off, *nothing* is finished and the packet lists every blocker with its fix.
 
-1. **Updates `STATE.md`** — moves the finished item to *Done*, sets *Next*.
-2. **Reconciles the Road** — marks it `DONE + superseded by <memory>`, or
-   refreshes its *Expected files* to match what actually shipped.
-3. **Updates Memory** — only if a reusable fact moved or changed owner.
+(`done` and `verify` execute the commands the Road declares. That is why they are for workflows
+you trust.)
 
-So you usually don't *perform* close-out — you just **check that it happened.**
-Open `STATE.md` and the active Road and glance at three things:
-
-- Does *Done* list what was actually built?
-- Does the Road's status / expected-files match the code?
-- Did Memory stay an index (not turn into a dump of code details)?
-
-If something's off, don't patch it by hand — point the AI back at it:
-
-```
-Close-out looks incomplete. Reconcile STATE.md, the active Road's status, and
-Memory against what was actually built, per 07-State-And-Sync-Specification.md.
-```
-
-You don't have to eyeball all of this. Run the mechanical check:
+Then the Leader finishes the paperwork:
 
 ```bash
-npm run validate                 # or: npx akrs-framework validate
-# add --fix to sync status mirrors + rotate an over-size LOG ledger, --clean to remove stale files
+akrs state render      # STATE.md is derived output; re-render it
+akrs validate          # CI green = workflow valid
 ```
 
-It flags illegal Road statuses, missing expected files, dependency-gating violations, an
-over-budget `STATE.md`, a parked owner decision, an over-size `LOG.md` ledger, and stale
-ephemeral artifacts — so **CI green = workflow valid.**
+For work that can be seen running, the **Tester** loop closes the Plan (the Leader declared a
+verification contract with `akrs test define`; a model plays the Tester):
+
+```bash
+akrs test-details R2        # the one packet the Tester needs
+akrs test run R2            # the CLI launches the product and runs the declared scenario
+akrs test result R2 --verdict pass --because "the page shows what the Road promised"
+```
+
+In the Plan tier (`akrs init --scaffold --plan P1`) the Leader then closes the Plan:
+`akrs plan finish P1 --dry-run` names every remaining blocker, then run it with the `--if-snapshot`
+it prints. A single Road without a Plan ends at the Tester's result.
+
+If something's off, don't patch a canonical file by hand — run the command the finding names
+(`akrs explain <code>` says which), or point the AI back at it:
+
+```
+Close-out looks incomplete. Run akrs validate and fix what it reports with the akrs commands.
+```
 
 > Close-out is the one discipline that keeps a Road and a Memory from ever
-> disagreeing about what the code is. Let the workflow do it — your job is just
+> disagreeing about what the code is. Let the CLI do it — your job is just
 > to confirm it did.
 
 ---
@@ -245,11 +275,11 @@ ephemeral artifacts — so **CI green = workflow valid.**
 ## The Loop, From Here On
 
 ```
-Ask Leader for next Task + Road   (Phase B, once)
+Ask Leader for the next Task + Road   (Phase B, once)
         ↓
-Worker: "Implement the active Road."   (cheap, repeatable)
+Worker: akrs work → edit → akrs done       (cheap, repeatable)
         ↓
-Close-out   (update STATE + Road + Memory)
+Leader: akrs state render, akrs validate    (and the Tester loop for a Plan)
         ↓
 repeat
 ```
@@ -264,10 +294,13 @@ constantly.
 | Mistake | Symptom | Fix |
 |--------|---------|-----|
 | Skipped Source-of-Truth confirmation | Workflow encodes wrong assumptions | Restart Phase A; confirm sources first |
+| Did not classify the models | `akrs validate` warns `AKRS-S006`; Roads cannot be activated | Tell the Leader how strong each model is; it runs `akrs executor set` |
 | Pre-generated all Tasks/Roads up front | Roads rot after the first requirement change | Generate Tasks/Roads on demand (Phase B) |
-| No `AGENTS.md` entry file | Worker boots into nothing, wanders | Create `AGENTS.md` (Step 4) |
-| Over-explaining to the Worker | Wasted tokens; Worker ignores the Road | Give a minimal prompt; trust the Road |
-| Skipping close-out | Road says X, code says Y (drift) | Run close-out every time work lands |
+| Wrote a Road too big for a weak model | The Worker is refused again and again, or yields | `akrs road fit`; split the Road |
+| No `AGENTS.md` entry file | Worker boots into nothing, wanders | `akrs agents setup`, then `akrs agents doctor` |
+| Hand-edited an `akrs/` machine file | `akrs validate` reports it as unverified | Restore it from git and use the command |
+| Over-explaining to the Worker | Wasted tokens; Worker ignores the Road | Give a minimal prompt; trust the packet |
+| Running `done`/`verify` on untrusted code | Declared checks execute commands | Only on workflows and checkouts you trust |
 | Forcing Full structure on a tiny project | Ceremony > value | Use AKRS Lite or skip (see Constitution §12) |
 
 ---
@@ -275,14 +308,21 @@ constantly.
 ## Troubleshooting
 
 **"The Worker keeps leaving scope."**
-The Road's boundaries are too loose. Tighten *Out of scope* / *Boundaries*.
+The Road's boundaries are too loose. Tighten `writes`, `forbidden` and `boundaries` with
+`akrs road update`; `akrs done` also refuses an undeclared change.
 
 **"The Worker asks what file to read."**
-The Kernel or Road isn't being booted. Check the `AGENTS.md` → `kernel/CORE.md` → role-file
-chain.
+It isn't using the packet. Check the `AGENTS.md` → `akrs work` chain with `akrs agents doctor`.
+
+**"`akrs done` refuses and I don't see why."**
+The packet lists every blocker with its fix. A failing declared check is the usual cause.
 
 **"Two files disagree about the code."**
-A close-out was skipped. Reconcile via `STATE.md` + Road status now.
+A close-out was skipped. Re-run `akrs validate` and `akrs state render`; the Leader reconciles
+Memory.
+
+**"I need a flag I can't find."**
+`akrs <command> --help` prints that command's usage and flags; `akrs --help` lists them all.
 
 **"My project is tiny — this feels heavy."**
 It probably is. AKRS scales down: Kernel + Router + Roads (Lite), or skip
@@ -292,7 +332,8 @@ entirely for throwaway work. See `docs/framework/01-Constitution.md` §12.
 
 ## Where to Go Next
 
+- **Try the smallest workflow:** [`examples/minimal`](https://github.com/asadeisa/akrs/tree/main/examples/minimal) — `akrs validate --root examples/minimal --workflow-root examples/minimal/akrs`
 - **Understand the routing path:** [`ROUTING-FLOW.md`](https://github.com/asadeisa/akrs/blob/main/docs/guides/ROUTING-FLOW.md) (GitHub)
 - **Understand the files:** [`FILE-STRUCTURE.md`](https://github.com/asadeisa/akrs/blob/main/docs/guides/FILE-STRUCTURE.md) (GitHub)
-- **Read the doctrine:** [`docs/framework/`](docs/framework/) (copied into `docs/akrs/framework/`)
+- **Read the doctrine and the procedures:** [`docs/framework/`](https://github.com/asadeisa/akrs/tree/main/docs/framework) (copied into your project's `docs/akrs/framework/`)
 - **See it proven:** [`docs/validation/`](https://github.com/asadeisa/akrs/tree/main/docs/validation) (GitHub)

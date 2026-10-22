@@ -13,14 +13,15 @@ already speaks.
 
 | AKRS term | Your team already calls it |
 |-----------|----------------------------|
-| **Road** | a scoped work order / a PR spec (scope + acceptance + files) |
+| **Road** | a scoped work order / a PR spec (scope + acceptance + files + checks) |
+| **Executor class** (weak / medium / frontier) | the seniority level you assign a model, which sets how big a work order it gets |
 | **Kernel** (`akrs/kernel/`) | the compiled system prompt (CORE + one role file per session) |
-| **STATE** | the handoff doc / stand-up save-point |
-| **LOG** | the engineering journal (append-only) |
-| **close-out** | your definition of done |
+| **STATE** | the handoff doc / stand-up save-point (rendered, never hand-edited) |
+| **Closure ledger** (`akrs/log/`) | the engineering journal (append-only) |
+| **close-out** (`akrs done`) | your definition of done |
 | **Memory** | the architecture-decision index |
 | **Tester** | QA sign-off (verifies the running product, not the paperwork) |
-| **Handoff** (`akrs/verify/*`) | the test charter for one idea |
+| **Verification contract / handoff** | the test charter for one idea, and the developer's note to QA |
 | **FEATURES** | the release-notes index (what landed, and where it lives) |
 
 Nothing here asks the team to learn a new process — only to see the process it has through
@@ -30,13 +31,15 @@ one consistent index.
 
 ## 2. Tickets, PRs, and CI (tools become views; AKRS stays the source of truth)
 
-- **Tickets.** A Task may carry an optional `Ticket:` field (external tracker id). The Task's
-  objective/acceptance *is* the ticket body; the tracker becomes a view.
+- **Tickets.** The Task's objective and its Road's acceptance *are* the ticket body; put the
+  external tracker ID in the Task's notes (or the commit message). The tracker becomes a view.
 - **PRs.** **One Road = one branch/PR.** A Road already contains scope + acceptance + expected
   files, so the PR description generates straight from it — the Road *is* the PR template.
-- **Close-out comments the ticket.** When a Road lands, close-out writes `LOG.md` and can
-  mirror that one-line summary into the ticket/PR.
-- **CI.** CI runs `npx akrs-framework validate` **plus** the committed `tests/`. The audit
+- **Close-out comments the ticket.** When a Road lands, `akrs done` writes the closure record
+  and the handoff; mirror its one-line result into the ticket/PR.
+- **CI.** CI runs `npx akrs-framework validate` (read-only, one packet with `--json`) **plus**
+  the committed `tests/`. `validate` never executes a Road's declared checks; `done` and
+  `verify` do, so run those only on code you trust. The audit
   statement is one line every engineering manager understands:
 
   > **CI green = workflow valid.**
@@ -50,11 +53,14 @@ one consistent index.
 Roads are **parallel-safe by construction** — an under-marketed strength worth stating
 plainly:
 
-- Two `ACTIVE` Roads with **disjoint Expected files** cannot collide; the `validate` CLI
-  enforces the disjointness (check 4).
-- **STATE `## Active` becomes a table** — one row per active Road — so several Workers (or
-  subagents) can run at once against one save-point.
-- **`LOG.md` is append-only**, so concurrent close-outs never merge-conflict.
+- Two `ACTIVE` Roads with **disjoint declared writes** cannot collide; `akrs graph` shows
+  collision edges and `akrs road-details` lists each one before you activate.
+- **A lease per Road** (`akrs work`) means two Workers cannot take the same Road by accident, and
+  `STATE.md` lists every ACTIVE Road, so several Workers (or subagents) run at once against one
+  save-point.
+- **The closure ledger is append-only and written under a repository lock**, so concurrent
+  close-outs never corrupt it (leases and the journal live in git-ignored `akrs/.ops/`, per
+  worktree). Multi-worktree orchestration is not part of v2.
 
 A team scales AKRS across people the same way it scales across sessions: split the work into
 Roads with non-overlapping file sets and run them side by side.
@@ -65,11 +71,9 @@ Roads with non-overlapping file sets and run them side by side.
 
 AKRS deliberately does **not** fabricate cost telemetry. Earlier ledgers asked the executing
 agent to record `model=`, `effort=`, `tokens=`, and `wall=` — values an agent cannot know
-reliably and, in practice, made up. As of v1.3.1 the `LOG.md` ledger is a bare chronology:
-
-```
-<YYYY-MM-DD> · <ROAD-ID> · <DONE|BLOCKED>
-```
+reliably and, in practice, made up. The closure ledger (`akrs/log/`, rendered by `akrs log`) is a
+bare chronology: one record per closure with its kind, subject (Road or Plan ID), outcome
+(`DONE` or `BLOCKED`) and an optional `deviations` clause.
 
 The cost slide comes from sources that actually measure cost — **the provider's usage
 dashboard, CI wall-clock, and PR metadata** — correlated with the ledger's Road-by-Road
@@ -83,10 +87,12 @@ figure the agent invented.
 ## 5. Rollout, lightly
 
 1. `npx akrs-framework init` in the repo; confirm the Source of Truth with the Leader.
-2. Generate the Phase A skeleton + the kernel folder; add `AGENTS.md`.
+2. Have the Leader ask the team how each model is classified (weak, medium, frontier), then
+   generate the Phase A skeleton and the kernel folder; run `akrs agents setup` to wire every
+   agent the team uses.
 3. Wire `npx akrs-framework validate` into CI (and, optionally, a pre-commit hook).
-4. Run one Road end-to-end (branch → PR → close-out → `LOG.md` ledger line); show the team
-   the PR that generated itself from the Road.
+4. Run one Road end-to-end (branch → `akrs work` → `akrs done` → PR → ledger line); show the
+   team the PR that generated itself from the Road.
 
 See [`FILE-STRUCTURE.md`](FILE-STRUCTURE.md) for the file layout and
 [`ROUTING-FLOW.md`](ROUTING-FLOW.md) for the execution path.

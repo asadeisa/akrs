@@ -11,5 +11,15 @@ akrs validate --root examples/minimal --workflow-root examples/minimal/akrs
 Every file under `akrs/` is written by the CLI: change a Road with `akrs road update`, the State with
 `akrs state set`, and never by hand (a hand-edited file is reported as unverified).
 
+See what each role would be handed (both are read-only queries):
+
+```text
+akrs road-details R1 --role worker --root examples/minimal --workflow-root examples/minimal/akrs
+akrs test-details R1 --root examples/minimal --workflow-root examples/minimal/akrs
+```
+
+A test keeps `validate` clean and compares both packets (JSON, prompt and human renderings) to
+committed goldens (`test/fixtures/examples-minimal/expected.json`).
+
 To create your own: `akrs init --scaffold` (add `--plan <id>` for the Plan tier). A test keeps this
 folder byte-identical to that output; it is regenerated with `AKRS_REGENERATE_EXAMPLE=1 npm test`.

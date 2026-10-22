@@ -34,7 +34,7 @@ test('with the real package root every path a config points at exists and the pa
   assert.equal(hook, `node "${PACKAGE_ROOT}/bin/akrs-guard.js"`);
   assert.equal(existsSync(`${PACKAGE_ROOT}/bin/akrs-guard.js`), true);
   const skills = Object.keys(tree).filter((path) => path.startsWith('.agents/skills/'));
-  assert.deepEqual(skills.sort(), ['akrs-close-out', 'akrs-live-verify'].map((name) => `.agents/skills/${name}/SKILL.md`));
+  assert.deepEqual(skills.sort(), ['akrs-classify-executors', 'akrs-close-out', 'akrs-live-verify', 'akrs-road-author', 'akrs-scope-request', 'akrs-work-loop'].map((name) => `.agents/skills/${name}/SKILL.md`));
   assert.equal((await runAgentsDefault(world, ['doctor'])).packet.status, 'ok');
   assert.equal((await runAgentsDefault(world, ['setup'])).packet.status, 'noop');
 });

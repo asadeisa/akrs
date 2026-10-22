@@ -24,20 +24,28 @@ naming exactly what to read, what to change, and where to stop. Every agent
 after that boots from the routing layer instead of from your codebase — and
 opens a **window** into each file it needs, never the whole file.
 
-AKRS is not a memory system, not a documentation tool, not a planning tool, not
-an MCP server, and not a runtime.
+AKRS is not a memory system, not a documentation tool and not a planning tool.
 
-**AKRS is a knowledge-routing doctrine.** A doctrine is a specification your
-strong model reads once and compiles into a project-specific routing layer, so
-every later agent — on any model — is handed the smallest correct slice of your
-project at the moment it acts, instead of being told to go find it.
+**AKRS is a knowledge-routing doctrine plus the small CLI that runs it.** The
+doctrine is a specification your strong model reads once and compiles into a
+project-specific routing layer. The `akrs` CLI (zero runtime dependencies,
+Node >= 22.17) then writes the workflow's records and hands every later agent —
+on any model — **one exact packet** for what it is about to do, instead of
+telling it to go find the context:
 
-There is no app to install: the specification is the product. `npx
-akrs-framework init` drops eleven markdown files into your repo, and `validate`
-is a zero-dependency linter that proves the workflow still agrees with the code.
-Nothing runs at inference time — which is why it works with **any agent that
-boots from `AGENTS.md`**: Codex, Claude Code, Gemini CLI, Cursor, Copilot, or
-whatever ships next.
+| Role | Entry | Happy path |
+|---|---|---|
+| Leader | `akrs boot` | classify executors, draft Roads, `road activate`, `plan finish` |
+| Worker | `akrs work` | edit inside the packet, then `akrs done` (two calls) |
+| Tester | `akrs test-details` | `akrs test run`, then `akrs test result` (three calls) |
+
+The agent supplies the content; the CLI owns the form, so a weak model never
+juggles hashes, request IDs or hand-written ledgers. Everything is plain files
+in git, and every command also speaks `--json`, so a future app can consume the
+same packets. It works with **any agent that boots from `AGENTS.md`**: Claude
+Code, Codex, Gemini CLI, Pi, opencode, Kimi Code CLI, Qwen Code, Cursor,
+Freebuff — through the CLI and skills everywhere, and through MCP
+(`akrs mcp`) where the agent supports it.
 
 ---
 
@@ -148,15 +156,20 @@ other tool gets a thin pointer that just refers back to it — so the same
 workflow behaves identically no matter which CLI you run it in, and a plan
 started in one tool resumes in another from `STATE.md`.
 
-| Tool | Entry file | How it points |
-|---|---|---|
-| Codex CLI | `AGENTS.md` | native — *is* the canonical file |
-| Claude Code / CLI | `CLAUDE.md` | `@AGENTS.md` import |
-| Gemini CLI | `GEMINI.md` | "Read AGENTS.md and follow it." |
-| Cursor | `.cursor/rules` | "Read AGENTS.md and follow it." |
-| GitHub Copilot | `.github/copilot-instructions.md` | "Read AGENTS.md and follow it." |
+```bash
+akrs agents setup          # wire all nine agents (--agent <id> for one, --dry-run to preview)
+akrs agents doctor         # what is current, missing or hand-modified, and the repair command
+```
 
-Adding a new tool means adding a pointer file — never touching the workflow.
+| Tool | Entry file | Skills | MCP |
+|---|---|---|---|
+| Claude Code | `CLAUDE.md` → `@AGENTS.md` | `.claude/skills/` | `.mcp.json` |
+| Codex CLI, Pi, opencode, Kimi Code CLI, Cursor, Freebuff | `AGENTS.md` | `.agents/skills/` | per-agent config |
+| Gemini CLI | `GEMINI.md` → `@./AGENTS.md` | `.agents/skills/` | `.gemini/settings.json` |
+| Qwen Code | `AGENTS.md` | `.qwen/skills/` | `.qwen/settings.json` |
+
+`akrs agents list` is the source of truth for each agent's verified facts. Setup only
+merges managed blocks and entries inside the repository and never overwrites your content.
 Specification: [`05-Platform-Adapter-Specification.md`](docs/framework/05-Platform-Adapter-Specification.md).
 
 ---
@@ -188,9 +201,10 @@ docs/akrs/
 └── framework/           ← the doctrine the Leader reads (01..11 + skills/)
 ```
 
-That's all most people need — the files now live in your repo, ready to read and
-to hand to your Leader model. Re-run with `npx akrs-framework init --force` to refresh them.
-The human guides live on GitHub (linked below); the README's links to them keep working on npm.
+The files now live in your repo, ready to read and to hand to your Leader model. The same
+package is the `akrs` CLI (`npx akrs-framework <command>`, or `akrs <command>` when installed).
+Re-run `init` with `--force` to replace the copied doctrine and `akrs sync` to refresh it while
+keeping local edits. The human guides live on GitHub (linked below).
 
 <details>
 <summary>Prefer a managed dependency, or just want to read the docs?</summary>
@@ -204,9 +218,9 @@ npm install akrs-framework      # or: pnpm add / yarn add akrs-framework
 git clone https://github.com/asadeisa/akrs
 ```
 
-Since v1.3.1, installing the package as a dependency runs the same copy `init` does — the
-framework doctrine lands in `docs/akrs/framework/` so your workflow reads local files, never
-`node_modules`. (Set `AKRS_SKIP_POSTINSTALL=1` to opt out.)
+Installing the package as a dependency runs a postinstall that syncs the doctrine into
+`docs/akrs/framework/` so your workflow reads local files, never `node_modules`; it never
+overwrites a local edit and always exits 0. (Set `AKRS_SKIP_POSTINSTALL=1` to opt out.)
 </details>
 
 ---
@@ -215,28 +229,33 @@ framework doctrine lands in `docs/akrs/framework/` so your workflow reads local 
 
 1. Run `npx akrs-framework init` in your project
 2. Read `docs/akrs/GETTING_STARTED.md`
-3. Generate your first workflow with your Leader model
-4. Start your first task
+3. Let your Leader model build the workflow: it asks which models you use and how strong each
+   is, then runs `akrs init --scaffold`
+4. Wire your agents with `akrs agents setup`, and start your first Road
+   (`akrs work` → `akrs done`)
 
 ---
 
 ## Validate Your Workflow
 
-Once you have a generated `akrs/` workflow, keep it honest with the built-in linter:
+Once you have a generated `akrs/` workflow, keep it honest with the built-in validator:
 
 ```bash
-npx akrs-framework validate          # 17 mechanical checks; exits non-zero on any failure
-npx akrs-framework validate --fix    # also sync mirrored Road statuses + rotate an over-size LOG ledger
-npx akrs-framework validate --clean  # also delete stale ephemeral artifacts
+npx akrs-framework validate            # 19 mechanical checks; exit 1 on a finding
+npx akrs-framework validate --json     # one packet, for CI and tools
+npx akrs-framework explain AKRS-S008   # rationale + remediation of any finding code
 ```
 
-Generated projects also ship a `package.json` that wires this up, so a developer who has never
-seen the `npx` commands can just run **`npm run validate`** (or `validate:fix` / `validate:clean`).
+`validate` is read-only: it never fixes, rotates or deletes anything. A finding is repaired by
+the writer command it names (for a stale `STATE.md`, `akrs state render`). Coverage is honest —
+each check is `passed`, `failed`, `skipped` or `not_applicable`, and a skip is never counted as a
+pass. It checks Roads (schema, identity, paths, dependencies, class fit), executors, `state.json`
+and its rendered `STATE.md`, the closure ledger, scope requests, Memory records, verification
+contracts and results, left-over drafts and the git posture. Run it at every close-out and in CI —
+**CI green = workflow valid.** Zero dependencies.
 
-It checks Road status / expected files / dependency gating, `STATE.md` (including parked owner
-decisions), the `LOG.md` ledger (entry length + rotation), the kernel folder, and the
-ephemeral-artifact lifecycle (handoff / change / BLOCKED / tester memory). Run it at every
-close-out and in CI — **CI green = workflow valid.** Zero dependencies.
+> Declared Road checks are repository commands. `akrs done`, `akrs road finish` and
+> `akrs verify` run them: use them only on workflows you trust, never on an untrusted checkout.
 
 ---
 
@@ -249,26 +268,28 @@ close-out and in CI — **CI green = workflow valid.** Zero dependencies.
 | [docs/guides/FILE-STRUCTURE.md](docs/guides/FILE-STRUCTURE.md) | Folder organization and file ownership · *read online (GitHub)* |
 | [docs/guides/TEAM-ADOPTION.md](docs/guides/TEAM-ADOPTION.md) | Mapping AKRS onto tickets, PRs, CI, and parallel work · *read online (GitHub)* |
 | [docs/framework/](docs/framework/) | Complete framework specifications (incl. `skills/`) |
-| [examples/](examples/) | Real project examples |
+| [examples/minimal](examples/minimal/) | A complete, runnable v2 workflow that validates clean |
+| [docs/framework/skills/](docs/framework/skills/) | The procedure bodies each role runs |
 | [docs/validation/](docs/validation/) | Test results and case studies |
 
 ---
 
 ## Examples
 
-The most complete worked example today is the **Atlas ERP case study** — a full
-Phase A → Phase B → execute → close-out cycle:
-[`docs/validation/case-study-atlas-erp.md`](docs/validation/case-study-atlas-erp.md).
+[`examples/minimal`](examples/minimal/) is exactly what `akrs init --scaffold` writes plus two
+executors — validate it with
+`akrs validate --root examples/minimal --workflow-root examples/minimal/akrs`.
 
-More sample projects (basic, existing-project integration, v0→v1 migration, full
-workflow) are tracked in [`examples/`](examples/) and on the
-[roadmap](ROADMAP.md).
+The most complete worked narrative is the **Atlas ERP case study** (written against the
+first framework generation, so read its file names as history, not as the v2 layout):
+[`docs/validation/case-study-atlas-erp.md`](docs/validation/case-study-atlas-erp.md).
 
 ---
 
 ## Validation & Testing
 
-AKRS v1 has been tested with multiple AI models:
+The first framework generation (v1, the evidence behind the doctrine) was tested with multiple
+AI models:
 
 | Model | Test | Result |
 |-------|------|--------|
@@ -285,7 +306,7 @@ reconciled the workflow afterward — without ever asking what to read.
 > **On cost.** AKRS deliberately does not record its own token or cost
 > telemetry: an executing agent cannot know those numbers reliably, and asking
 > for them only invites fabrication. Cost belongs to your provider's usage
-> dashboard, correlated with the `LOG.md` ledger's Road-by-Road chronology.
+> dashboard, correlated with the closure ledger's Road-by-Road chronology (`akrs log`).
 > Model prices also fall every few months — the argument here is about decision
 > space, which doesn't.
 
@@ -293,9 +314,11 @@ reconciled the workflow afterward — without ever asking what to read.
 
 ## Versioning
 
-- **Framework Version:** v1.3.1 (specifications)
-- **Generated Workflows:** Versioned independently (v1, v2, etc.)
-- **Kernel Version:** Generated per-project from latest framework (now a `kernel/` folder)
+- **Framework Version:** v2 (specifications + the `akrs` CLI; the exact version is in
+  `package.json` and the top of `CHANGELOG.md`)
+- **Generated Workflows:** Versioned independently; a v2 workflow is a new v2 workflow (there is
+  no migration from older Markdown workflows)
+- **Kernel Version:** Generated per-project from the latest framework (a `kernel/` folder)
 
 See `VERSIONING.md` for details.
 
@@ -351,4 +374,4 @@ AKRS is free to use, modify, and distribute in personal and commercial projects.
 
 Made with care for developers who want reliable, predictable AI agents.
 
-**AKRS v1.3.1** — August 2026
+**AKRS v2** — see `CHANGELOG.md` for the release

@@ -1,107 +1,63 @@
-# AKRS v1 — Framework
+# AKRS v2 — Framework
 
 **AKRS** (Adaptive Knowledge Routing System) is a reusable framework that teaches a
 strong *Leader* model how to analyze a software project once and generate a workflow that
 lets inexpensive *Worker* models execute many tasks reliably, by delivering the **smallest
 correct knowledge to the correct agent at the correct moment**.
 
-This folder (`docs/framework/`) is the **v1 framework** — the permanent, reusable source used
-to generate AKRS workflows for real projects. It is the *source code*. The per-project
-**Kernel** it produces is the *compiled artifact* (see `08-Kernel-Specification.md`).
+This folder (`docs/framework/`) is the **framework** — the permanent, reusable source used to
+generate AKRS workflows for real projects. It is the *source code*. The per-project **Kernel** it
+produces is the *compiled artifact* (see `08-Kernel-Specification.md`). The `akrs` CLI is the
+local navigation and control layer that writes and serves the workflow.
 
-> The v0 framework is preserved unchanged in `docs/research/v0/` as the reference implementation.
-> v1 lives entirely beside it. Nothing in v0 was modified, renamed, or deleted.
-
----
-
-## What v1 changes (improvements over v0)
-
-v1 keeps the full AKRS philosophy and incorporates five fixes discovered after the first
-real implementation:
-
-| # | Problem in v0 | v1 fix | Owner file |
-|---|---|---|---|
-| P1 | ~6,000-word read-once doctrine carried by every target project | **Kernel** — a minified, prompt-engineered operating file generated per project; heavy doctrine never ships to the target | `08-Kernel-Specification.md` |
-| P2 | Roads silently go stale (drift); a Road and a Memory can disagree about reality | **STATE + Road close-out lifecycle** — mandatory reconciliation when work lands | `07-State-And-Sync-Specification.md` |
-| P3 | Dev↔agent interaction was principles-only, not operational | **Operational Interaction Protocol** — recommended-first options, one decision at a time, a guided next step every turn | `04-Developer-Interaction-Protocol.md` |
-| P4 | Many entry files, no single owner | **Single canonical `AGENTS.md`** + thin pointer adapters for every famous tool | `05-Platform-Adapter-Specification.md` |
-| P5 | Plan in one CLI, run in another — no portable resume point | **Portable `STATE.md`** any CLI can resume from | `07-State-And-Sync-Specification.md` + `06-Runtime-Boot-Protocol.md` |
-| cross | Full structure forced on tiny projects | **Applicability scale** — Lite vs Full, driven by blast radius | `01-Constitution.md` |
+> Earlier framework generations are preserved unchanged in `docs/research/` and in the
+> `CHANGELOG.md`. Nothing here is a migration guide: v2 creates new v2 workflows; there is no
+> parser for older Markdown workflows.
 
 ---
 
-## What v1.2 adds (grows the framework — nothing removed)
+## What v2 is
 
-v1.2 is additive over v1: every fix grows an existing artifact or adds a new spec beside the
-others. This table grows as each part lands.
+The doctrine is the same; the **mechanics moved into the CLI** so that a weak model never has to
+juggle hashes, hand-written ledgers or shell-quoted JSON.
 
-| v1.2 addition | What it does | Owner file(s) |
+| Principle | In practice | Owner file(s) |
 |---|---|---|
-| **STATE / LOG split** | STATE ≤ 1-page save-point; append-only `LOG.md` history with a metrics line | `07-State-And-Sync-Specification.md` |
-| **QUEUED status + batch generation** | legal status for generated-not-yet-active Roads; per-plan batching with staleness re-validation | `07` + `02-Generation-Specification.md` |
-| **Task/Road granularity + no-duplication** | Leader-decided granularity; a Task restates nothing from its Road | `02-Generation-Specification.md` |
-| **SoT Index + read windows + partitioning** | no agent ever reads the whole Source of Truth, however large or pre-existing | `09-Scale-And-Source-Index-Specification.md` |
-| **Tester role + idea-level verification** | Done is proven against the running product — Mirror Check, raw measurement, Test-Handoff, seam ownership, expiring open questions | `10-Verification-Specification.md` |
-| **Change management + FEATURES index** | features change without leaving broken data — FEATURES index, on-demand change file, merge-or-vanish, requirements-delta | `11-Change-Management-Specification.md` |
-| **Kernel folder + Gate + BLOCKED + Skills** | the Gate loads `CORE.md` + one role file per session; a non-leader stuck agent raises `BLOCKED.md`; Tasks may name `Skills:` | `08-Kernel-Specification.md` + `06` + `03` |
-| **`validate` CLI (17 checks, `--fix`, `--clean`)** | mechanical enforcement — CI green = workflow valid; the tool fixes/cleans without bothering the agent | `bin/akrs.js` + `07 §6` |
-| **Overhead budget (D12)** | the workflow never becomes the agent's main job — close-out touches at most LOG + STATE + Road + one Memory + one FEATURES line | `01-Constitution.md §14` |
+| **Content from the agent, form from the CLI** | Roads, State, executors, contracts, handoffs, results and the closure ledger are JSON/JSONL written only by their command from a draft the agent writes; a hand-edit is detected (`unverified`). Narrative (Task, Memory, `STATE.md`) stays Markdown | `02` + `07` + `skills/akrs-road-author.md` |
+| **One call per intent** | Leader `boot`; Worker `work` -> `done` (and `yield`); Tester `test-details` -> `test run` -> `test result`. The primitives (`road new`, `road finish`, `test handoff`, ...) stay public as the fallback | `03` + `06` + `10` + `skills/` |
+| **Executor classes** | The *user* classifies each executing model (weak, medium, frontier); Road size, packet shape and the finish limits follow the class | `01` + `04` + `skills/akrs-classify-executors.md` |
+| **Leases, scope envelope, write guard** | A Worker claims a Road with a lease; extra scope is a request, granted only by the Leader or the Road's own envelope; a pre-write hook (where verified) denies out-of-scope edits and `done` audits the rest | `03` + `07` + `skills/akrs-scope-request.md` |
+| **Done is experiential** | A Plan's verification contract declares the launch, the scenario, the budgets and the evidence; the CLI runs it (`test run`) and records mechanical facts; the Tester records a structured, append-only verdict; `plan finish` refuses without a current pass | `10` + `skills/akrs-live-verify.md` |
+| **State is derived** | `state.json` is canonical; `STATE.md` is rendered and must reproduce byte-identically; the closure ledger lives in `akrs/log/` | `07` |
+| **Every agent** | `akrs agents setup` wires AGENTS.md pointers, skill pointers, an MCP server entry (`akrs mcp`) and a guard hook for the agents that support them; the CLI works everywhere | `05` |
+| **Honest validation** | `akrs validate` reports passed / failed / skipped / not applicable, never counts a skip as a pass, never fixes anything; every finding has a permanent code (`akrs explain`) | `07 §6` |
+| **Desktop-ready, not a desktop** | `graph`, `view` (a static board), `watch` (a change stream) and the `projects` registry expose the same packets a future app would consume. An HTTP server, a desktop shell and multi-worktree orchestration are **not** part of v2 | `05 §8` |
 
----
-
-## What v1.3 changes (the subtraction release — same guarantees, ledger prices)
-
-v1.3 keeps every v1.2 guarantee (Mirror Check, honest instruments, the Tester) and pays for
-them with far less agent writing. Nothing new is asked of the Worker or Leader; each item below
-**removes an agent step or moves work into the CLI**.
-
-| v1.3 change | What it does | Owner file(s) |
-|---|---|---|
-| **LOG → one-line ledger** | close-out writes ONE line (+ optional `deviations:`), not a ~450-word essay; the exact format is owned by the `akrs-close-out` skill | `07` + `skills/akrs-close-out.md` |
-| **Skills seam filled** | `akrs-close-out` + `akrs-live-verify` — procedures move out of the kernel/specs into single-owner skill bodies; kernel + specs keep only the invariants + a pointer | `skills/` + `02` + `05` + `08` |
-| **Verification diet** | handoff ≤ 1 page; asserts per Road, Mirror Check per Plan, a live Tester pass only for DOM/CSS plans + one final end-to-end pass — not per Road | `10` + `08` |
-| **Ask-the-developer trigger** | owner/developer decisions are asked in-chat the same turn; STATE stores only the answer (a parked decision warns) | `04` + `08` + `bin/akrs.js` |
-| **CLI grows to 17 checks** | ledger-entry lint, automatic LOG rotation (`--fix`), parked-owner-decision warn; plus false-positive fixes (roads/tasks `README`, SOT-INDEX legend) | `bin/akrs.js` + `07 §6` |
-| **Generated projects ship the tool** | Phase A emits a `package.json` with `npm run validate` / `:fix` / `:clean`; the CLI points you at a nested `akrs/` when `./akrs` is missing | `02` + `bin/akrs.js` |
-| **Packaging** | `init` copies just the framework (+ `skills/`); `docs/guides` leaves the npm tarball (web-readable on GitHub); maintainer contact ships in the package | `bin/akrs.js` + `package.json` |
-
----
-
-## What v1.3.1 changes (field-feedback patch — a live low-capability-model run)
-
-v1.3.1 fixes five things a live run (Sonnet 5 Leader + Gemini Flash Worker) surfaced. Each
-removes a way a weaker model was pushed into fabricating, failing, or diverging. No scope growth.
-
-| v1.3.1 fix | What it does | Owner file(s) |
-|---|---|---|
-| **Install syncs doctrine locally** | `npm install akrs-framework` now runs a `postinstall` that copies `docs/framework/` into the project's `docs/akrs/` — the workflow reads local files, not `node_modules` | `bin/akrs.js` + `package.json` |
-| **`validate` rule 2 gated by status** | Expected-files check is `QUEUED` skip · `ACTIVE` warn · `DONE` error — a freshly generated Road never hard-fails CI; real post-completion drift is caught | `bin/akrs.js` + `07 §6` |
-| **Telemetry dropped from the ledger** | close-out records only `date · ROAD-ID · DONE\|BLOCKED` (+ optional `deviations:`); no `model`/`effort`/`tokens`/`tools`/`wall` for an agent to invent | `skills/akrs-close-out.md` + `07` + `03` + `01` + `bin/akrs.js` |
-| **Handoff is per Plan, made explicit** | both role files name the identical `<plan>-handoff.md`; no-Plan tiers emit no handoff at all — stops weak Leaders emitting a `<road>-handoff.md` | `08` + `10` |
-| **SoT Index is a mandatory Phase-A step** | generate `akrs/SOT-INDEX.md`, or record a justified `SOT-INDEX: none — <reason>`; a silent skip on a large/pre-existing SoT is a generation failure | `02 §3.1, §9` |
+Unchanged and still central: the Kernel (compact, per-project), the SoT Index and read windows
+(`09`), the Tester and the Mirror Check (`10`), change management (`11`), single-owner knowledge,
+and the applicability scale (Lite vs Full) in `01`.
 
 ---
 
 ## File map
 
-| File | Purpose | Redesigns (v0) |
-|---|---|---|
-| `01-Constitution.md` | Philosophy + architecture principles + applicability scale | `Constitution.md` |
-| `02-Generation-Specification.md` | How a Leader generates a workflow (Phase A skeleton / Phase B on-demand), now including STATE and Kernel generation | `Appendix to the AKRS Constitution.md` |
-| `03-Execution-Contract.md` | Worker execution guarantees + mandatory close-out | `Execution-Contract.md` |
-| `04-Developer-Interaction-Protocol.md` | Operational Leader↔Developer interaction | `v-0-Developer Interaction Protocol.md` |
-| `05-Platform-Adapter-Specification.md` | Canonical `AGENTS.md` + thin pointer adapters + include-syntax table | `v-0-Platform Adapter Specification.md` |
-| `06-Runtime-Boot-Protocol.md` | Deterministic session boot, fast path, STATE resume | `v-0-Runtime Boot Protocol.md` |
-| `07-State-And-Sync-Specification.md` | `STATE.md` save-point + `LOG.md` journal + Road close-out/sync lifecycle | — (new capability) |
-| `08-Kernel-Specification.md` | The Kernel concept + minified kernel template | — (new capability) |
-| `09-Scale-And-Source-Index-Specification.md` | Staying minimal-read at scale: SoT Index, read windows, progressive analysis, domain partitioning | — (new v1.2 capability) |
-| `10-Verification-Specification.md` | Proving Done against the running product: Tester role, Mirror Check, idea-level `Verify:`, handoff, raw measurement, seam ownership | — (new v1.2 capability) |
-| `11-Change-Management-Specification.md` | Changing requirements without broken data: FEATURES index, on-demand change file, merge-or-vanish, requirements-delta | — (new v1.2 capability) |
-| `skills/` | The procedure bodies the specs point to: `akrs-close-out` (close-out steps + ledger format), `akrs-live-verify` (live rig + handoff template) — single-owner, platform-neutral | — (new v1.3 capability) |
+| File | Purpose |
+|---|---|
+| `01-Constitution.md` | Philosophy + architecture principles + roles + applicability scale |
+| `02-Generation-Specification.md` | How a Leader generates a workflow (Phase A skeleton / Phase B on-demand), State and Kernel generation |
+| `03-Execution-Contract.md` | Worker execution guarantees, scope expansion and close-out invariants |
+| `04-Developer-Interaction-Protocol.md` | Operational Leader<->Developer interaction (including classifying executors) |
+| `05-Platform-Adapter-Specification.md` | Canonical `AGENTS.md`, `akrs agents setup`, MCP, the write guard |
+| `06-Runtime-Boot-Protocol.md` | Deterministic session boot per role, fast path, State resume |
+| `07-State-And-Sync-Specification.md` | `state.json`/`STATE.md`, the closure ledger, the Road lifecycle and leases, mechanical validation |
+| `08-Kernel-Specification.md` | The Kernel concept + minified kernel templates |
+| `09-Scale-And-Source-Index-Specification.md` | Staying minimal-read at scale: SoT Index, read windows, progressive analysis, domain partitioning |
+| `10-Verification-Specification.md` | Proving Done against the running product: the verification contract, the Tester lane, Mirror Check, raw measurement, seam ownership |
+| `11-Change-Management-Specification.md` | Changing requirements without broken data: FEATURES index, change file, merge-or-vanish, requirements-delta |
+| `skills/` | The procedure bodies the specs point to — see `skills/README.md` |
 
 Origin assets (`ai-work-flow-original.png/.json`, `akrs-system-graph.drawio`) remain in
-`docs/research/v0/`. Regenerating the system graph to show the v1 kernel + state lanes is an
-optional follow-up; it is not required for the framework to be usable.
+`docs/research/v0/`.
 
 ---
 
@@ -113,25 +69,27 @@ When wording appears to conflict, resolve in this order:
 2. `02-Generation-Specification.md` (generation behavior)
 3. The remaining specifications (execution, interaction, adapters, boot, state, kernel)
 
-A specification never overrides an architectural principle in the Constitution.
+A specification never overrides an architectural principle in the Constitution. For the exact
+form of a command, flag or record, the shipped manifest wins: `akrs --help` and
+`akrs <command> --help` are generated from it, and a spec names a command only if it exists
+there.
 
 ---
 
-## How this framework is later used (NOT part of building v1)
+## How this framework is later used (NOT part of building the framework)
 
-When a developer starts a real project with AKRS v1:
+When a developer starts a real project with AKRS:
 
-1. Read the v1 framework.
-2. Analyze the target project; confirm the Source of Truth.
-3. Generate the workflow skeleton — Router, Memory, Plans, Phases (Phase A).
-4. Generate `STATE.md`.
-5. Generate Tasks + Roads on demand (Phase B).
+1. `npx akrs-framework init` copies the framework into `docs/akrs/`; the Leader reads it.
+2. Analyze the target project; confirm the Source of Truth (and build the SoT Index if needed).
+3. Ask the user to classify the executors; record them (`akrs executor set`).
+4. Generate the workflow skeleton — Router, Memory, Plans (Phase A), starting from
+   `akrs init --scaffold`.
+5. Generate Tasks + Roads on demand (Phase B) through drafts and the `akrs` writers.
 6. Generate a fresh project-specific kernel folder (`akrs/kernel/` — `CORE.md` + one file per
-   role) from `08-Kernel-Specification.md`, and instantiate the skill bodies (`akrs/skills/`)
-   from `skills/`.
-7. Remove the framework source documents from the generated project (only `akrs/kernel/` +
-   `akrs/skills/` ship).
-8. Execute using the kernel folder; reconcile via close-out as work lands.
+   role) from `08-Kernel-Specification.md`, and wire the agents (`akrs agents setup`).
+7. Execute: Worker `work` -> `done`; Tester `test-details` -> `test run` -> `test result`;
+   Leader `boot`, `state render`, `plan finish`.
 
 The kernel folder is regenerated for every project, never versioned, never stored in this
 repo, never reused across projects. Only the framework belongs in version control.

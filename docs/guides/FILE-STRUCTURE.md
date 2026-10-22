@@ -19,23 +19,16 @@ akrs/
 ├── CHANGELOG.md               What changed, per version
 ├── CONTRIBUTING.md            How to contribute
 ├── VERSIONING.md              Framework / Workflow / Kernel versioning
-├── ROADMAP.md                 Where AKRS is going (CLI, generators…)
+├── ROADMAP.md                 Where AKRS is going
 ├── RELEASE.md                 Maintainer release checklist
 ├── package.json               npm / pnpm / yarn metadata
 │
+├── bin/, lib/                 ← THE CLI (`akrs`): zero runtime dependencies, Node >= 22.17
+│
 ├── docs/
 │   ├── framework/             ← THE FRAMEWORK (the Leader reads this)
-│   │   ├── 01-Constitution.md
-│   │   ├── 02-Generation-Specification.md
-│   │   ├── 03-Execution-Contract.md
-│   │   ├── 04-Developer-Interaction-Protocol.md
-│   │   ├── 05-Platform-Adapter-Specification.md
-│   │   ├── 06-Runtime-Boot-Protocol.md
-│   │   ├── 07-State-And-Sync-Specification.md
-│   │   ├── 08-Kernel-Specification.md
-│   │   ├── 09-Scale-And-Source-Index-Specification.md
-│   │   ├── 10-Verification-Specification.md
-│   │   └── 11-Change-Management-Specification.md
+│   │   ├── 01-Constitution.md … 11-Change-Management-Specification.md
+│   │   └── skills/            The procedure bodies (Leader, Worker, Tester)
 │   │
 │   ├── guides/                ← Human guides
 │   │   ├── ROUTING-FLOW.md
@@ -45,11 +38,8 @@ akrs/
 │   ├── validation/            ← Proof it works (per-model + case study)
 │   │
 │   └── research/              ← History; not needed to use AKRS
-│       ├── v0/                Original v0 specification
-│       ├── v0-benchmark/      v0 test harness (reference)
-│       └── design-history/    v1 design analysis reports
 │
-├── examples/                  ← Sample projects (see examples/README.md)
+├── examples/minimal/          ← A complete, runnable v2 workflow (validates clean)
 └── templates/                 ← Reusable starting points (grows over time)
 ```
 
@@ -58,111 +48,106 @@ akrs/
 | Audience | Reads |
 |----------|-------|
 | **You (first time)** | `README.md` → `GETTING_STARTED.md` → guides |
-| **The Leader model** | `docs/framework/` |
-| **The Worker model** | *Nothing here.* It reads the **Kernel** in your project |
+| **The Leader model** | `docs/framework/` (copied to `docs/akrs/framework/` by `akrs init`) |
+| **The Worker / Tester model** | *Nothing here.* It runs `akrs work` / `akrs test-details` and reads the packet |
 | **Contributors** | `CONTRIBUTING.md`, `docs/research/` |
 
-> The Worker never reads this framework. That's the entire idea: heavy doctrine
-> teaches the Leader; the Leader compiles a tiny **Kernel** for the Worker.
+> The Worker never reads this framework. That's the entire idea: heavy doctrine teaches the
+> Leader; the Leader compiles a tiny **Kernel** and the CLI hands the Worker an exact packet.
 
 ---
 
 ## 2. A Generated Project (what AKRS creates in *your* repo)
 
-After Phase A + first Phase B, your own project contains:
-
 ```text
 your-project/
-├── AGENTS.md                  Canonical entry file (boots the Kernel)
-├── CLAUDE.md                  Thin pointer → @AGENTS.md (optional, per-tool)
+├── AGENTS.md                  Canonical entry file (a managed block written by `akrs agents setup`)
+├── CLAUDE.md, GEMINI.md       Thin pointers → AGENTS.md (per agent, managed blocks)
+├── .agents/skills/ …          Thin skill pointers (or .claude/skills/, .qwen/skills/)
 │
-├── akrs/
-│   ├── kernel/                Compiled operating files — the Gate boots CORE + one role file
+├── akrs/                      ← the workflow (the CLI's `--workflow-root`)
+│   ├── kernel/                Compiled operating files — Leader-written Markdown
 │   │   ├── CORE.md            Shared: route, modes, close-out, pointers (~1 page)
-│   │   ├── worker.md          Worker rules only
-│   │   ├── leader.md          Leader rules only
-│   │   ├── tester.md          Tester rules only
-│   │   └── changer.md         Change-management (Mode 4) rules only
-│   ├── router.md              Routes only — "where next?"
-│   ├── STATE.md               Portable save-point — "where did we leave off?"
-│   ├── LOG.md                 Append-only close-out journal — never read at boot
-│   ├── FEATURES.md            Landed-features index (one line per feature)
+│   │   └── worker.md leader.md tester.md changer.md
+│   ├── router.md              Routes only — "where next?"          (Leader-written Markdown)
 │   ├── SOT-INDEX.md           SoT navigation index (only if the SoT is large / pre-exists)
-│   ├── BLOCKED.md             On-demand flag — a stuck non-leader agent (deleted on resolve)
+│   ├── FEATURES.md            Landed-features index (one line per feature)
+│   ├── changes/<id>.md        Ephemeral change files (deleted on merge-or-vanish)
 │   │
-│   ├── memory/                Reusable knowledge, one owner per concept
-│   │   ├── domain-model.md
-│   │   ├── technical-stack.md
-│   │   ├── <domain>/          Optional: per-domain memory for large projects
-│   │   └── tester/            Ephemeral: tester topic files (deleted after a fix)
+│   ├── state.json             Canonical save-point             (CLI: `state set`)
+│   ├── STATE.md               Derived, human-readable          (CLI: `state render`)
+│   ├── executors.json         Executors + user-given classes   (CLI: `executor set`)
+│   ├── roads/<id>.json        One per Task; reads/writes/checks/status (CLI: `road new/update`)
+│   ├── roads/<plan>/<id>.json Same, grouped by Plan
+│   ├── plans/<id>.json        Plan record: questions, seams, findings, closure   (CLI-owned)
+│   ├── tasks/<id>.md          Narrative "what to build"        (CLI: `task new`; the model fills it)
+│   ├── memory/<topic>.md      Reusable knowledge records       (CLI: `memory add`)
+│   ├── log/NNNN.jsonl         Append-only closure ledger, rotated by the CLI (`log`, `log append`)
+│   ├── scope/<road>.jsonl     Scope requests and yields        (CLI: `scope …`, `yield`)
+│   ├── verifications/<plan>/
+│   │   ├── contract.json      The Plan's verification contract (CLI: `test define`)
+│   │   ├── handoff.jsonl      The Worker's baton, append-only  (CLI: `done`, `test handoff`)
+│   │   ├── results.jsonl      Tester results, append-only      (CLI: `test result`)
+│   │   └── evidence/<run>/    Run record + evidence files      (CLI: `test run`)
 │   │
-│   ├── tasks/                 "What to build" — generated on demand
-│   │   └── <task>.md
-│   │
-│   ├── roads/                 "What to read & change" — one per Task, has a Status
-│   │   └── <task>.md
-│   │
-│   ├── plans/                 Optional: <domain>/ subfolders for large projects
-│   │
-│   ├── verify/                Ephemeral: <plan>-handoff.md batons (deleted on pass)
-│   └── changes/               Ephemeral: <id>.md change files (deleted on merge-or-vanish)
+│   ├── drafts/                Agent-written input files, removed on success (git-ignored)
+│   ├── .ops/                  Journal, locks, leases, guard allowlists — CLI only (git-ignored)
+│   └── .cache/                Derived output: `view` board, `page` screenshots (git-ignored)
 │
 ├── tests/                     Committed verification asserts (never discarded)
-└── docs/
-    └── app-info.md            Your Source of Truth (you provide this)
+└── SOT/ or docs/              Your Source of Truth (you provide this)
 ```
 
-> **Ephemeral artifacts** (`verify/*`, `changes/*`, `BLOCKED.md`, `memory/tester/*`) each
-> have a **named creator and a named deleter**, and `npx akrs-framework validate` flags any
-> left behind. No broken or orphan data may persist.
+> `akrs init --scaffold` writes a minimal working set (Road, Task, State, contract) in one
+> transaction; the rest appears as you use it. Folders for large projects (per-domain Memory
+> topics, a SoT Index) are optional.
 
 ### What each generated file owns
 
-| File | Answers only | Must never contain |
-|------|--------------|--------------------|
-| `kernel/CORE.md` + `kernel/<role>.md` | How do I operate here? | Project knowledge / docs |
-| `router.md` | Where do I go next? | Explanations, implementation |
-| `memory/*.md` | Which knowledge? (index) | Tutorials, duplicated docs |
-| `roads/*.md` | Exactly what to read/change? | Architecture essays |
-| `tasks/*.md` | Exactly what to build? | Duplicated knowledge |
-| `STATE.md` | Where did we leave off? | Knowledge (it points, never teaches) |
-| `LOG.md` | What happened, in full? | Anything a session needs at boot |
-| `FEATURES.md` | What has landed, and where? | Teaching, implementation, rationale |
+| File | Answers only | Written by | Must never contain |
+|------|--------------|------------|--------------------|
+| `kernel/CORE.md` + `kernel/<role>.md` | How do I operate here? | the Leader | Project knowledge / docs |
+| `router.md` | Where do I go next? | the Leader | Explanations, implementation |
+| `memory/*.md` | Which knowledge? (index) | `memory add` | Tutorials, duplicated docs |
+| `roads/**/*.json` | Exactly what to read/change? | `road new/update`, lifecycle commands | Architecture essays |
+| `tasks/*.md` | Exactly what to build? | `task new` + the model | Duplicated knowledge |
+| `state.json` / `STATE.md` | Where did we leave off? | `state set` / `state render` | Knowledge (it points, never teaches) |
+| `log/*.jsonl` | What closed, in what order? | `done`, `road finish`, `log append` | Telemetry, narrative |
+| `verifications/**` | What must be tested, what happened? | `test …` | Anything deleted later |
+| `FEATURES.md` | What has landed, and where? | the Leader | Teaching, implementation, rationale |
 
 ---
 
-## What You Must Never Edit by Hand (carelessly)
+## What You Must Never Edit by Hand
 
-- **`kernel/`** — it is *compiled* by the Leader (CORE + role files). Regenerate it; don't
-  patch it ad hoc, or it drifts from the framework.
-- **`router.md` / `memory/`** — only the **Leader** changes architecture. Workers
-  reference these; they never redesign them.
+- **Every machine file the CLI writes** — `roads/`, `plans/`, `state.json`, `executors.json`,
+  `log/`, `verifications/`, `scope/`, `memory/`, `.ops/`. A hand-edited file fails its content
+  hash and `akrs validate` reports it as unverified; nothing repairs it except restoring it from
+  version control and using the command. To change one, write a draft and run the command (see
+  `docs/framework/skills/akrs-road-author.md`).
+- **`STATE.md`** — it is rendered output; `akrs state render` rewrites it.
+- **`kernel/`** — it is *compiled* by the Leader (CORE + role files). Regenerate it; don't patch
+  it ad hoc, or it drifts from the framework.
+- **`router.md` / `memory/`** — only the **Leader** changes architecture. Workers reference these;
+  they never redesign them.
 
-What you *do* keep current, every time work lands:
-
-- **`STATE.md`** and the active **Road's Status** — via **close-out**.
+What you *do* keep current, every time work lands: nothing by hand. The Worker's `akrs done`
+closes the Road; the Leader runs `akrs state render` and `akrs validate`.
 
 ---
 
 ## After the Kernel exists, you can slim down
 
-The framework docs you copied in with `npx akrs-framework init` (`docs/akrs/framework/`)
-are input for the **Leader** — they only matter while the workflow and the
-Kernel are being *generated*. Once the Kernel is compiled and the loop is
-running, **nothing scans them anymore**: the Worker boots the Kernel and reads
-only the Road and Memory it points to.
+The framework docs you copied in with `npx akrs-framework init` (`docs/akrs/framework/`) are input
+for the **Leader** — they matter while the workflow and the Kernel are being *generated*, and the
+skills in `docs/akrs/framework/skills/` are what the agents' skill pointers read. Keep that
+`skills/` folder (or copy it to `akrs/skills/`); the numbered specs can be deleted once your flow
+works. Two things you should always **keep**:
 
-So once your flow works, it's safe to **delete the copied framework docs** from
-your project to keep it clean. Two things you should always **keep**:
+- **`akrs/`** — your generated workflow. This *is* the system now.
+- **Your Source of Truth** — the workflow points back to it as ground truth.
 
-- **`akrs/`** — your generated workflow (Kernel, Router, STATE, Memory, Roads).
-  This *is* the system now.
-- **Your Source of Truth** (`docs/app-info.md`, or wherever it lives) — the
-  workflow points back to it as ground truth, and you'll want it whenever you
-  regenerate or extend.
-
-If you ever need the doctrine back (to regenerate the Kernel from scratch, or to
-plan a big change), just re-run `npx akrs-framework init` to pull `docs/akrs/` in again.
+If you ever need the doctrine back, re-run `npx akrs-framework init --force`.
 
 ---
 
@@ -173,6 +158,6 @@ docs/framework/   =  source code   (versioned, teaches the Leader, ~6,000 words)
 akrs/kernel/      =  compiled output (per-project, CORE + role files, ~1 page per session)
 ```
 
-Only the framework is versioned and shared. The Kernel is regenerated for every
-project, from the latest framework, using the strongest available model — so it
-keeps getting better over time without you migrating anything.
+Only the framework is versioned and shared. The Kernel is regenerated for every project, from the
+latest framework, using the strongest available model — so it keeps getting better over time
+without you migrating anything.

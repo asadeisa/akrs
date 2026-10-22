@@ -1,43 +1,43 @@
-# AKRS Kernel Specification (v1.2, revised v1.3.1)
+# AKRS Kernel Specification (v2)
 
 ### What the Kernel is, and the templates the framework emits
 
-This is a **v1 capability, grown in v1.2**. It removes the single biggest cost of v0: a
-~6,000-word, read-once doctrine that every target project carried but the Worker never read.
-v1.2 grows the compiled artifact from a single file into a **folder** so each role reads
-*less*, not more (D10) — the philosophy is unchanged, the concept is bigger.
+The Kernel removes the single biggest cost of the original design: a ~6,000-word, read-once
+doctrine that every target project carried but the Worker never read. The compiled artifact is a
+**folder**, so each role reads *less*, not more — the philosophy is unchanged.
 
 > **Framework vs. Kernel.** The framework (this folder) is the **source code**: permanent,
-> versioned, teaches a Leader how to analyze projects. The Kernel is the **compiled
-> artifact**: disposable, per-project, teaches an agent how to execute *one* project.
-> Only the framework belongs in version control. The Kernel lives only inside the generated
-> project and is regenerated for every project using the latest framework and the strongest
-> available model.
+> versioned, teaches a Leader how to analyze projects. The Kernel is the **compiled artifact**:
+> disposable, per-project, teaches an agent how to execute *one* project. Only the framework
+> belongs in version control. The Kernel lives only inside the generated project and is
+> regenerated for every project using the latest framework and the strongest available model.
 
-> **Scope note.** Building the framework produces this **specification and templates only**.
-> It does **not** generate an actual project kernel. A real kernel folder is generated later,
-> when AKRS is applied to a concrete project.
+> **Scope note.** Building the framework produces this **specification and templates only**. A
+> real kernel folder is generated later, when AKRS is applied to a concrete project.
+
+> **The Kernel stays compact.** New agent behavior ships as **skills** and form specifications
+> (`skills/`), reached through one pointer line — never as more always-loaded Kernel prose. The
+> CLI's own packets (`boot`, `work`, `test-details`) carry the project-specific facts.
 
 ---
 
-## 1. What the Kernel is — a folder (D10)
+## 1. What the Kernel is — a folder
 
 The compiled artifact is **`akrs/kernel/`**:
 
-- **`CORE.md`** — the shared minimum every role needs, and nothing any single role owns
-  alone: the one route, runtime priority, the Modes table, the blind-assumption check, the
-  close-out one-liner, and the pointers.
-- **one file per role** — `worker.md`, `leader.md`, `tester.md`, `changer.md` — each holding
-  only that role's operating rules.
+- **`CORE.md`** — the shared minimum every role needs, and nothing any single role owns alone:
+  the one route, runtime priority, the Modes table, the blind-assumption check, the close-out
+  one-liner, and the pointers.
+- **one file per role** — `worker.md`, `leader.md`, `tester.md`, `changer.md` — each holding only
+  that role's operating rules.
 
-**The Gate** (boot) loads **`CORE.md` + exactly one role file** — never another role's file.
-So a Worker session never reads Leader or Tester rules; each session reads *less* than the v1
-single Kernel, and no role is distracted by another role's concerns
-(`06-Runtime-Boot-Protocol.md §2`).
+**The Gate** (boot) loads **`CORE.md` + exactly one role file** — never another role's file. A
+Worker session never reads Leader or Tester rules, and no role is distracted by another role's
+concerns (`06-Runtime-Boot-Protocol.md §2`). `akrs boot` reads `kernel/CORE.md` and
+`kernel/leader.md` for the Leader.
 
-**Numeric budget (so the CLI can check it):** `CORE.md` ≤ ~175 words; each role file ≤ ~175
-words; **`CORE.md` + any one role file ≤ ~350 words** (~1 page — the same convention as
-STATE's word budget). Compress to fit; never drop a rule.
+**Numeric budget:** `CORE.md` ≤ ~175 words; each role file ≤ ~175 words; **`CORE.md` + any one
+role file ≤ ~350 words** (~1 page). Compress to fit; never drop a rule.
 
 ---
 
@@ -46,6 +46,8 @@ STATE's word budget). Compress to fit; never drop a rule.
 - **Token-dense.** Tables and imperative bullets. Zero motivational prose, zero repetition.
 - **Single owner across the folder.** Each rule appears in **exactly one** file — `CORE.md`
   *or* one role file, never two. Roles do not restate CORE, and no role restates another.
+- **Pointers, not procedures.** A role file names the skill that owns a procedure; it never
+  copies the procedure.
 - **Deterministic ordering.** Stable section order so any model loads it the same way.
 - **Machine-actionable, not human-inspirational.** Optimized for an LLM to load and obey.
 
@@ -53,37 +55,32 @@ STATE's word budget). Compress to fit; never drop a rule.
 
 ## 3. Required content
 
-**`CORE.md`** (shared): Roles + role-at-boot line · Runtime priority (`Road → Memory → Router
-→ Repository`; SoT only via windows / SOT-INDEX) · Modes 0–4 table with prompt→Mode hints
-(Mode 0 = escape hatch) · the one route · the blind-assumption check + scope-expansion loop ·
-the close-out pointer line (→ the `akrs-close-out` skill) · Pointers (Router / STATE / LOG /
-SOT-INDEX / FEATURES / Source of Truth).
+**`CORE.md`** (shared): roles + role-at-boot line · the rule that `akrs/` machine files are
+written by `akrs` only · runtime priority (`Road → Memory → Router → Repository`; SoT only via
+windows / SOT-INDEX) · Modes 0–4 table with prompt→Mode hints (Mode 0 = escape hatch) · the one
+route · the blind-assumption check + scope-expansion pointer · the close-out pointer line (→ the
+`akrs-close-out` skill) · Pointers (Router / STATE / SOT-INDEX / FEATURES / Source of Truth /
+skills).
 
-**`worker.md`**: execution guarantees · Road + Task file shapes (Task carries `Verify:` and
-`Skills:`) · handoff-file duty (≤1 page) · the close-out skill pointer · BLOCKED escalation.
+**`worker.md`**: entry command + packet-only reading · execution guarantees · the skills it uses
+(`akrs-work-loop`, `akrs-scope-request`, `akrs-close-out`) · `yield` escalation.
 
-**`leader.md`**: generation + granularity rules · Router + Memory file shapes · batch +
-staleness · dep-gating · Plan close-out ownership (Mirror-Check trigger + FEATURES append) ·
-interaction + applicability.
+**`leader.md`**: entry command + questions · generation + granularity rules · Router + Memory
+shapes · batch + staleness · dep-gating · Plan close-out ownership (Mirror-Check trigger +
+`plan finish` + FEATURES line) · the authoring skills · interaction + applicability.
 
-**`tester.md`**: consume the handoff · Mirror Check · the live-verify cadence + the
-`akrs-live-verify` skill pointer · instruments-are-evidence + user-acceptability sentence ·
-findings + delete-on-pass · tester-memory rules · BLOCKED escalation.
+**`tester.md`**: entry command + the loop (→ the `akrs-live-verify` skill) · instruments-are-evidence
++ user-acceptability sentence · append-only results · `blocked` escalation.
 
-**`changer.md`**: Leader-only, Mode 4 · FEATURES → impact → flag conflicts → merge-or-vanish
-· the requirements-delta procedure.
+**`changer.md`**: Leader-only, Mode 4 · FEATURES → impact → flag conflicts → merge-or-vanish ·
+the requirements-delta procedure.
 
-**Handoff naming — one token, per Plan (v1.3.1).** Both `worker.md` and `tester.md` refer to
-the **same** baton, spelled the **same** way: `akrs/verify/<plan>-handoff.md` — keyed to the
-**Plan**, never the Road. When compiling the kernel the Leader must copy this token verbatim into
-both role files; a kernel where one role writes `<plan>-handoff.md` and the other reads
-`<road>-handoff.md` is malformed and fails the acceptance test (§5). **If the selected tier
-generates no Plans** (AKRS Lite / tiny — `01-Constitution.md §12`), omit the handoff line from
-both role files entirely: there is no `akrs/verify/`, and the Tester (if any) verifies the Road
-against the running product directly (`10-Verification-Specification.md §3`). Never emit a
-per-Road handoff to compensate.
+**One baton, per Plan.** There is no handoff file in the Kernel: the Worker's `done` and the
+Tester's `test-details` are the two ends of the same CLI-written handoff record keyed to the Plan
+(or to the single Road in the no-Plan tier). A role file that names a handoff *file* is malformed
+and fails the acceptance test (§5).
 
-Every rule of the pre-v1.2 single template survives — redistributed into exactly one of these
+Every rule of the original single template survives — redistributed into exactly one of these
 files.
 
 ---
@@ -100,9 +97,10 @@ The framework emits these templates, filled with project-specific values at gene
 > Gate loads CORE + your ONE role file (never another's). Don't scan the repo.
 
 ## Roles · role at boot
-Leader plans/owns architecture · Worker executes the active Road · Tester verifies the idea on
-the running product · Changer (=Leader, Mode 4).
-Role: prompt `as leader|worker|tester:` → STATE Role: → ask. Load only kernel/<role>.md.
+Leader plans/owns architecture · Worker executes one Road · Tester verifies the idea on the
+running product · Changer (=Leader, Mode 4).
+Role: prompt `as leader|worker|tester:` → entry command (boot | work | test-details) → ask.
+Files under akrs/ are written by `akrs` only; never hand-edit one. `akrs --help` lists commands.
 
 ## Runtime priority
 Road → Memory → Router → Repository (repo only if the Road says so). Read the SoT only via the
@@ -121,54 +119,45 @@ Road's windows — through SOT-INDEX if present.
 Prompt → Mode → Router → Memory → Road → Execute.
 
 ## Before executing (once)
-"Finish with ONLY the active Road?" YES → execute. NO → Router → Memory → back to Road. Never guess.
+"Finish with ONLY the packet?" YES → execute. NO → akrs scope request. Never guess.
 
 ## Close-out (Road lands)
-Execute `akrs/skills/akrs-close-out.md` (flip Road · ledger line · STATE ≤1 page · Memory · commit · validate).
+Execute docs/akrs/framework/skills/akrs-close-out.md (Worker: `akrs done`).
 
 ## Pointers
-Router <path> · STATE akrs/STATE.md · LOG akrs/LOG.md · SOT-INDEX akrs/SOT-INDEX.md ·
-FEATURES akrs/FEATURES.md · SoT <path(s)>
+Router <path> · STATE akrs/STATE.md · SOT-INDEX akrs/SOT-INDEX.md · FEATURES akrs/FEATURES.md ·
+SoT <path(s)> · skills docs/akrs/framework/skills/
 ```
 
 ### `akrs/kernel/worker.md`
 
 ```markdown
 # WORKER
-- Execute ONLY the active Road. Atomic changes. Never redesign, never leave scope, never
-  invent knowledge. Validate before expanding.
-- Road shape: read-order + expected-files + scope + Status + Deps / no docs.
-- Task shape: objective + constraints + acceptance + Verify(none|idea|measured) +
-  Skills(names, optional) + road-pointer / restates nothing from its Road.
-- Skills: use the skill / MCP-tool names the Task lists (zero, one, or many).
-- Handoff: keep akrs/verify/<plan>-handoff.md current (what became observable, how to reach
-  it, expected); ≤1 page; flag "ready" when runnable.
-- Close-out: when my Road lands, execute akrs/skills/akrs-close-out.md. I do not run the
-  Plan-level pass — that is the Leader's/Tester's.
-- Stuck: after the scope-expansion loop fails, write akrs/BLOCKED.md (which Road, what
-  blocked, what I tried, what I need) and tell the developer. Do not guess forward.
+- Start: `akrs work`. Read ONLY the packet. Execute ONLY the Road. Atomic changes. Never redesign,
+  never leave the writes, never invent knowledge. Skill: akrs-work-loop.
+- Need more scope: `akrs scope request` (akrs-scope-request). Road too big: `akrs yield`.
+- Finish: `akrs done <road> --result … --reach … --expect …` (akrs-close-out). Commit asserts to tests/.
+- Never run Leader commands: state render, road finish, scope approve, plan finish.
 ```
 
 ### `akrs/kernel/leader.md`
 
 ```markdown
 # LEADER
+- Start: `akrs boot`. Answer questions_for_user first; executors are classified by the USER
+  (akrs-classify-executors). Author via drafts + akrs writers, never by hand (akrs-road-author).
 - Generate navigation, not docs; prefer references.
-- Granularity is my call: fits one reliable session → ONE Task + ONE Road (even a whole small
-  plan). Split only when too large. Never for symmetry.
-- Router shape: routes+refs / no explanations. Memory shape: index+refs+ownership, each fact
-  labeled Decided/Assumption(H/M/L)/Unknown / no implementation.
-- Batch: Mode 3 may generate a plan's Roads at once (extra QUEUED). Activate a QUEUED Road
-  only after re-checking Memory/STATE.
-- Gating: a Road whose Deps aren't all DONE can't go ACTIVE without a recorded override.
-- Plan close-out — the Plan closes only when: Mirror Check passes (every SoT bullet reachable
-  at runtime, not just exported); the Tester's verification passed; no unowned seam; no open
-  question owned by this Plan. Then append one FEATURES line.
-- Validate: one owner/concept; one Road per Task; every Road a legal Status; no Unknown
-  silently hardened.
-- Interaction: 2–4 options recommended-first, one decision/turn, confirm SoT first, guided
-  next step. ASK owner decisions the same turn; STATE stores only the answer, never a parked
-  question.
+- Granularity is my call: fits one reliable session of the executor's class → ONE Task + ONE Road
+  (even a whole small plan). Split only when too large (`akrs road fit`). Never for symmetry.
+- Router shape: routes+refs / no explanations. Memory shape (`akrs memory add`): index+refs+
+  ownership, each fact labeled Decided/Assumption(H/M/L)/Unknown / no implementation.
+- Batch: Mode 3 may write a plan's Roads at once (extras stay QUEUED). Activate a QUEUED Road
+  only after re-checking Memory/SoT; deps must be DONE.
+- Plan close-out — only when: Mirror Check passes (every SoT bullet reachable at runtime, not just
+  exported); the Tester's result is a current pass; no unowned seam; no open question owned by this
+  Plan. Then `akrs plan finish`, then one FEATURES line.
+- Interaction: 2–4 options recommended-first, one decision/turn, confirm SoT first, guided next
+  step. ASK owner decisions the same turn; State stores only the answer.
 - Applicability: Lite = kernel+Router+Roads; Full = +Plans/Phases/Memory; tiny = skip.
 ```
 
@@ -176,19 +165,15 @@ FEATURES akrs/FEATURES.md · SoT <path(s)>
 
 ```markdown
 # TESTER
-- Consume akrs/verify/<plan>-handoff.md. Verify the idea against the RUNNING product, not the
-  paperwork. Never edit product code.
-- Cadence: asserts per Road; Mirror Check per Plan; a real-browser pass ONLY for Plans that
-  touched DOM/CSS + one final end-to-end pass — not per Road. Run it: execute
-  akrs/skills/akrs-live-verify.md (the rig + handoff template live there).
+- Start: `akrs test-details <plan>` → `akrs test run <plan>` → `akrs test result <plan> --verdict …
+  --because …` (akrs-live-verify). Verify the idea against the RUNNING product, not the paperwork.
+  Never edit product code.
+- Cadence: asserts per Road; Mirror Check per Plan; a live pass only for live/measured Plans + one
+  final end-to-end pass — not per Road.
 - Instruments are evidence, never verdicts (never the product's own HUD). End every pass with
   "as a user, is this acceptable? — yes/no because ___".
-- Pass → delete the handoff. Bug → write findings (handoff stays), escalate, re-test after the
-  fix lands.
-- Tester memory (akrs/memory/tester/): create a topic file ONLY on a repeated error / red-flag
-  pattern; inform the developer; delete it once the problem is fixed.
-- Stuck (handoff insufficient / product won't run): write akrs/BLOCKED.md and tell the
-  developer.
+- Results are append-only; delete nothing. Bug → verdict fail with findings; cannot test →
+  verdict blocked, say what is needed.
 ```
 
 ### `akrs/kernel/changer.md`
@@ -199,26 +184,26 @@ FEATURES akrs/FEATURES.md · SoT <path(s)>
   intent · SoT diff · impact list (from FEATURES + SOT-INDEX: affected Plans/Memories/QUEUED
   Roads) · conflicts flagged to the developer WITH options BEFORE editing anything.
 - Merge-or-vanish: landed → update the SoT + FEATURES, then delete the change file.
-  Rejected → delete it with one LOG line. No orphan artifacts.
+  Rejected → delete it and record the rejection as a Decided Memory record (`akrs memory add`).
 - Requirements-delta: diff the SoT (via SOT-INDEX) → list affected Plans/Memories/QUEUED Roads
-  → re-validate or regenerate each (retire superseded Roads; refresh stale QUEUED) → record
-  the delta in STATE + LOG.
+  → re-validate or regenerate each (`road update` a stale QUEUED Road; a Road that already landed
+  stays DONE as history and the changed behavior gets a new Road; never edit the ledger) → record
+  the delta with `akrs state set --next` and `akrs memory add`.
 ```
 
 ---
 
 ## 5. Acceptance test
 
-The kernel is correct only if: **a session given only `AGENTS.md → kernel/CORE.md + its role
-file → the active artifact` executes correctly** without reading any doctrine, without
+The kernel is correct only if: **a session given only `AGENTS.md → kernel/CORE.md + its role file
+→ its entry command's packet` executes correctly** without reading any doctrine, without
 scanning the repo, and without loading another role's file.
 
-This is the guardrail against over-trimming and against leakage: if a session would need a
-rule its CORE + role file omitted, the kernel failed and must be regenerated, not patched ad
-hoc; if a role file carries a rule another role owns, single-owner across the folder is
-broken. It is also the guardrail against cross-role drift: if `worker.md` and `tester.md`
-disagree on the handoff token (`<plan>-handoff.md` vs `<road>-handoff.md`), or a no-Plan tier
-still names a handoff, the kernel is malformed and must be regenerated (§3).
+This is the guardrail against over-trimming and against leakage: if a session would need a rule
+its CORE + role file omitted, the kernel failed and must be regenerated, not patched ad hoc; if a
+role file carries a rule another role owns, single-owner across the folder is broken. It is also
+the guardrail against cross-role drift: if two role files disagree about a command or name a
+file the CLI owns, the kernel is malformed and must be regenerated.
 
 ---
 

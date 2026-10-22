@@ -1,4 +1,4 @@
-# AKRS Constitution (v1)
+# AKRS Constitution (v2)
 
 ### The official specification for workflow generation
 
@@ -64,12 +64,20 @@ never share the same navigation path. Planning **discovers**; execution **follow
 ### Leader
 Owns the workflow and understands the project. Responsible for: analyzing the project,
 discovering architecture, creating Plans / Phases / Tasks / Memories / Roads, updating
-routing, generating the Kernel, and maintaining synchronization (close-out). The Leader is
-the **only** authority allowed to modify workflow architecture.
+routing, generating the Kernel, classifying the executors with the user, and maintaining
+synchronization (close-out). The Leader is the **only** authority allowed to modify workflow
+architecture.
 
 ### Worker
 Never discovers project knowledge. Follows prepared Roads, executes the assigned scope,
 does not redesign, and stays inside scope.
+
+### Executors and classes
+Each model that executes work is an **executor**, and the **user** (never the CLI, never a guess
+from the model's name) classifies it as **weak**, **medium** or **frontier**. The class decides
+how big a Road may be and how much of the packet is spelled out: a weak Worker gets small Roads
+with ordered steps and inlined reads; a frontier Worker gets terse pointers. The Leader asks the
+user and records the answer (`akrs executor set`).
 
 **Execution contract (summary):** the Leader provides sufficient knowledge; the Worker
 executes only the provided scope. If the active Road is sufficient → execute. If it is
@@ -78,29 +86,32 @@ continue. The Worker never redesigns the Road. (Full guarantees: `03-Execution-C
 
 ### Tester
 Verifies landed *ideas* against the **running product**, not the paperwork. Consumes the
-Worker's Test-Handoff, runs the Mirror Check, takes at least one raw measurement against a SoT
-budget, and answers *"as a user, is this acceptable?"* The Tester **never modifies product
-code**; it reports findings, escalates, and — on a repeated failure pattern — may open a
-tester-memory topic and inform the Developer. On pass it deletes the handoff. (Full role:
+Worker's handoff baton, runs the Leader-declared scenario, takes at least one raw measurement
+against a SoT budget, and answers *"as a user, is this acceptable?"* The Tester **never modifies
+product code**; it records a structured result (pass, fail with findings, or blocked) that is
+append-only history, and reports a repeated failure pattern as a finding. (Full role:
 `10-Verification-Specification.md`.)
 
 ---
 
 ## 6. The artifacts and the one route
 
-AKRS is built from a small, fixed set of artifacts, each with a single owner question:
+AKRS is built from a small, fixed set of artifacts, each with a single owner question. Machine
+records (Road, State, ledger, contract, handoff, result) are **JSON/JSONL written only by the
+CLI** from content an agent supplies; narrative (Task, Memory, `STATE.md`, Router, SoT index) is
+Markdown:
 
 | Layer | Answers only | Must contain | Must never contain |
 |---|---|---|---|
 | **Router** | "Where do I go next?" | routes, references | explanations, implementation, docs |
 | **Memory** | "Which knowledge?" | summaries, references, ownership, relationships, one epistemic label per fact (Decided / Assumption H-M-L / Unknown) | tutorials, implementation, duplicated docs |
-| **Road** | "Exactly what should I read / change?" | context scope, read order, expected files, change scope, boundaries, `Status`, `Deps` (when relevant) | architecture explanations, project docs, tutorials |
-| **Task** | "Exactly what should I build?" | objective, constraints, acceptance, Road pointer | duplicated knowledge (nothing its Road already holds) |
+| **Road** (`roads/<id>.json`) | "Exactly what should I read / change?" | read windows, allowed writes, forbidden paths, declared checks, acceptance, boundaries, steps, `status`, `deps` | architecture explanations, project docs, tutorials |
+| **Task** (`tasks/<id>.md`) | "Exactly what should I build?" | objective, constraints, approach, Road pointer | duplicated knowledge (nothing its Road already holds) |
 | **Phase** | "Which milestone?" | objectives, outputs, dependencies | implementation detail |
 | **Plan** | "Which business capability?" | capability scope | implementation teaching |
-| **STATE** | "Where did we leave off?" | active mode/role/plan/phase/task/road, Done (last 3), Next, Open questions, timestamp+author | knowledge (it points, never teaches) |
-| **LOG** | "Which Roads closed, in what order?" | append-only one-line ledger (`date · Road · DONE\|BLOCKED`) | narrative, telemetry, anything a session needs at boot |
-| **Handoff** | "What must the Tester check?" | what became observable, how to reach it, expected behavior (ephemeral — Worker creates, Tester deletes) | a report, teaching, anything permanent |
+| **STATE** (`state.json` + derived `STATE.md`) | "Where did we leave off?" | active mode/role/plan/phase/task/road, Done (last 3), Next, Ready, Blockers, timestamp+author | knowledge (it points, never teaches) |
+| **Closure ledger** (`log/NNNN.jsonl`) | "Which Roads closed, in what order?" | append-only closure records (`kind`, `subject`, `DONE\|BLOCKED`, optional `deviations`) | narrative, telemetry, anything a session needs at boot |
+| **Verification** (`contract.json`, `handoff.jsonl`, `results.jsonl`) | "What must the Tester check, and what did it find?" | the Leader's contract; the Worker's baton (what is ready, how to reach it, what to expect); append-only Tester results | a report, teaching; nothing is ever deleted |
 | **FEATURES** | "What has landed, and where does it live?" | one line per landed feature (name · Plan · key Roads/Memories · SoT section) | teaching, implementation, rationale |
 
 Every execution follows exactly one route. Workers never jump randomly between layers:
@@ -114,14 +125,15 @@ Repository exploration happens only when the active Road explicitly requires it.
 
 ---
 
-## 7. The Kernel (v1.2 — a folder)
+## 7. The Kernel (a folder)
 
 The doctrine in this framework is heavy on purpose — it teaches the Leader. A target
 project must **not** carry it. Instead the Leader compiles a minified, prompt-engineered
 **kernel folder** (`akrs/kernel/` — a shared `CORE.md` plus one file per role) that every
 session boots into through the **Gate**, which loads `CORE.md` + exactly one role file. It
 replaces the read-once doctrine with ~one page of operating rules per session, generated per
-project.
+project. The Kernel stays compact: new agent behavior ships as **skills** and form specs
+(`skills/`), never as more always-loaded prose.
 
 > The **framework is the source code; the Kernel is the compiled artifact.** Only the
 > framework is versioned. The kernel folder lives only inside the generated project and is
@@ -130,22 +142,22 @@ project.
 
 ---
 
-## 8. State and close-out (v1)
+## 8. State and close-out
 
 A workflow that cannot record where it stopped will drift: Roads silently rot until a Road
-and a Memory disagree about reality. v1 makes the save-point and the reconciliation
+and a Memory disagree about reality. AKRS makes the save-point and the reconciliation
 first-class:
 
-- **`STATE.md`** is a tool-neutral **save-point** (≤ ~1 page) any CLI can resume from
-  (portability across Claude / Codex / Gemini). **`LOG.md`** is the append-only **ledger** —
-  one line per close-out (`date · Road · DONE|BLOCKED`, no telemetry) — that STATE no longer
-  carries and boot never reads.
-- **Every Road carries a `Status`** (`QUEUED` | `ACTIVE` | `DONE + superseded by <memory>`);
-  a `QUEUED` Road is re-validated against Memory + STATE before activation, and a Road whose
-  `Deps` are unfinished cannot become `ACTIVE` without a recorded developer override.
-- **Close-out is mandatory when work lands:** append one ledger line to `LOG.md`, rewrite
-  `STATE.md` ≤ 1 page, then retire the Road (`DONE + superseded`) or refresh its *Expected
-  files* to match reality.
+- **State** is a tool-neutral **save-point** any CLI can resume from (portability across Claude /
+  Codex / Gemini): `state.json` is canonical, written by `akrs state set`; `STATE.md` (≤ ~1 page)
+  is derived by `akrs state render`. The **closure ledger** (`akrs/log/`) is the append-only
+  record (one JSON line per close-out, no telemetry) that State no longer carries and boot never
+  reads.
+- **Every Road carries a `status`** (`QUEUED` | `ACTIVE` | `DONE`) that only the lifecycle
+  commands change; a `QUEUED` Road is re-validated against Memory + the SoT before activation,
+  and a Road whose `deps` are unfinished cannot become `ACTIVE`.
+- **Close-out is mandatory when work lands:** the Worker runs one call, `akrs done`, which
+  finishes the Road and writes its closure; the Leader re-renders State and reconciles Memory.
 
 Full lifecycle: `07-State-And-Sync-Specification.md`.
 
@@ -228,11 +240,11 @@ A workflow is complete only if every answer is YES:
 - Every concept has exactly one owner; no duplicated knowledge exists.
 - Every file has one purpose.
 - Every Task belongs to one Phase; every Phase belongs to one Plan.
-- Every Task has exactly one Road; every Road has explicit scope and a `Status`.
+- Every Task has exactly one Road; every Road has explicit scope and a `status`.
 - No Task restates its Road's content; granularity was decided, not defaulted.
 - Memory files are indexes; the Router contains only routing.
 - Workers can execute without scanning the repository.
-- `STATE.md` exists and reflects the current save-point.
+- `state.json` exists, `STATE.md` equals its render, and `akrs validate` is green.
 - No unresolved Unknown knowledge remains; every assumption is justified.
 - Every Plan close-out ran the Mirror Check; no seam is unowned; no open question is owned by
   a closing Plan (`10-Verification-Specification.md`).
@@ -253,7 +265,8 @@ documentation; Workers need repository scanning; planning and execution mix. Whe
 appear, **simplify the architecture before expanding it.**
 
 **Overhead budget (the routing-vs-execution line, made concrete):** close-out touches **at
-most LOG + STATE + the Road + one Memory + one FEATURES line**. If close-out regularly costs
+most the Road, the ledger, State, one Memory and one FEATURES line**, and the CLI writes all but
+the last two. If close-out regularly costs
 more than that, the architecture must be simplified. Mechanical checking belongs to tooling,
 never to the agent — the workflow must never become the agent's main job.
 

@@ -1,9 +1,9 @@
-# AKRS Scale & Source-Index Specification (v1.2)
+# AKRS Scale & Source-Index Specification (v2)
 
 ### How AKRS stays minimal-read when the Source of Truth is large, or the project already exists
 
-This is a **new v1.2 capability** and the most important one. It closes the framework's
-oldest silent assumption: that the Source of Truth (SoT) is small enough to read whole. It
+This is one of the framework's most important capabilities. It closes the oldest silent
+assumption: that the Source of Truth (SoT) is small enough to read whole. It
 owns exactly one question:
 
 > How does AKRS stay minimal-read when the Source of Truth is large, or the project already
@@ -17,7 +17,7 @@ scale mechanics; other docs point here and never restate its content.
 
 ## 1. The problem
 
-v1 silently assumes the SoT is small enough to read whole. When the SoT is large — a
+Without this, the workflow silently assumes the SoT is small enough to read whole. When the SoT is large — a
 multi-hundred-line requirements doc, a design corpus, or an **existing repository** that *is*
 the SoT — every layer inherits the overload the framework exists to prevent. A Leader that
 reads a 40-page spec to plan one Task has already lost; a Worker handed "read `data.md`" when
@@ -60,19 +60,26 @@ index entry **may flag a SoT section that is missing a measurable acceptance lin
 
 ## 3. Read windows
 
-A Road's *read order* names **file + section/anchor — a window** — never a whole file,
-whenever the target exceeds **~1 page**. This applies to source code, docs, and the SoT
-alike. The Worker opens only the window. Read windows are the per-Road enforcement of D2:
+A Road's `reads` name **file + line range — a window** — never a whole file, whenever the target
+exceeds **~1 page**. This applies to source code, docs, and the SoT alike. The CLI resolves each
+window and puts its lines in the Worker packet (inlined for a weak class), so the Worker opens
+only the window. Read windows are the per-Road enforcement of D2. In the Road they are an ordered
+list, in the Leader's order:
 
-```
-Read order:
-1. akrs/memory/rendering.md            (index — whole, it is small)
-2. docs/data.md §6                     (window: performance budgets only)
-3. src/engine/loop.js:1-80             (window: the frame loop only)
+```json
+"reads": [
+  { "path": "akrs/memory/rendering.md", "lines": null,       "why": "index — whole, it is small" },
+  { "path": "docs/data.md",             "lines": [120, 164], "why": "performance budgets only" },
+  { "path": "src/engine/loop.js",       "lines": [1, 80],    "why": "the frame loop only" }
+]
 ```
 
-A Road that says "read `src/engine/`" when the directory is large is a **routing defect** —
-the same class of defect as a stale Road. Windows keep even a cheap Worker from drowning.
+The SoT Index maps a section to its line range; the Leader copies that range into the window. A
+missing or unresolved window **blocks** the packet; nothing is silently shortened.
+
+A Road that reads a large directory or file whole is a **routing defect** — the same class of
+defect as a stale Road. (`akrs road fit` reports a Road whose declared reads exceed its class's
+read budget.) Windows keep even a cheap Worker from drowning.
 
 ---
 
@@ -102,8 +109,8 @@ windows.
 
 When the SoT is large and serves different purposes, the workflow may shard:
 
-- `akrs/plans/<domain>/` — plans per domain.
-- `akrs/memory/<domain>/` — memory per domain.
+- one Plan per capability, named for its domain (`akrs/plans/<plan-id>.json`, written by the CLI).
+- Memory topics per domain (`akrs memory add` files each fact under `akrs/memory/<topic>.md`).
 - optional per-domain section in the Router.
 
 A **global layer** holds the original thoughts:
@@ -127,8 +134,8 @@ single-owner violation.
 
 - **Index** when the SoT is **> ~2 pages**, or the project **pre-exists**.
 - **Partition** when the SoT serves **2+ unrelated capabilities**.
-- **Small project → none of this applies.** The v1 flat layout (`akrs/plans/`,
-  `akrs/memory/`, one SoT read whole) is unchanged and remains the **default**. Do not index
+- **Small project → none of this applies.** The flat layout (`akrs/plans/`, `akrs/memory/`, one
+  SoT read whole) remains the **default**. Do not index
   a one-page spec; do not shard a single-purpose project. Scale to the work, never past it.
 
 ---

@@ -1,73 +1,77 @@
 ---
 name: akrs-close-out
-description: Run the AKRS Road close-out when work lands — flip the Road status, append the one-line ledger entry to LOG.md, rewrite STATE, reconcile Memory, commit, and validate. Use whenever a Road's assigned work has landed.
+description: Close out an AKRS Road when its work has landed — one `akrs done` call for the Worker, or the Leader's `road finish` and ledger commands — then re-render STATE, reconcile Memory, commit, and validate. Use whenever a Road's assigned work has landed.
 ---
 
 # akrs-close-out
 
-The single owner of the AKRS close-out **procedure and the ledger-line format**. The specs
-(`03-Execution-Contract.md`, `07-State-And-Sync-Specification.md`) own only the *invariants*
-and point here; the kernel's close-out line points here too. Do not restate these steps
-anywhere else.
+The single owner of the AKRS close-out **procedure**. The specs (`03-Execution-Contract.md`,
+`07-State-And-Sync-Specification.md`) own only the *invariants* and point here; the kernel's
+close-out line points here too. Do not restate these steps anywhere else.
 
-Run this the moment a Road's assigned work has landed. It is a **ledger** close-out: one line,
-not an essay. The Road already carries scope + expected files + acceptance; Memory carries the
-contracts; the handoff carries how-to-verify. Do not re-tell any of them here.
+Close-out is **one command, not an essay**. The Road already carries scope, checks and
+acceptance; Memory carries the contracts; the handoff carries how to verify. Every file the
+close-out writes is **canonical JSON/JSONL written by the CLI** — never edit one by hand (a
+hand-edited file is reported as unverified and `validate` fails).
 
-## Steps (in order)
+## Worker: `done` (the normal path)
 
-1. **Flip the Road status.** In the active Road, set `Status: DONE + superseded by <memory>`
-   (name the Memory that now owns the truth). If the work stays live under this Road rather
-   than retiring, instead refresh its *Expected files* / scope to match what actually shipped.
-2. **Append ONE ledger line to `akrs/LOG.md`** (append-only, newest at the bottom), in this
-   exact format:
+1. **Land the work** inside the Road's declared `writes`. Do not edit anything else.
+2. **Run `akrs done <road>`** with the baton for the Tester:
 
    ```
-   <YYYY-MM-DD> · <ROAD-ID> · <DONE|BLOCKED>
+   akrs done <road> --result "<what is ready>" --reach "<step to reach it>" --expect "<what to see>"
    ```
 
-   Example:
+   Repeat `--reach` for every step. For longer text, write a file inside the project and pass it
+   with `--handoff <file>` (do not mix the file with the flat flags). Add `--deviations "<text>"`
+   **only** when reality diverged from the Road (what the Road assumed -> what shipped, one
+   clause). Add `--pre-existing <path>` for a file that was already dirty before you started.
+3. `done` runs the Road's declared checks and the git audit, then — in **one** transaction —
+   records the handoff, marks the Road `DONE`, writes the closure record and releases your lease.
+   If anything fails **nothing** is finished: the packet lists every blocker with its fix. Fix
+   it and run `done` again. After the number of refusals your class allows, the packet offers
+   `yield` (the Road is too big): run `akrs yield <road> --reason "<why>"`.
+4. Stop. A Worker has no further close-out step. Its next step is `akrs next --executor <id>`
+   or `akrs work`.
 
-   ```
-   2026-07-05 · R07c · DONE
-   ```
+The CLI fills the Road, snapshot and readiness of the handoff. Never type a hash, snapshot or
+request ID.
 
-   **No telemetry.** AKRS does **not** record model, effort, tokens, tools, or wall-clock time
-   — an executing agent cannot know those values reliably and must never fabricate them. The
-   ledger records only *when* a Road closed and *how it ended*.
+## Leader: after the Road is DONE
 
-   Add a **second `deviations:` line ONLY when reality diverged from the Road** — the one
-   piece of knowledge with no other home (what the Road assumed → what actually shipped, one
-   clause):
+Run these only when you are the Leader (or when the Road was finished without `done`):
 
-   ```
-   deviations: Road named Camera.setFov → the real owner was Controls.setFov
-   ```
-
-   No narrative. The ledger line is three fields, nothing more (the `deviations:` line is
-   exempt). Never rewrite an existing ledger line; never read `LOG.md` at boot.
-3. **Rewrite `STATE.md` ≤ 1 page.** Move the landed objective into *Done* (keep only the last
-   3), set the single most-obvious *Next*, refresh the timestamp + author. STATE is rewritten
-   fresh, never appended.
-4. **Update the owning Memory only if a contract changed** (a reusable fact changed owner or
-   location). If nothing reusable moved, touch no Memory.
+1. **Finish a Road you closed yourself** with `akrs road finish <road>` (it runs the declared
+   checks and the audit, writes the closure and releases the lease). A Road already finished by
+   `done` needs nothing here.
+2. **Record a closure the CLI did not write** (a Plan, or a deliberate BLOCKED) with
+   `akrs log append --kind road|plan --subject <id> --outcome DONE|BLOCKED [--deviations "<text>"]`.
+   The ledger is append-only (`akrs/log/NNNN.jsonl`, rotated by the CLI): never rewrite a line.
+   **No telemetry** — the ledger records when something closed and how it ended, never model,
+   effort, tokens or time.
+3. **Re-render the save-point:** `akrs state render` (derived `STATE.md`). Change the
+   Leader-owned fields only with `akrs state set` (`--phase`, `--task`, `--next`, ...).
+4. **Update Memory only if a reusable fact changed owner or location:** write a draft
+   (`akrs template memory --to-draft <name>`) and run `akrs memory add --input akrs/drafts/<name>.json`.
+   If nothing reusable moved, touch no Memory.
 5. **One commit.** One Road = one commit (or branch/PR); message `<ROAD-ID>: <summary>`.
-6. **Validate.** Run `npm run validate` (or `npx akrs-framework validate`). Green = the Road,
-   STATE, the kernel, and the ephemeral artifacts are all consistent.
+6. **Validate:** `akrs validate`. Green = the Roads, State, ledger, Memory and verification
+   records all agree. Fix a finding with the command `akrs explain <code>` names — never by
+   hand-editing a canonical file.
 
-## Leader plan-pass verdict
+## Plan close-out (Leader)
 
-When the Leader closes a **Plan** (not a Road), the plan-pass entry is **one verdict line**,
-no narrative:
-
-```
-Mirror Check: PASS · <n>/<n> asserts · <one metric>
-```
+A Plan does not close on its Roads alone. Run the Tester loop (`akrs-live-verify`), the Mirror
+Check (`10-Verification-Specification.md`), then `akrs plan finish <plan>` (use `--dry-run`
+first: it names every blocker). The Plan's entry in `akrs/FEATURES.md` is the one Leader-written
+line that completes it.
 
 ## Invariants this procedure must never break
 
-- Close-out touches **at most** LOG + STATE + the Road + one Memory + one FEATURES line.
-- The Road is the record of *what was built*; the ledger is the record of *chronology* (when a
-  Road closed, and whether it landed or blocked); neither re-tells the other.
-- A Road still `ACTIVE` after its work landed, or whose Expected files no longer match
-  reality, is a drift defect this close-out exists to prevent.
+- Close-out touches **at most** the Road, the ledger, STATE, one Memory and one FEATURES line,
+  and all but the last two are written by the CLI.
+- The Road is the record of *what was built*; the ledger is the record of *chronology*; neither
+  re-tells the other.
+- A Road still `ACTIVE` after its work landed is a drift defect this close-out exists to
+  prevent.

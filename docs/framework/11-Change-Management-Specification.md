@@ -1,8 +1,8 @@
-# AKRS Change-Management Specification (v1.2)
+# AKRS Change-Management Specification (v2)
 
 ### How requirements change without leaving broken data behind
 
-This is a **new v1.2 capability**. It owns one question:
+This spec owns one question:
 
 > How do requirements change without leaving broken data behind?
 
@@ -17,7 +17,7 @@ single owner of the change lifecycle; other docs point here and never restate it
 Adding, changing, or removing a feature mid-project today is unmanaged. A new requirement
 arrives; the Leader edits the SoT; and downstream, `QUEUED` Roads built against the old truth
 still look valid, Memories still point at superseded facts, and no artifact records what the
-change *touched*. The result is exactly the drift v1 close-out fixed for one Road — but at
+change *touched*. The result is exactly the drift close-out fixes for one Road — but at
 the scale of a whole feature. Change needs its own path.
 
 ---
@@ -33,14 +33,15 @@ the scale of a whole feature. Change needs its own path.
 Example:
 
 ```
-adaptive-quality · P3-Rendering · roads/adaptive.md, memory/rendering.md · data.md §6
-win-screen · P4-Gameplay · roads/win-ui.md, memory/gameplay.md · data.md §4.2
+adaptive-quality · P3-Rendering · R-P3-4, memory/rendering.md · data.md §6
+win-screen · P4-Gameplay · R-P4-2, memory/gameplay.md · data.md §4.2
 ```
 
 - Appended at **Plan close-out** — **one line** (this is the "+ one FEATURES line" inside the
   D12 overhead budget; `01-Constitution.md §14`).
-- It is **Memory-class**: it points, never teaches. It carries no implementation, no
-  rationale — only *what landed and where it lives*.
+- It is **Memory-class** Leader-written Markdown: it points, never teaches. It carries no
+  implementation, no rationale — only *what landed and where it lives* (Road IDs and Memory
+  topics, not file contents).
 - It is the **first thing the change path reads**: to change a feature, you must first find
   it.
 
@@ -64,7 +65,7 @@ hat — D9), never pre-generated. It holds:
 Intent: SoT performance budget 20→30 FPS at 480×270.
 SoT diff: data.md §6 — budget line updated.
 Impact (FEATURES + SOT-INDEX): P3-Rendering (adaptive-quality), memory/rendering.md,
-  QUEUED roads/bvh-wire.md.
+  QUEUED R-P3-5.
 Conflicts: adaptive-quality assumes the 20 FPS floor — Developer: keep floor / retune / drop?
 ```
 
@@ -76,8 +77,9 @@ A change file is **ephemeral** and never persists (D14):
 
 - **Landed change** → update the SoT (it stays the single truth) → update `FEATURES.md` →
   **delete the change file** (named deleter: the **Leader**).
-- **Rejected change** → delete the change file with **one `LOG.md` line** recording the
-  rejection.
+- **Rejected change** → delete the change file and record the rejection as a **Decided Memory
+  record** (`akrs memory add`) so the same change is not re-litigated. The closure ledger is
+  for Roads and Plans only.
 
 No orphan artifacts, ever. Road retirement / regeneration mechanics are **not** restated here
 — §5 is their sole owner.
@@ -94,16 +96,17 @@ Diff the SoT               (via SOT-INDEX when present — 09)
 List affected              Plans / Memories / QUEUED Roads   (from FEATURES + the impact list)
   ↓
 Re-validate or regenerate  each affected item:
-   · retire a superseded Road   → Status: DONE + superseded by <memory>
-   · refresh a stale QUEUED Road → per the staleness rule (07 §3 / 02 §4)
-   · re-point or update Memory   where a fact moved
+   · refresh a stale QUEUED Road → `akrs road update` per the staleness rule (07 §3 / 02 §4)
+   · a Road that already landed → stays DONE as history; the changed behavior gets a new Road
+   · re-point or update Memory   where a fact moved (`akrs memory add`)
   ↓
-Record the delta           in STATE.md + LOG.md
+Record the delta           with `akrs state set --next` and the Memory records above
 ```
 
 This is the one place re-validation mechanics live. Generation and boot point here; they
-never carry their own copy. A superseded Road is retired, never left `ACTIVE` against a truth
-that moved — that is the drift defect, prevented at feature scale.
+never carry their own copy. A superseded Road is never left `ACTIVE` against a truth that moved
+(`akrs road reopen` returns it to QUEUED so it can be refreshed) — that is the drift defect,
+prevented at feature scale.
 
 ---
 

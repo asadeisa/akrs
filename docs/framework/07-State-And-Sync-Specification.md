@@ -1,189 +1,166 @@
-# AKRS State & Sync Specification (v1, revised v1.3.1)
+# AKRS State & Sync Specification (v2)
 
-### The portable save-point, the append-only journal, and the Road close-out lifecycle
+### The portable save-point, the closure ledger, and the Road close-out lifecycle
 
-This is a **new v1 capability**. It solves two proven v0 failures with one file-based
-mechanism:
+This spec solves two proven failures with one mechanism:
 
-- **Drift (P2):** Roads silently rot. In the first real implementation, a Road still edited
+- **Drift:** Roads silently rot. In the first real implementation, a Road still edited
   `WorkCard.vue` while Memory and `git status` showed that file had been **deleted** and
   replaced by `WorkList.vue`. A Road and a Memory disagreed about reality, and nothing forced
   reconciliation.
-- **Cross-CLI handoff (P5):** a plan created in one CLI had no portable save-point another
-  CLI could resume from.
+- **Cross-CLI handoff:** a plan created in one CLI had no portable save-point another CLI could
+  resume from.
 
-The fix is **`STATE.md`** (the save-point) plus a mandatory **Road close-out** (the
-reconciliation). v1.2 splits the historical record out into an append-only **`LOG.md`**; v1.3
-demotes that journal to a **one-line ledger**, and v1.3.1 strips it to three fields, so
-close-out costs a handful of words instead of ~450.
+The fix is a **canonical State** (`state.json`, rendered to the human-readable `STATE.md`), an
+append-only **closure ledger**, a **Road lifecycle** the CLI enforces, and a mandatory **Road
+close-out** (the reconciliation). In v2 every one of these is a machine record **written by the
+CLI**: the agent supplies content, the CLI owns the form, the hash and the transaction.
 
----
-
-## 1. `akrs/STATE.md` — the portable save-point
-
-Tool-neutral markdown, lives in the repo, written by whichever tool/session is active. It
-**points**; it never teaches.
-
-**Hard budget: `STATE.md` ≤ ~1 page (~300 words).** It is *rewritten fresh* at every
-close-out — never appended. The full narrative belongs in `LOG.md` (§2). `Done` holds only
-the **last 3** landed items, one line each; older history lives only in `LOG.md`.
-
-**Required fields:**
-
-- Active **Mode**, active **Plan / Phase / Task**, active **Road**, and **`Role:`** — who is
-  operating (`leader | worker | tester`). When Roads run in parallel, `## Active` may be a
-  **table** (one row per active Road).
-- **Done** — the last 3 landed items only, one line each.
-- **Next** — the single most obvious next step.
-- **Open questions** — unresolved Unknowns / decisions awaiting the Developer; each owned by a
-  Plan and expiring at that Plan's close-out (`10-Verification-Specification.md §7`).
-- **Last updated** — timestamp + which tool/session wrote it.
-
-**Template:**
-
-```markdown
-# STATE
-Updated: 2026-06-28T14:05Z by claude-code
-
-## Active
-- Mode: 3 (Planning)
-- Role: worker
-- Plan / Phase / Task: Portfolio / Content / rewire-work-list
-- Road: roads/content-rewire-work-list.md (Status: ACTIVE)
-
-## Done   (last 3 only — full history in LOG.md)
-- WorkCard.vue removed; WorkList.vue created and routed.
-- Router points at WorkList.vue.
-- Memory projects.md updated to WorkList.vue.
-
-## Next
-- Generate the next Task on request.
-
-## Open questions
-- (none)
-```
-
-**Parallel form** — when several Roads are `ACTIVE` at once, `## Active` becomes a table with
-one row per Road (parallel-ACTIVE Roads must have disjoint Expected files — §3):
-
-```markdown
-## Active
-- Mode: 3 · Role: leader
-| Road | Plan/Phase/Task | Status | Expected files |
-|------|-----------------|--------|----------------|
-| roads/a.md | P1/Ph1/a | ACTIVE | src/a.js |
-| roads/b.md | P1/Ph1/b | ACTIVE | src/b.js |
-```
-
-Boot reads `STATE.md` to resume (`06-Runtime-Boot-Protocol.md §5`). Because it is plain,
-tool-neutral markdown, no tool-specific names leak into Roads, and any CLI can pick the work
-up exactly where it left off.
+> **Writer rule.** Machine-only artifacts are JSON or JSONL and are written only by their
+> command. A hand-edited canonical file fails its content hash and is reported as `unverified`
+> (detection, not a security boundary). Narrative a model or human reads (Tasks, Memory,
+> `STATE.md`) is Markdown.
 
 ---
 
-## 2. `akrs/LOG.md` — the append-only ledger
+## 1. State — the portable save-point
 
-`LOG.md` is the history `STATE.md` is not allowed to hold — demoted in v1.3 from a narrative
-journal to a **ledger: ONE line per close-out, newest at the bottom**. It is **never read at
-boot** and **never edited retroactively**; append-only files don't merge-conflict, so
-concurrent close-outs are safe.
+`akrs/state.json` holds the Leader-owned fields — `mode`, `role`, `plan`, `phase`, `task`, and
+an optional `next` note — plus who updated it and when. It is written only by
+**`akrs state set`** (`--mode --role --plan --phase --task --next`, `--clear <field>`), which
+re-renders `STATE.md` in the same transaction.
 
-The **exact ledger-line format is owned by the `akrs-close-out` skill**
-(`skills/akrs-close-out.md`); this spec owns only the invariants:
+`akrs/STATE.md` is **disposable derived output**: **`akrs state render`** rewrites it from
+`state.json`, the Roads, the closure ledger, the pending scope requests and the verification
+records, and never reads the previous `STATE.md`. It must reproduce byte-identically from the
+canonical inputs; a stale or hand-edited copy is reported (`AKRS-S008`) and replaced by the
+next render. It **points; it never teaches**, and stays about one page.
 
-- **One line per close-out** — exactly three fields, `<YYYY-MM-DD> · <ROAD-ID> ·
-  <DONE|BLOCKED>` — plus an optional `deviations:` line **only when reality diverged from the
-  Road** (the one piece of knowledge with no other home).
-- **No telemetry (v1.3.1).** The ledger records neither model, effort, tokens, tools, nor
-  wall-clock time. An executing agent cannot know those values reliably; requiring them only
-  invited fabrication. AKRS does not measure its own execution cost — cost lives in the
-  provider's usage data and the PR, not in a number the agent invents.
-- **Append-only, newest at the bottom; never rewritten; never read at boot.**
-- **Rotation is mechanical, never manual.** When the ledger crosses the CLI's threshold
-  (200 entries or 16 KB), `validate --fix` rotates it into a read-only `LOG-<NNN>.md` archive
-  and starts a fresh `LOG.md` — so no agent ever counts entries (§6, `bin/akrs.js`).
+Sections of the render:
 
-Why keep the ledger at all: the cross-road chronology — which Roads closed, in what order, and
-whether each landed or blocked — lives nowhere else. Roads are archived per-file, and git
-history can't be read by an agent in one pass. A three-field line keeps that chronology at a
-fraction of the words, with nothing an agent has to guess.
+- **Active** — mode, role, plan, task, and every ACTIVE Road;
+- **Phase** — the Leader's phase note;
+- **Done** — the last 3 closures only (full history is the ledger);
+- **Next** — the Leader's `--next` note when one is set, otherwise a line **derived from the
+  workflow** (a blocking scope decision, an ACTIVE Road, a Road ready to activate, a Plan ready
+  for its Tester). A derived line is never a frozen instruction that stopped being true;
+- **Ready** — QUEUED Roads whose dependencies are all DONE;
+- **Blockers**, **Scope requests**, **Verification** — recomputed each render, never hand-kept.
+
+`state.json` records the *answer* to a developer decision, never an unasked question
+(`04-Developer-Interaction-Protocol.md §2.6`). Boot resumes from it (`06-Runtime-Boot-Protocol.md`).
+For anything the agent should ask the CLI instead of reading prose, use the queries:
+`akrs status` (everything), `akrs next` (legal next actions), `akrs stale` (what is no longer
+current and why), `akrs graph` (Plans, Roads, dependencies, collisions), `akrs where <path>`.
 
 ---
 
-## 3. Road `Status` (the drift fix)
+## 2. The closure ledger — `akrs/log/`
 
-Every Road carries a **`Status`** field with exactly one of:
+The ledger is the history `STATE` is not allowed to hold: **one JSON record per closure**,
+append-only, in segment files `akrs/log/0001.jsonl`, `0002.jsonl`, ... that the CLI rotates
+before a segment would pass 80 lines. A record carries: `kind` (`road` | `plan`), `subject`,
+`outcome` (`DONE` | `BLOCKED`), an optional `deviations` clause, a timestamp, and its own ID and
+hash. Written by the lifecycle commands (`done`, `road finish`, `plan finish`) and by
+`akrs log append`; rendered for humans by `akrs log`.
 
-- `QUEUED` — the Road is generated but not yet the current execution contract. A `QUEUED`
-  Road **must be re-validated against Memory + STATE before activation** (the staleness rule:
-  if reality moved, the Leader refreshes the Road first). Batch generation is the source of
-  `QUEUED` Roads (`02-Generation-Specification.md §4`).
-- `ACTIVE` — the Road is the current execution contract. At most a **small number** of Roads
-  are `ACTIVE` at once, and parallel-`ACTIVE` Roads must have **disjoint Expected files**.
-- `DONE + superseded by <memory>` — the work landed; the named Memory now owns the truth.
+Invariants:
 
-A Road that is still `ACTIVE` after its work has landed, or whose *Expected files* no longer
-match reality, is a **drift defect**.
+- **One record per closure** — a duplicate closure is rejected under the repository lock.
+- **`deviations` only when reality diverged from the Road** — what the Road assumed -> what
+  shipped, one clause. It is the one piece of knowledge with no other home.
+- **No telemetry.** The ledger records neither model, effort, tokens, tools nor wall-clock time.
+  An executing agent cannot know those values reliably; requiring them only invited
+  fabrication. Cost lives in the provider's usage data and the PR.
+- **Append-only; archived segments are byte-identical and never rewritten; never read at boot.**
+- **Rotation is mechanical, never manual.** No agent counts entries.
 
-**Dependency gating.** A Road may carry an optional `Deps:` field (a list of Road IDs). A
-Road whose `Deps` are not all `DONE` **cannot become `ACTIVE`** without an explicit developer
-override recorded in `STATE.md`. (This is the rule that would have caught the mirror-test
-C2-before-E3 inversion, where the Worker was forced to invent an input contract.)
+The procedure that writes a closure is owned by the `akrs-close-out` skill.
+
+---
+
+## 3. Road `status` (the drift fix)
+
+Every Road carries a `status` with exactly one of `QUEUED`, `ACTIVE`, `DONE`. **Lifecycle
+commands own it**; `road update` cannot change it.
+
+- `QUEUED` — written but not yet the current execution contract (batch generation is the source
+  of QUEUED Roads, `02-Generation-Specification.md §4`). `akrs road check <id>` reports its
+  readiness: dependencies DONE, an executor class and a matching executor, class fit, declared
+  checks. **Before activation the Leader re-validates it** against Memory and the Source of
+  Truth; if reality moved, it refreshes the Road with `road update` first.
+- `ACTIVE` (`akrs road activate <id> --if-snapshot ...`) — dispatchable. A Worker **claims** a
+  lease with `akrs work`; claiming is not a lifecycle change. Parallel ACTIVE Roads should not
+  collide on writes: `akrs graph` shows collision edges and `road-details` lists each
+  collision, so the Leader sees them before activating.
+- `DONE` (`akrs done` by the Worker, or `akrs road finish` by the Leader) — the declared checks
+  and the git audit passed, the closure is in the ledger and the lease is released.
+- `akrs road reopen <id>` returns an ACTIVE or DONE Road to QUEUED and releases its lease; the
+  ledger is never edited.
+
+A Road that is still `ACTIVE` after its work landed, or whose declared `writes` no longer match
+reality, is a **drift defect**. The finish commands refuse on an undeclared change; `validate`
+reports a DONE Road whose declared file is gone.
+
+**Dependency gating.** A Road lists `deps` (Road IDs). A Road whose deps are not all DONE
+cannot become ACTIVE (`road activate` is blocked and names the dependency). There is no
+override: reorder the dependency or split the Road.
+
+**Leases.** A lease is one executor's claim on one ACTIVE Road (`akrs/.ops/leases/`, git-ignored,
+per worktree). It covers the Road's *contract projection* — the Road, its dependency statuses,
+its declared reads outside its own writes, scope resolution and the executors — and not the
+holder's own product edits, so a Worker's work never stales its own lease. A changed projection
+returns the delta and the fresh packet; `akrs work` refreshes the lease; `akrs lease release
+<road>` frees a stuck one; `work --takeover` replaces a holder explicitly. A Plan-level Tester
+lease is created by `akrs test run`.
 
 ---
 
 ## 4. Close-out (mandatory when work lands)
 
 Reaching execution completion (`03-Execution-Contract.md §5`) is **not** the end. When work
-lands the Worker (or the Leader on hand-off) runs the close-out, whose **procedure is owned by
-the `akrs-close-out` skill** (`skills/akrs-close-out.md`) — instantiated per project at
-`akrs/skills/akrs-close-out.md`. This spec owns only the invariants:
+lands the Worker closes the Road with **one call, `akrs done`**, and the Leader reconciles the
+rest. The **procedure is owned by the `akrs-close-out` skill**; this spec owns only the
+invariants:
 
-- **Flip the Road** — retire it (`Status: DONE + superseded by <memory>`) or refresh its
-  Expected files / scope to match what actually shipped.
-- **Append one ledger line** to `LOG.md` (+ optional `deviations:` line — §2).
-- **Rewrite `STATE.md` ≤ 1 page** — objective → *Done* (last 3), set *Next*, refresh the
-  timestamp + author.
+- **Finish the Road** — checks and audit pass, handoff recorded, status `DONE`, closure written,
+  lease released, in one transaction (`done`; `road finish` for the Leader).
+- **Re-render the save-point** — `akrs state render`; the Leader updates `state set` fields only
+  when they changed.
 - **Update the owning Memory only if a contract changed** (a reusable fact moved owner or
-  location).
-- **One commit**, then `validate`.
+  location), through `akrs memory add`.
+- **One commit**, then `akrs validate`.
 
-**Overhead budget (D12).** Close-out touches **at most LOG + STATE + the Road + one Memory +
-one FEATURES line**. If close-out regularly costs more than that, the architecture must be
-simplified before it is expanded (`01-Constitution.md §14`). Mechanical checking belongs to
-tooling, never to the agent.
+**Overhead budget.** Close-out touches **at most the Road, the ledger, State, one Memory and
+one FEATURES line**, and the CLI writes all but the last two. If close-out regularly costs more
+than that, the architecture must be simplified before it is expanded
+(`01-Constitution.md §14`). Mechanical checking belongs to tooling, never to the agent.
 
 **Plan completion is more than Road close-out.** When the last Road of a Plan lands, the
-Plan-level verification pass runs against the running product before the Plan may close —
-Mirror Check, raw measurement, seam ownership, and open-question resolution
-(`10-Verification-Specification.md §1, §4–7`). Road-level close-out keeps the paper in sync;
-the Plan-level pass proves the product is actually right. The Plan then appends **one line to
-`akrs/FEATURES.md`** (name · Plan · key Roads/Memories · SoT section —
-`11-Change-Management-Specification.md §2`).
-
-Close-out is the step that makes the drift case above impossible: the moment `WorkCard.vue` was
-replaced by `WorkList.vue`, close-out would have refreshed the Road's *Expected files* (or
-retired it) and updated Memory — so Road and Memory could never disagree.
+Plan-level pass runs against the running product (`akrs test run`, `akrs test result`;
+`10-Verification-Specification.md`) and the Leader runs the Mirror Check. Only then does
+`akrs plan finish <plan>` close it: every Road DONE, the latest Tester result a current pass with
+its evidence and measurements, and no Tester finding, unowned seam or Plan question open. The
+Plan then gets **one line in `akrs/FEATURES.md`**
+(`11-Change-Management-Specification.md §2`).
 
 ---
 
-## 5. Canonical case study (illustrative)
+## 5. Worked example (illustrative)
 
-> **Used here only as a worked example.** Fixing any specific portfolio file is a separate
-> task and is out of this framework's edit scope.
+> Used only as a worked example. Fixing any specific portfolio file is a separate task.
 
-**Drift observed:** `roads/A-C-content-rewire.md` (`Status: ACTIVE`, Expected files include
-`WorkCard.vue`) vs. `memory/projects.md` + `git status`, which show `WorkCard.vue` deleted
-and `WorkList.vue` added.
+**Drift observed:** `roads/A-C-content-rewire.json` (`ACTIVE`, writes include `WorkCard.vue`) vs.
+Memory + `git status`, which show `WorkCard.vue` deleted and `WorkList.vue` added.
 
-**What close-out would have done at landing time:**
+**What the v2 loop does at landing time:**
 
-1. `LOG.md` → one ledger line for the close-out (Road ID · DONE · metrics).
-2. `STATE.md` → *Done:* "WorkCard.vue removed, WorkList.vue created"; *Next:* "point Memory
-   at WorkList.vue."
-3. Road → `DONE + superseded by memory/projects.md` **or** *Expected files* updated to
-   `WorkList.vue`.
-4. `memory/projects.md` → now the single owner of the component's truth.
+1. `akrs done` refuses while the change set includes an undeclared file or a declared check
+   fails; the Worker has the Road corrected (a scope request, or the Leader's `road update`)
+   until the declared writes match what shipped.
+2. The finish writes the closure to the ledger and flips the Road to `DONE`.
+3. The Leader runs `akrs state render`, records the moved fact with `akrs memory add`, and
+   `akrs validate` confirms Road, Memory, State and ledger agree.
 
 Result: one owner, no contradiction.
 
@@ -191,38 +168,48 @@ Result: one owner, no contradiction.
 
 ## 6. Mechanical validation
 
-The lint now exists as a shipped command: **`npx akrs-framework validate`** (zero-dependency,
-in `bin/akrs.js`). It checks, mechanically, what the agent should never have to:
+`akrs validate` is a **read-only query**: it never fixes, rotates or deletes anything (the CLI
+rotates the ledger itself; a repair is the writer command a finding names). Coverage is honest:
+every check reports `passed`, `failed`, `skipped` (inputs should exist but could not be parsed)
+or `not_applicable` (the workflow legitimately has nothing for it), and `skipped` is never
+counted as a pass. The 19 checks cover:
 
-- every Road has a legal `Status`, and its *Expected files* are checked on disk **by status**:
-  `QUEUED` skipped, `ACTIVE` warns (the Worker may not have created them yet), `DONE` errors (a
-  retired Road whose file is gone is drift) — FIX-2;
-- no `ACTIVE` Road is gated by an unfinished `Deps` entry (without a STATE override);
-- parallel-`ACTIVE` Roads have disjoint Expected files;
-- `STATE.md` exists, carries its required fields, is within its word budget, and **parks no
-  unasked owner decision** ("pending/awaiting owner" phrasing warns — `04 §2.6`);
-- the `LOG.md` ledger stays a ledger: an over-long ledger entry warns, and when the ledger
-  crosses the rotation threshold (200 entries / 16 KB) `--fix` archives it to `LOG-<NNN>.md`;
-- the kernel folder is present and within budget; mirrored Road statuses agree with the
-  canonical `Status:`; `SOT-INDEX`/`FEATURES` references resolve; ephemeral artifacts
-  (handoff / change / BLOCKED / tester memory) are not stale.
+- Road schema, identity, path containment and case, dependency references and cycles,
+  dependency readiness, executor class fit, executors and their classification;
+- DONE Roads whose declared files exist (`done-writes-exist`);
+- State and `STATE.md` agreement (`state`, `state-render`);
+- the closure ledger and closure/Road consistency (`log`, `closure-consistency`);
+- scope requests, Memory labels and pointers, verification contracts and results;
+- left-over drafts, leftover v1 Markdown Roads (`legacy-forms`), git posture.
 
-Run it at **every close-out** and, recommended, as a **pre-commit hook / CI job**. `--fix`
-syncs mirrored statuses and rotates an over-threshold ledger; `--clean` deletes stale
-ephemerals. The audit statement for teams: **CI green = workflow valid.** Mechanical checking
-is the CLI's job, not the agent's (D12).
+Every finding has a permanent code; `akrs explain <code>` returns its rationale and the
+remediation. `akrs doctor` classifies the control-plane git posture (`tracked`, `ignored`,
+`mixed`, `not_git`) and `akrs audit --git --road <id>` reports a Road's changes (undeclared,
+declared, missing, pre-existing, workflow, test, evidence) without editing anything.
+
+Run `validate` at **every close-out** and, recommended, as a **pre-commit hook / CI job**
+(`akrs validate --json` is one packet; exit code `1` means a finding). The audit statement for
+teams: **CI green = workflow valid.** Mechanical checking is the CLI's job, not the agent's.
+
+`akrs verify --road <id>` is a different, narrower thing: it **executes the Road's declared
+checks** (argv arrays only, bounded time and output) and reports one mechanical result each.
+Those are repository-declared commands, so run `verify`, `done` and `road finish` **only on
+workflows you trust**; never in an untrusted checkout.
 
 ---
 
 ## 7. Relationship to other documents
 
-- Generation initializes `STATE.md` at the end of Phase A and updates it in Phase B
-  (`02-Generation-Specification.md §3–4`).
-- Boot reads `STATE.md` to resume (`06-Runtime-Boot-Protocol.md`).
+- Generation initializes State with `init --scaffold` or `state set`, and creates Roads with
+  `road new` (`02-Generation-Specification.md §3–4`).
+- Boot resumes from the State and the queries (`06-Runtime-Boot-Protocol.md`).
 - The Execution Contract makes close-out a Worker obligation (`03-Execution-Contract.md §6`).
-- The Kernel carries a one-line pointer to the `akrs-close-out` skill and the `STATE.md` /
-  `LOG.md` pointers (`08-Kernel-Specification.md`); the ledger-line format is owned by that
-  skill (`skills/akrs-close-out.md`), not by this spec.
-- Assumption aging is owned by `02-Generation-Specification.md §6`; open-question expiry at
-  Plan close-out and the whole Plan-level verification pass are owned by
-  `10-Verification-Specification.md`.
+- The Kernel carries a one-line pointer to the `akrs-close-out` skill
+  (`08-Kernel-Specification.md`).
+- Assumption aging is owned by `02-Generation-Specification.md §6`; open-question expiry and the
+  whole Plan-level verification pass are owned by `10-Verification-Specification.md`.
+- Mutation safety (a repository lock, an operation journal in `akrs/.ops/`, recoverable
+  multi-file transactions, `--dry-run` on every mutation, idempotent retries by request ID,
+  snapshot guards) is the CLI's contract. Several renames are never described as atomic: a
+  crashed transaction is completed or restored before the next mutation. A snapshot or a hash
+  is change detection, **not a signature or a security boundary**.

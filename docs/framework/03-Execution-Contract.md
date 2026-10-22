@@ -1,9 +1,10 @@
-# AKRS Execution Contract (v1, revised v1.3.1)
+# AKRS Execution Contract (v2)
 
 ### Execution guarantees for Worker agents
 
 This document defines the rules that must remain true during execution. It does not define
-how a model should think — it defines what the Worker must and must not do.
+how a model should think — it defines what the Worker must and must not do. The Worker's
+procedure is owned by the `akrs-work-loop` skill; this contract owns only the invariants.
 
 > The Leader plans. The Worker executes.
 
@@ -14,8 +15,11 @@ how a model should think — it defines what the Worker must and must not do.
 Workers execute; Workers do not redesign; Workers follow prepared Roads; Workers always
 prefer **predictable execution over creative exploration**.
 
-Runtime priority is always **Road → Memory → Router → Repository**. Repository exploration
-occurs only when the active Road explicitly requires it.
+Runtime priority is always **Road -> Memory -> Router -> Repository**. Repository exploration
+occurs only when the active Road explicitly requires it. The Worker's entry point is
+**`akrs work`**: it claims a lease on one ACTIVE Road and returns the one packet the Worker
+needs (the Road's reads as windows, allowed writes, forbidden paths, checks, steps, acceptance).
+The Worker reads that packet and nothing more.
 
 ---
 
@@ -23,15 +27,16 @@ occurs only when the active Road explicitly requires it.
 
 During execution the Worker must:
 
-- Stay inside the assigned Road and execute only the assigned scope.
+- Stay inside the assigned Road and execute only the assigned scope: write only the Road's
+  declared `writes`, never a `forbidden` path, never the workflow folder (`akrs/**`) except
+  drafts.
 - Prefer **atomic** changes over large simultaneous modifications.
 - Complete one logical change before starting another.
 - Validate completed work before expanding scope.
 - Keep the change set as small as reasonably possible.
-- Never modify files outside the assigned execution scope.
 - Never redesign workflow architecture.
 - Never invent missing knowledge; never convert assumptions into facts.
-- Return to the Router whenever the current Road becomes insufficient.
+- Ask for more scope whenever the current Road becomes insufficient (§4).
 - Ask the Developer whenever required knowledge cannot be determined with confidence.
 
 ---
@@ -40,8 +45,8 @@ During execution the Worker must:
 
 > Can this task be completed using only the current Road?
 
-- **YES** → execute.
-- **NO** → scope expansion (§4).
+- **YES** -> execute.
+- **NO** -> scope expansion (§4).
 
 Asked once. No recursive routing. No execution reports.
 
@@ -49,28 +54,19 @@ Asked once. No recursive routing. No execution reports.
 
 ## 4. Scope expansion
 
-If execution needs knowledge outside the current Road:
+If execution needs knowledge or files outside the current Road, the Worker sends a **scope
+request** (`akrs scope request`); it never expands scope by guessing. A request **asks, it never
+grants**: the Road's Leader-authored envelope may grant a safe request at once, otherwise the
+Leader decides (`scope approve` or `scope reject`). A *blocking* request stops `done` until it is
+decided; a non-blocking one lets the Worker continue. The procedure — including the envelope — is
+owned by the `akrs-scope-request` skill.
 
-```
-Check the Router
-  ↓
-Load the required Memory
-  ↓
-Return to the Road
-  ↓
-Continue execution
-```
-
-The Worker must never expand scope by guessing.
-
-**Escalation — `akrs/BLOCKED.md` (when there is no way forward).** A **non-leader** agent that
-is genuinely stuck raises a flag rather than guessing: a **Worker** *after* the scope-expansion
-loop above has failed; a **Tester** when the handoff is insufficient or the product will not
-run. It creates `akrs/BLOCKED.md` — **which Road, what blocked, what was tried, what is
-needed** — and tells the Developer. The Leader (or Developer) resolves it, the resolution gets
-one `LOG.md` line, and the file is **deleted** (named deleter: the Leader — an ephemeral
-artifact, D14). While `BLOCKED.md` exists, surfacing it is the first action of any session
-(`06-Runtime-Boot-Protocol.md §2`).
+**Escalation — when there is no way forward.** A **Worker** that is genuinely stuck (the Road is
+too big for its class, or `done` has been refused as often as its class allows) runs
+**`akrs yield <road> --reason "<why>"`**: it releases the lease, marks the Road as needing a split
+and raises a question for the Leader. A **Tester** that cannot test records a result with verdict
+`blocked`. Both are canonical records the Leader sees in `akrs boot`, `akrs next` and
+`akrs status`; neither is a free-form flag file. The agent never guesses forward.
 
 ---
 
@@ -80,56 +76,52 @@ Execution is complete only when:
 
 - the assigned objective is complete,
 - all changes remain inside scope,
-- the modified work has been validated,
+- the modified work has been validated (the Road's declared `checks` pass),
 - no unresolved assumptions remain,
 - verification asserts written along the way are **committed** to `tests/` (or the confirmed
   harness), never discarded (`10-Verification-Specification.md §9`).
 
-**Handoff duty.** While executing, the Worker keeps the Plan's Test-Handoff file current — what
-became observable, how to reach it, expected behavior — and flags it "ready" when the idea is
-runnable (`10-Verification-Specification.md §3`).
+**Baton duty.** When the work is runnable, the Worker tells the Tester how to see it through
+the finishing call: *what is ready, how to reach it, what to expect*. The CLI records it as the
+handoff (`10-Verification-Specification.md §3`); there is no handoff file to keep current.
 
 ---
 
 ## 6. Close-out (mandatory when work lands)
 
-Reaching §5 is not the end. When work lands the Worker (or the Leader on hand-off) runs the
-close-out so the workflow does not drift. The **procedure — and the exact ledger-line format —
-is owned by the `akrs-close-out` skill** (instantiated per project at
-`akrs/skills/akrs-close-out.md`); this contract owns only the invariants. Close-out must, in
-one pass:
+Reaching §5 is not the end. When work lands the Worker runs **one command, `akrs done`**, so the
+workflow does not drift. The **procedure is owned by the `akrs-close-out` skill**; this contract
+owns only the invariants. In one transaction `done`:
 
-- **flip the Road** — retire it (`DONE + superseded by <memory>`) or refresh its *Expected
-  files* / scope to match what actually shipped;
-- **append ONE ledger line** to `LOG.md` — three fields, `date · ROAD-ID · DONE|BLOCKED`, no
-  telemetry to invent (+ an optional `deviations:` line only when reality diverged from the
-  Road) — append-only, never read at boot (`07-State-And-Sync-Specification.md §2`);
-- **rewrite `STATE.md` ≤ ~1 page** — landed objective → *Done* (last 3), set *Next*, record any
-  new *Open questions*, refresh the timestamp + author (rewritten fresh, never appended);
-- **update Memory** only if a reusable fact changed owner or location.
+- runs the Road's declared checks and the git audit (any failure or undeclared change finishes
+  nothing and lists every blocker with its fix);
+- records the baton for the Tester;
+- marks the Road `DONE`, writes its one closure record to the ledger (an optional `deviations`
+  clause only when reality diverged from the Road; never telemetry) and releases the lease.
 
-**Git protocol:** one Road = one commit (or branch/PR); message `<ROAD-ID>: <summary>`.
-Commit hygiene lives inside the workflow, not beside it.
+The Leader then re-renders `STATE.md` (`akrs state render`), updates Memory only if a reusable
+fact changed owner or location, and runs `akrs validate`
+(`07-State-And-Sync-Specification.md §4`). Every one of these files is canonical and written by
+the CLI; **no agent edits one by hand**.
 
-**Run `npx akrs-framework validate`** at close-out (and, recommended, in CI) — the mechanical
-check that Roads, STATE, the kernel, and the ephemeral artifacts are all consistent
-(`07-State-And-Sync-Specification.md §6`).
+**Git protocol:** one Road = one commit (or branch/PR); message `<ROAD-ID>: <summary>`. Commit
+hygiene lives inside the workflow, not beside it. Declared checks are repository commands:
+`done` and `verify` are for trusted workflows only.
 
 **Plan-level verification.** A Task closes on the checks above, but a **Plan** does not close
 until its verification pass runs against the running product — Mirror Check, raw measurement,
-seam ownership, and open-question resolution (`10-Verification-Specification.md §1, §4–7`).
+seam ownership and open-question resolution (`10-Verification-Specification.md §1, §3–7`).
 
-Close-out touches **at most LOG + STATE + the Road + one Memory** — the overhead budget of
-`01-Constitution.md §14`. A Road whose `Status` is still `ACTIVE` after its work has landed,
-or whose *Expected files* no longer match reality, is a **drift defect**. Close-out exists to
-prevent the case where a Road and a Memory disagree about what the code is. Full lifecycle and
-the canonical case study: `07-State-And-Sync-Specification.md`.
+Close-out touches **at most the Road, the ledger, State, one Memory and one FEATURES line** —
+the overhead budget of `01-Constitution.md §14`. A Road whose status is still `ACTIVE` after its
+work has landed is a **drift defect**; close-out exists to prevent the case where a Road and a
+Memory disagree about what the code is.
 
 ---
 
 ## 7. Final principle
 
-The Worker is responsible for **reliable execution** — not project discovery, not
-architecture design, not workflow generation. Reliable execution means following prepared
-Roads, making the smallest verified changes possible, and leaving the workflow synced with
-reality through close-out.
+The Worker is responsible for **reliable execution** — not project discovery, not architecture
+design, not workflow generation. Reliable execution means following prepared Roads, making the
+smallest verified changes possible, and leaving the workflow synced with reality through
+close-out.
