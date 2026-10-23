@@ -18,6 +18,9 @@ actually observed — including the rough edges.
 
 Full worked example: [`case-study-atlas-erp.md`](case-study-atlas-erp.md).
 
+The v2 release gate (every end-to-end, packaging and agent-experience gate, with the test files that
+prove it and the owner dogfood status) is in [`v2.0.0-release-gate.md`](v2.0.0-release-gate.md).
+
 ---
 
 ## What "passed" means

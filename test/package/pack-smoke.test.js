@@ -95,6 +95,25 @@ test('packed tarball installs into a temp project and runs from the installed co
   assert.equal(scaffoldValidation.data.coverage.skipped, 0);
   assert.deepEqual(scaffoldValidation.findings.map(({ code }) => code), ['AKRS-S006']);
 
+  // the IDs the scaffold returned drive the detail queries: never a placeholder or a guessed ID (P2-W11). The tier selects exactly one
+  // test-details form: the Plan ID on the Plan tier, the Road ID on the no-Plan tier.
+  for (const [id, role, klass] of [['lead', 'leader', 'frontier'], ['worker', 'worker', 'weak']]) {
+    const set = await runInstalled(installed, sandbox, `executor set ${id}`, [
+      'executor', 'set', id, '--role', role, '--class', klass, '--label', id, '--answer', klass, '--root', sandbox.projectDirectory, '--json',
+    ]);
+    assert.equal(JSON.parse(set.stdout).status, 'ok');
+  }
+  const { tier, plan_id: planId, road_id: roadId } = scaffoldPacket.data.scaffold;
+  assert.match(roadId, /^[A-Za-z0-9][A-Za-z0-9._-]*$/);
+  const roadDetails = await runInstalled(installed, sandbox, 'road-details', ['road-details', roadId, '--role', 'worker', '--root', sandbox.projectDirectory, '--json']);
+  const roadPacket = JSON.parse(roadDetails.stdout);
+  assert.deepEqual([roadPacket.command, roadPacket.status, roadPacket.data.role, roadPacket.data.road.id], ['road-details', 'ok', 'worker', roadId]);
+  const testSubject = tier === 'plan' ? planId : roadId;
+  assert.ok(tier === 'plan' ? planId !== null : planId === null, 'the plan ID is null exactly on the no-Plan tier');
+  const testDetails = await runInstalled(installed, sandbox, 'test-details', ['test-details', testSubject, '--root', sandbox.projectDirectory, '--json']);
+  const testPacket = JSON.parse(testDetails.stdout);
+  assert.deepEqual([testPacket.command, testPacket.status, testPacket.data.kind, testPacket.data.plan], ['test-details', 'ok', 'test_details', testSubject]);
+
   // postinstall layout contract shared with the init/sync implementation.
   const docsRoot = sandbox.inside(join(sandbox.projectDirectory, 'docs', 'akrs'));
   assert.equal((await stat(join(docsRoot, 'GETTING_STARTED.md'))).isFile(), true);
