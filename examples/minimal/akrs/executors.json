@@ -18,7 +18,7 @@
   ],
   "class_overrides": {},
   "meta": {
-    "generator": "akrs/2.0.0-alpha.0",
-    "content_hash": "sha256:0db59d5b921287562c07f61012f67afcd1ec4ebe470fa983cd69f444768e4ca7"
+    "generator": "akrs/2.0.0",
+    "content_hash": "sha256:92f2d7c9abe8a732ac48fa81893fd477b3a5833e8ae69fb0c9cf8dad754f4192"
   }
 }

@@ -2,8 +2,8 @@
   "worker": {
     "status": "ok",
     "snapshot": {
-      "before": "sha256:aa077134504f2e19a96a001a850ed424a86fd45418acec3865f296ae172c9989",
-      "after": "sha256:aa077134504f2e19a96a001a850ed424a86fd45418acec3865f296ae172c9989"
+      "before": "sha256:1e966fd3eb03e61dfd197adf715c9d32d09920377e0bafd13891993eaac2467e",
+      "after": "sha256:1e966fd3eb03e61dfd197adf715c9d32d09920377e0bafd13891993eaac2467e"
     },
     "data": {
       "kind": "road_details",
@@ -160,8 +160,8 @@
   "worker_pointers": {
     "status": "ok",
     "snapshot": {
-      "before": "sha256:aa077134504f2e19a96a001a850ed424a86fd45418acec3865f296ae172c9989",
-      "after": "sha256:aa077134504f2e19a96a001a850ed424a86fd45418acec3865f296ae172c9989"
+      "before": "sha256:1e966fd3eb03e61dfd197adf715c9d32d09920377e0bafd13891993eaac2467e",
+      "after": "sha256:1e966fd3eb03e61dfd197adf715c9d32d09920377e0bafd13891993eaac2467e"
     },
     "data": {
       "kind": "road_details",
@@ -318,8 +318,8 @@
   "leader": {
     "status": "ok",
     "snapshot": {
-      "before": "sha256:aa077134504f2e19a96a001a850ed424a86fd45418acec3865f296ae172c9989",
-      "after": "sha256:aa077134504f2e19a96a001a850ed424a86fd45418acec3865f296ae172c9989"
+      "before": "sha256:1e966fd3eb03e61dfd197adf715c9d32d09920377e0bafd13891993eaac2467e",
+      "after": "sha256:1e966fd3eb03e61dfd197adf715c9d32d09920377e0bafd13891993eaac2467e"
     },
     "data": {
       "kind": "road_details",
@@ -490,8 +490,8 @@
   "leader_full": {
     "status": "ok",
     "snapshot": {
-      "before": "sha256:aa077134504f2e19a96a001a850ed424a86fd45418acec3865f296ae172c9989",
-      "after": "sha256:aa077134504f2e19a96a001a850ed424a86fd45418acec3865f296ae172c9989"
+      "before": "sha256:1e966fd3eb03e61dfd197adf715c9d32d09920377e0bafd13891993eaac2467e",
+      "after": "sha256:1e966fd3eb03e61dfd197adf715c9d32d09920377e0bafd13891993eaac2467e"
     },
     "data": {
       "kind": "road_details",

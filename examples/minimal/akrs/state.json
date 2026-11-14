@@ -8,10 +8,10 @@
   "next": null,
   "updated": {
     "at": "2026-10-03T10:00:00.000Z",
-    "by": "akrs/2.0.0-alpha.0"
+    "by": "akrs/2.0.0"
   },
   "meta": {
-    "generator": "akrs/2.0.0-alpha.0",
-    "content_hash": "sha256:1085ca9c37a5c758e49ebcb6c607b09302e3efbec604824ad71e3229f54464f4"
+    "generator": "akrs/2.0.0",
+    "content_hash": "sha256:f3e707bd0f843316cba7f4bad7981889e6e0bb3603af1211b0162c080c7f4ef2"
   }
 }

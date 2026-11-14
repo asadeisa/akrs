@@ -2,7 +2,7 @@
 
 - Packet `akrs.road-details/v2` status `ok`
 - Road status: `ACTIVE`; plan `P6`; class `frontier`
-- Snapshot: `sha256:91ce265b2a7a05418895b33dde45be098e4f8d415521f375c67fff708e09124d`
+- Snapshot: `sha256:0a1917c75b80c022b242f09cb4d16056ef284326de310d5dc16ba59ef8a94e57`
 
 ## Task
 

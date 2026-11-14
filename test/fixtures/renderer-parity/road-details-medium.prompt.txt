@@ -2,7 +2,7 @@
 
 - Packet `akrs.road-details/v2` status `ok`
 - Road status: `ACTIVE`; plan `P6`; class `medium`
-- Snapshot: `sha256:e4790b2698c491c39e9c3f9ac9651085f0a762875f74ca23ce68b7867703dd72`
+- Snapshot: `sha256:c9ba11a6d9876229202b693072b17d82a2f2d44825f900e0bdbe184ce3151ed3`
 
 Work only inside this packet. If you need anything it does not allow, stop and report it to the Leader.
 

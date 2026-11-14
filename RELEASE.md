@@ -31,8 +31,9 @@ For maintainers cutting a new AKRS release. Follow top to bottom.
       (`bin`, `lib`, `docs/framework` — incl. `skills/`, `examples/minimal`, `GETTING_STARTED.md`,
       `README.md`, `LICENSE`, `CHANGELOG.md`, `VERSIONING.md`). **No `docs/guides`** (web-readable on
       GitHub only; npm rewrites the README's links).
-- [ ] v2 prereleases (`2.0.0-alpha.*`) publish under the `next` dist-tag (`publishConfig.tag`), so
-      `latest` stays on v1 until the final v2 release.
+- [ ] A prerelease (`2.0.0-alpha.*`) is published with `--tag next` so `latest` stays on the
+      previous line. `publishConfig` sets no tag: the final `2.0.0` publishes to `latest` and moves
+      it from v1 to v2. Confirm that is intended before publishing.
 - [ ] `.npmignore` excludes research, validation internals, `docs/guides`, dev artifacts.
 - [ ] Dry-run the package and inspect contents:
   ```bash

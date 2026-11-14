@@ -43,7 +43,7 @@
   },
   "oversize_reason": null,
   "meta": {
-    "generator": "akrs/2.0.0-alpha.0",
-    "content_hash": "sha256:cc046044b6027780ce5f2c3cd602f19b9cf603da3abdbfea7582f1a1916e5951"
+    "generator": "akrs/2.0.0",
+    "content_hash": "sha256:ebed6c78f180b8b329ccd043756ed884e0e1eb3ea399c898ff5ef6d4756a49b9"
   }
 }

@@ -69,7 +69,7 @@ test('a Road without a Plan is written flat; every field of every valid fixture 
     assert.equal(storedStatus, 'QUEUED', name);
     assert.deepEqual(Object.keys(found.road), ROAD_KEYS, name);
     assert.deepEqual(rest, input, `${name}: nothing lost, nothing invented`);
-    assert.equal(storedMeta.generator, 'akrs/2.0.0-alpha.0');
+    assert.equal(storedMeta.generator, 'akrs/2.0.0');
   }
 });
 

@@ -26,7 +26,7 @@
           },
           "serverInfo": {
             "name": "akrs",
-            "version": "2.0.0-alpha.0"
+            "version": "2.0.0"
           },
           "instructions": "AKRS workflow tools. Each call returns the same packet as the akrs CLI with --json: read status, findings and next_commands, then do the next command. Worker: akrs_work work -> edit only the declared writes -> akrs_work done. Tester: akrs_test details -> run -> result. Leader: akrs_status boot, then akrs_write / akrs_scope. Never pass hashes, snapshots or request IDs. Structured input: write JSON to akrs/drafts/<name>.json, pass input_path. A large result names a file under akrs/.cache/mcp/ to read."
         }

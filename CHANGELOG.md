@@ -9,6 +9,76 @@ version lines relate.
 
 ---
 
+## [2.0.0] — 2026-11-14
+
+The **v2 release**: content from the agent, form from the CLI. A workflow is no longer Markdown that
+an agent edits and a validator reads back; it is a set of canonical records that only the CLI
+writes, with agents asked for content and the CLI doing the bookkeeping. **This is a breaking
+release.**
+
+### Breaking changes and the migration position
+
+- **v2 creates new workflows and has intentionally no compatibility layer from v1.** There is no
+  v1 parser, no migration command and no `road compile`. A v1 `STATE.md`, Markdown Road or
+  `LOG.md` is never read as state. Start a v2 project with `akrs init --scaffold`; keep the v1
+  folder as history, or re-author its Roads with `akrs road new`.
+- **The record formats changed.** Roads, State, executors, verification contracts, handoffs,
+  results, scope requests and the closure ledger are closed JSON or JSONL schemas (`akrs.*/v1`)
+  carrying a content hash; `STATE.md` is derived from them. Hand edits are detected and reported,
+  not trusted.
+- **The v1 command surface is replaced.** `validate --fix` and `validate --clean` are gone (each
+  fix has its own exact command), `validate --dir` is `--root` / `--workflow-root`, and unknown
+  flags, a flag without its value and a flag given twice are usage errors instead of being ignored.
+- **Exit codes and streams are fixed:** `--help` and `--version` exit 0, findings never go to
+  stdout in `--json` mode, a missing workflow exits 3, and `--json` prints exactly one
+  `akrs.packet/v2` packet.
+- **Node 22.17.0 or newer** is required.
+- A project does not have to upgrade; the v1 line keeps working as it did.
+
+### Added
+
+- **Agent loops, one call per intent.** Leader `boot`; Worker `work` → `done` (and `yield` when a
+  Road is too big); Tester `test-details` → `test run` → `test result`. Leases, a journal-based
+  replay and the Leader-authored scope envelope mean an agent never types a hash, a snapshot or a
+  request ID. The primitives (`road-details`, `verify`, `audit`, `road finish`, …) stay public.
+- **Executor classes.** The user classifies each model as weak, medium or frontier
+  (`akrs executor set`); Road size and packet shape follow the class (`road fit` proposes splits).
+- **Scope control.** `scope request | approve | reject | list`, an envelope the Leader can pre-grant,
+  and a pre-write `akrs-guard` hook.
+- **Verification.** A Plan-level contract, a scenario runner (`test run`: browser and HTTP,
+  evidence, run records), raw measurement against a budget, and `plan finish` that refuses without a
+  current Tester pass. `akrs page` reads a running page through an installed Chrome, Edge or
+  Chromium with no dependency.
+- **Every agent.** `akrs mcp` (a dual-era MCP stdio server with seven flat tools) and
+  `akrs agents setup | doctor | list` for Claude Code, Codex, Gemini CLI, Pi, opencode, Kimi Code
+  CLI, Qwen Code, Cursor and Freebuff.
+- **Desktop-ready surfaces.** `graph`, `view` (one self-contained, offline board), `watch` (a change
+  stream), the `projects` registry and `status --all-projects`, all over the same packets and the
+  public `lib/core` entry.
+- **Honest validation.** `validate` reports explicit coverage and permanent finding codes
+  (`explain`), plus `doctor`, `audit`, `stale`, `status`, `next`, `where` and `log`.
+- **Safe writes.** Every mutation validates before the first write, supports `--dry-run`, runs under
+  a repository lock and a recoverable transaction, and lists every file it changed.
+
+### Fixed
+
+The 26 v1 defects found by the v2 audit are closed or retired by design: silent zero coverage,
+findings on stdout, help/version exit codes, ignored and misread flags, CRLF rewrites, archived-log
+rewrites, substring status and clean matches, path escapes and two path roots, postinstall
+overwriting local edits, `init --force` ghosts, duplicate Road IDs, substring State overrides,
+hyphen-stripped SOT paths, prose dependency tokenization, unsorted results, host-dependent case
+handling and emoji-only severities. The Markdown parsers that caused several of them no longer exist.
+
+### Changed
+
+- The framework specification (`docs/framework/`) and the skills are rewritten around the v2 contracts.
+- `examples/minimal` is a working v2 workflow that validates clean and answers the Worker and
+  Tester queries.
+- The release gate (end to end, from the packed tarball) is documented in
+  `docs/validation/v2.0.0-release-gate.md`.
+
+---
+
 ## [1.3.1] — 2026-07-09
 
 A **field-feedback patch** from a live low-capability-model run (Sonnet 5 as Leader, Gemini
@@ -259,6 +329,7 @@ The original AKRS specification: the read-once doctrine, the artifact layers
 (Router / Memory / Road / Task / Plan / Phase), and the first real-project test
 harness. Preserved unchanged under `docs/research/v0/`.
 
+[2.0.0]: https://github.com/asadeisa/akrs/releases/tag/v2.0.0
 [1.3.1]: https://github.com/asadeisa/akrs/releases/tag/v1.3.1
 [1.3.0]: https://github.com/asadeisa/akrs/releases/tag/v1.3.0
 [1.2.0]: https://github.com/asadeisa/akrs/releases/tag/v1.2.0

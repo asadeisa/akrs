@@ -113,7 +113,7 @@ test('the new permanent finding codes are in the catalog with closed detail shap
 });
 
 test('frozen store decisions are written down where tests can pin them', () => {
-  assert.equal(GENERATOR, 'akrs/2.0.0-alpha.0');
+  assert.equal(GENERATOR, 'akrs/2.0.0');
   assert.match(ROAD_STORE_POLICY.placement, /roads\/<plan>\/<id>\.json/);
   assert.match(ROAD_STORE_POLICY.identity, /AKRS-R001/);
   assert.match(ROAD_STORE_POLICY.exit_codes, /exit 2/);

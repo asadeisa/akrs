@@ -15,7 +15,7 @@ import { treeDigest } from '../transactions/support.js';
 
 export { fakeProviders, treeDigest, ulid };
 export const KNOWN_COMMANDS = commandManifest.commands.map(({ id }) => id);
-export const GENERATOR = 'akrs/2.0.0-alpha.0';
+export const GENERATOR = 'akrs/2.0.0';
 
 const lines = (count, prefix) => `${Array.from({ length: count }, (_, index) => `${prefix} ${index + 1}`).join('\n')}\n`;
 

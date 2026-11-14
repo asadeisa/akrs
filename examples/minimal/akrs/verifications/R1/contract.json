@@ -22,7 +22,7 @@
   "allowed_hosts": [],
   "scenario": [],
   "meta": {
-    "generator": "akrs/2.0.0-alpha.0",
-    "content_hash": "sha256:e421c903ff277f7ce961a2f7a91d9ea6e3dfadefa00690c3b8e52418c7112768"
+    "generator": "akrs/2.0.0",
+    "content_hash": "sha256:f069cf31df7c7fbe21d1c74effa03b43b9837e1a582fda402762100a4bfc834f"
   }
 }

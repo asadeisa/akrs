@@ -1,5 +1,5 @@
 # STATE
-Updated: 2026-10-03T10:00:00.000Z by akrs/2.0.0-alpha.0
+Updated: 2026-10-03T10:00:00.000Z by akrs/2.0.0
 
 ## Active
 - Mode: 0

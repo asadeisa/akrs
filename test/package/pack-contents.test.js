@@ -5,8 +5,8 @@ import { parseNpmJson, repositoryRoot, repositoryTarballs, runNpm } from './pack
 
 const packageJson = JSON.parse(await readFile(new URL('../../package.json', import.meta.url), 'utf8'));
 
-test('package.json declares the v2 prerelease runtime contract', () => {
-  assert.equal(packageJson.version, '2.0.0-alpha.0');
+test('package.json declares the v2 runtime contract', () => {
+  assert.equal(packageJson.version, '2.0.0');
   assert.equal(packageJson.engines.node, '>=22.17.0');
   assert.equal(packageJson.scripts.test, 'node --test');
   assert.equal(packageJson.scripts.postinstall, 'node bin/akrs.js postinstall');
@@ -50,6 +50,8 @@ test('npm pack --dry-run ships the runtime and excludes development material', a
   assert.deepEqual(await repositoryTarballs(), before, 'dry run must not leave a .tgz in the repository');
 });
 
-test('v2 prereleases publish under the next dist-tag, publicly', () => {
-  assert.deepEqual(packageJson.publishConfig, { access: 'public', tag: 'next' });
+// RELEASE.md: prereleases (2.0.0-alpha.*) publish under `next` so `latest` stays on v1; the final 2.0.0 is the release that takes `latest`.
+test('a final version publishes publicly under the default latest tag; only a prerelease would need next', () => {
+  assert.equal(/^\d+\.\d+\.\d+$/.test(packageJson.version), true, 'the version is final, not a prerelease');
+  assert.deepEqual(packageJson.publishConfig, { access: 'public' });
 });

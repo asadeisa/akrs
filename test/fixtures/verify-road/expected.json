@@ -2,8 +2,8 @@
   "dry_run": {
     "status": "ok",
     "snapshot": {
-      "before": "sha256:378a22e27932fadc146141bb0cf465095e0a4091b0ff471645b33fccc2ec2e60",
-      "after": "sha256:378a22e27932fadc146141bb0cf465095e0a4091b0ff471645b33fccc2ec2e60"
+      "before": "sha256:97c72467ba6f259e67950742f35b60425c2121b050c8a93a533af7ce1cc84756",
+      "after": "sha256:97c72467ba6f259e67950742f35b60425c2121b050c8a93a533af7ce1cc84756"
     },
     "data": {
       "kind": "verify_road",
@@ -114,8 +114,8 @@
   "run": {
     "status": "error",
     "snapshot": {
-      "before": "sha256:378a22e27932fadc146141bb0cf465095e0a4091b0ff471645b33fccc2ec2e60",
-      "after": "sha256:378a22e27932fadc146141bb0cf465095e0a4091b0ff471645b33fccc2ec2e60"
+      "before": "sha256:97c72467ba6f259e67950742f35b60425c2121b050c8a93a533af7ce1cc84756",
+      "after": "sha256:97c72467ba6f259e67950742f35b60425c2121b050c8a93a533af7ce1cc84756"
     },
     "data": {
       "kind": "verify_road",
@@ -287,8 +287,8 @@
   "single_passed": {
     "status": "ok",
     "snapshot": {
-      "before": "sha256:378a22e27932fadc146141bb0cf465095e0a4091b0ff471645b33fccc2ec2e60",
-      "after": "sha256:378a22e27932fadc146141bb0cf465095e0a4091b0ff471645b33fccc2ec2e60"
+      "before": "sha256:97c72467ba6f259e67950742f35b60425c2121b050c8a93a533af7ce1cc84756",
+      "after": "sha256:97c72467ba6f259e67950742f35b60425c2121b050c8a93a533af7ce1cc84756"
     },
     "data": {
       "kind": "verify_road",

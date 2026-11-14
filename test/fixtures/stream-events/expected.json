@@ -190,8 +190,8 @@
             "status": "error",
             "root": "<root>",
             "snapshot": {
-              "before": "sha256:bb59ae288ffc15046f6c3d2c7dd72781ec6277986914c82c0e3ed3042d7329ff",
-              "after": "sha256:bb59ae288ffc15046f6c3d2c7dd72781ec6277986914c82c0e3ed3042d7329ff"
+              "before": "sha256:c6b4db34c97af6183a8392a986b11f38c0eda9a5abef86c420c5310484e050ba",
+              "after": "sha256:c6b4db34c97af6183a8392a986b11f38c0eda9a5abef86c420c5310484e050ba"
             },
             "data": {
               "kind": "verify_road",
@@ -382,8 +382,8 @@
             "status": "ok",
             "root": "<root>",
             "snapshot": {
-              "before": "sha256:bb59ae288ffc15046f6c3d2c7dd72781ec6277986914c82c0e3ed3042d7329ff",
-              "after": "sha256:bb59ae288ffc15046f6c3d2c7dd72781ec6277986914c82c0e3ed3042d7329ff"
+              "before": "sha256:c6b4db34c97af6183a8392a986b11f38c0eda9a5abef86c420c5310484e050ba",
+              "after": "sha256:c6b4db34c97af6183a8392a986b11f38c0eda9a5abef86c420c5310484e050ba"
             },
             "data": {
               "kind": "verify_road",
@@ -550,8 +550,8 @@
       "status": "error",
       "root": "<root>",
       "snapshot": {
-        "before": "sha256:bb59ae288ffc15046f6c3d2c7dd72781ec6277986914c82c0e3ed3042d7329ff",
-        "after": "sha256:bb59ae288ffc15046f6c3d2c7dd72781ec6277986914c82c0e3ed3042d7329ff"
+        "before": "sha256:c6b4db34c97af6183a8392a986b11f38c0eda9a5abef86c420c5310484e050ba",
+        "after": "sha256:c6b4db34c97af6183a8392a986b11f38c0eda9a5abef86c420c5310484e050ba"
       },
       "data": {
         "kind": "verify_road",
