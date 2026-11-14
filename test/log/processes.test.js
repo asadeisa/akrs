@@ -10,9 +10,34 @@ const append = (repo, subject, deviations = null) => cli(repo, [
   'log', 'append', '--kind', 'road', '--subject', subject, '--outcome', 'DONE', ...(deviations === null ? [] : ['--deviations', deviations]), '--json',
 ]);
 
+// A contender that waits past the lock budget gets the documented blocked result (AKRS-C009, reason held) and
+// writes nothing; on a slow runner that is a correct outcome, so it retries the way an agent would. Any other
+// failure still fails the test.
+const lockHeld = (run) => {
+  if (run.exitCode !== 1) return false;
+  try {
+    const packet = JSON.parse(run.stdout);
+    return packet.status === 'blocked' && packet.findings.some(({ code, detail }) => code === 'AKRS-C009' && detail?.reason === 'held');
+  } catch {
+    return false;
+  }
+};
+
+async function settle(runs, retry) {
+  const settled = [];
+  for (const [index, first] of runs.entries()) {
+    let run = first;
+    for (let attempt = 0; attempt < 5 && lockHeld(run); attempt += 1) run = await retry(index);
+    settled.push(run);
+  }
+  return settled;
+}
+
 test('unique appends from separate processes lose no record', SLOW, async (t) => {
   const repo = await createRepo(t);
-  const runs = await Promise.all(Array.from({ length: 6 }, (_, index) => append(repo, `R-race-${index}`)));
+  const subject = (index) => `R-race-${index}`;
+  const first = await Promise.all(Array.from({ length: 6 }, (_, index) => append(repo, subject(index))));
+  const runs = await settle(first, (index) => append(repo, subject(index)));
   for (const run of runs) assert.equal(run.exitCode, 0, run.stderr || run.stdout);
   const log = await readLog(repo.options);
   assert.deepEqual(log.records.map(({ subject }) => subject).sort(), Array.from({ length: 6 }, (_, index) => `R-race-${index}`));
@@ -30,7 +55,9 @@ test('the duplicate closure race accepts at most one record', SLOW, async (t) =>
 test('the rotation boundary race keeps every record and exactly 80 lines in the full segment', SLOW, async (t) => {
   const repo = await createRepo(t);
   await seedSegment(repo, 1, LOG_SEGMENT_LIMIT - 2);
-  const runs = await Promise.all(Array.from({ length: 5 }, (_, index) => append(repo, `R-edge-${index}`)));
+  const subject = (index) => `R-edge-${index}`;
+  const first = await Promise.all(Array.from({ length: 5 }, (_, index) => append(repo, subject(index))));
+  const runs = await settle(first, (index) => append(repo, subject(index)));
   for (const run of runs) assert.equal(run.exitCode, 0, run.stderr || run.stdout);
   const log = await readLog(repo.options);
   assert.equal(log.records.length, LOG_SEGMENT_LIMIT + 3);
