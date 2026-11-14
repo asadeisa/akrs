@@ -209,3 +209,15 @@ test('an executors.json that does not verify and an unknown Road are refused wit
   assert.equal(await statusOf(repo), 'ACTIVE');
   assert.ok(reasonsOf);
 });
+
+test('done stores the outcome of the checks it ran in the handoff, pinned to the product bytes they ran against (dogfood finding 7)', async (t) => {
+  const { computeSnapshot } = await import('../../lib/store/snapshots/index.js');
+  const { repo } = await workWorld(t);
+  await claimAndEdit(repo);
+  const result = await done(repo);
+  assert.equal(result.packet.status, 'ok', result.stdout);
+  const [record] = (await readHandoffs({ ...repo.options, key: 'P6' })).records.map(({ value }) => value);
+  assert.deepEqual(record.checks.results, [{ name: 'unit', passed: true, exit_code: 0 }]);
+  const product = (await computeSnapshot({ ...repo.options, projections: ['road-writes'], target: { road: ROAD } })).snapshot;
+  assert.equal(record.checks.product_snapshot, product);
+});

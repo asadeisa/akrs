@@ -59,10 +59,21 @@ test('work -> done and the primitive chain end in the same canonical workflow st
   assert.equal(await statusOf(primitive), 'DONE');
   assert.equal(await statusOf(composed), 'DONE');
   assert.equal(await primitive.read('akrs/roads/P6/R-P6-1.json'), await composed.read('akrs/roads/P6/R-P6-1.json'), 'the Road file is byte-identical');
-  assert.deepEqual(await canonicalState(composed), await canonicalState(primitive));
+  // the handoff ledger is compared field by field below (it differs only in the checks the done ran)
+  const withoutLedger = async (repo) => Object.fromEntries(Object.entries(await canonicalState(repo)).filter(([path]) => path !== 'akrs/verifications/P6/handoff.jsonl'));
+  assert.deepEqual(await withoutLedger(composed), await withoutLedger(primitive));
 
   const strip = ({ id, hash, ts, ...rest }) => rest;
   assert.deepEqual((await closures(composed)).map(strip), (await closures(primitive)).map(strip));
-  const batons = async (repo) => (await readHandoffs({ ...repo.options, key: 'P6' })).records.map(({ value }) => strip(value));
-  assert.deepEqual(await batons(composed), await batons(primitive), 'the baton is the same record, snapshot included');
+  const records = async (repo) => (await readHandoffs({ ...repo.options, key: 'P6' })).records.map(({ value }) => strip(value));
+  const [composedBatons, primitiveBatons] = [await records(composed), await records(primitive)];
+  // the one intended difference (dogfood finding 7): done stores the outcome of the checks it ran; test handoff runs none
+  assert.equal(primitiveBatons.length, 1);
+  assert.equal(primitiveBatons[0].checks, null);
+  assert.equal(composedBatons.length, 1);
+  assert.match(composedBatons[0].checks.product_snapshot, /^sha256:[0-9a-f]{64}$/);
+  assert.equal(composedBatons[0].checks.results.length > 0, true);
+  assert.equal(composedBatons[0].checks.results.every(({ passed, exit_code: code }) => passed === true && code === 0), true);
+  const baton = ({ checks, ...rest }) => rest;
+  assert.deepEqual(composedBatons.map(baton), primitiveBatons.map(baton), 'otherwise the baton is the same record, snapshot included');
 });

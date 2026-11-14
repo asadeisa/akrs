@@ -31,7 +31,7 @@ const pass = results.find(({ name }) => name === 'pass').value;
 test('F6/Q22 handoff and result: frozen records', () => {
   assert.equal(HANDOFF_SCHEMA, 'akrs.handoff/v1');
   assert.equal(RESULT_SCHEMA, 'akrs.result/v1');
-  assert.deepEqual(HANDOFF_KEYS, ['id', 'hash', 'ts', 'road', 'snapshot', 'result', 'reach', 'expect', 'ready']);
+  assert.deepEqual(HANDOFF_KEYS, ['id', 'hash', 'ts', 'road', 'snapshot', 'result', 'reach', 'expect', 'checks', 'ready']);
   assert.deepEqual(HANDOFF_INPUT_KEYS, ['schema', 'road', 'result', 'reach', 'expect']);
   assert.deepEqual(RESULT_KEYS, [
     'id', 'hash', 'ts', 'plan', 'tested_snapshot', 'contract_hash', 'verdict', 'checks', 'measurements', 'evidence',
@@ -49,7 +49,7 @@ defineClosedSchemaTests({
   validate: (value) => validateHandoff(value),
   keys: HANDOFF_KEYS,
   primary: 'ready',
-  closedPaths: [''],
+  closedPaths: ['', 'checks', 'checks.results[0]', 'checks.results[1]'],
 });
 
 defineClosedSchemaTests({

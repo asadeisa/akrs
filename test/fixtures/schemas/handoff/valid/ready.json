@@ -10,5 +10,20 @@
     "Click Save"
   ],
   "expect": "A toast says Saved.",
+  "checks": {
+    "product_snapshot": "sha256:fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9",
+    "results": [
+      {
+        "name": "unit",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "lint",
+        "passed": true,
+        "exit_code": 0
+      }
+    ]
+  },
   "ready": true
 }

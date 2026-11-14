@@ -176,7 +176,8 @@ test('gate 9: a Tester definition and a Worker handoff round-trip their content 
   assert.equal((await cli(repo, ['test', 'handoff', 'P6', '--json', '-'], { stdin: input })).exitCode, 0);
   const [line] = (await repo.read('akrs/verifications/P6/handoff.jsonl')).split('\n').filter(Boolean).map((text) => JSON.parse(text));
   assert.deepEqual({ road: line.road, result: line.result, reach: line.reach, expect: line.expect }, { road: input.road, result: input.result, reach: input.reach, expect: input.expect });
-  assert.deepEqual(Object.keys(line).sort(), ['expect', 'hash', 'id', 'ready', 'reach', 'result', 'road', 'snapshot', 'ts'].sort(), 'only the declared fields exist: nothing else is invented');
+  assert.deepEqual(Object.keys(line).sort(), ['checks', 'expect', 'hash', 'id', 'ready', 'reach', 'result', 'road', 'snapshot', 'ts'].sort(), 'only the declared fields exist: nothing else is invented');
+  assert.equal(line.checks, null, 'test handoff runs no check, so it records none');
   assert.equal(await repo.read('akrs/verifications/P6/contract.json'), contractBytes, 'a handoff never changes acceptance');
   const bad = await cli(repo, ['test', 'handoff', 'P6', '--json', '-'], { stdin: { ...input, road: 'R-P6-1', reach: [], result: '' } });
   assert.notEqual(bad.exitCode, 0);

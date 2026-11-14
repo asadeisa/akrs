@@ -44,7 +44,7 @@ const FORMATS = {
 // CLI-owned keys in the stored form that the agent-authored input form omits
 const CLI_OWNED = {
   road: ['status', 'meta'], state: ['updated', 'meta'], verification: ['meta'], executors: ['meta'], plan: ['findings', 'closure', 'meta'],
-  'scope-request': ['id', 'hash', 'ts', 'type', 'snapshot'], handoff: ['id', 'hash', 'ts', 'snapshot', 'ready'],
+  'scope-request': ['id', 'hash', 'ts', 'type', 'snapshot'], handoff: ['id', 'hash', 'ts', 'snapshot', 'checks', 'ready'],
   result: ['id', 'hash', 'ts', 'plan', 'tested_snapshot', 'contract_hash', 'run'],
 };
 
@@ -125,7 +125,7 @@ test('Q6 ordering: binding ordered/set rows for the Road (single source of truth
     { path: 'scope_policy.auto_writes', kind: 'set' },
   ]);
   const handoff = ORDERING_TABLE['akrs.handoff/v1'];
-  assert.deepEqual(handoff, [{ path: 'reach', kind: 'ordered' }]);
+  assert.deepEqual(handoff, [{ path: 'reach', kind: 'ordered' }, { path: 'checks.results', kind: 'ordered' }]);
   const executors = ORDERING_TABLE['akrs.executors/v1'];
   assert.deepEqual(executors, [{ path: 'executors', kind: 'set', sortKey: 'id' }]);
   const verification = ORDERING_TABLE['akrs.verification/v1'];
