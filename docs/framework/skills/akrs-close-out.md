@@ -64,7 +64,10 @@ Run these only when you are the Leader (or when the Road was finished without `d
 
 A Plan does not close on its Roads alone. Run the Tester loop (`akrs-live-verify`), the Mirror
 Check (`10-Verification-Specification.md`), then `akrs plan finish <plan>` (use `--dry-run`
-first: it names every blocker). The Plan's entry in `akrs/FEATURES.md` is the one Leader-written
+first: it names every blocker). An open question or an unowned seam blocks it: resolve the
+question with `akrs plan question resolve <plan> <question> --resolution <answer>`, and give the
+seam an owner by removing it and adding it again with `--road <id>` or `--intent <text>`
+(`akrs plan seam remove`, `akrs plan seam add`). Never hand-edit `akrs/plans/<plan>.json`. The Plan's entry in `akrs/FEATURES.md` is the one Leader-written
 line that completes it.
 
 ## Invariants this procedure must never break

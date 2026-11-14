@@ -69,3 +69,14 @@ test('invalid arguments are rejected with a reason that names the argument and w
   rejected('akrs_work', 'done', /object/);
   rejected('akrs_work', ['done'], /object/);
 });
+
+test('the Plan record writers route through akrs_write: id names the Plan, road/intent/question stay their own flags', () => {
+  const seam = resolve('akrs_write', { action: 'plan_seam_add', id: 'P6', text: 'API wiring', road: 'R-P6-1' }).input;
+  assert.deepEqual(seam.positionals, { plan: 'P6' });
+  assert.equal(seam.flags['--road'], 'R-P6-1');
+  assert.equal(seam.flags['--text'], 'API wiring');
+  const resolved = resolve('akrs_write', { action: 'plan_question_resolve', id: 'P6', question: 'Q1', resolution: 'Postgres' }).input;
+  assert.deepEqual(resolved.positionals, { plan: 'P6', question: 'Q1' });
+  assert.equal(resolved.flags['--resolution'], 'Postgres');
+  assert.deepEqual(resolve('akrs_write', { action: 'plan_new', id: 'P7', title: 'Seven' }).input.positionals, { plan: 'P7' });
+});

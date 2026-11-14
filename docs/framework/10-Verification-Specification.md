@@ -70,7 +70,10 @@ is `live` or `measured`, plus one final end-to-end pass — never once per Road*
 **The Worker's baton.** When a Road is finished, `akrs done` (or `akrs test handoff`) appends one
 record to `akrs/verifications/<plan>/handoff.jsonl`: *result* (what is ready), *reach* (ordered
 steps) and *expect* (what to see), with the Road, snapshot and readiness filled by the CLI. A
-baton, not a report; it never changes acceptance. The ledger is **append-only and is never
+`done` also stores the outcome of the declared checks it ran (`checks`: name, passed, exit code,
+pinned to the product bytes they ran against); `test handoff` runs none and stores `null`. The
+Tester packet shows that outcome as the **Worker's** run, never as a Tester verdict, and only as
+current while the product bytes are unchanged. A baton, not a report; it never changes acceptance. The ledger is **append-only and is never
 deleted**: a Tester pass does not remove it.
 
 **The Tester's packet.** `akrs test-details <plan>` is a read-only query and returns the one
@@ -153,7 +156,10 @@ Therefore: the moment a Road ships a **seam** ("X builds it, someone wires it"),
 exists, otherwise the **owning Plan/Phase plus a one-line wiring intent** (Roads are generated on
 demand per `02-Generation-Specification.md §4` — a seam must never force pre-generating one).
 **A seam with no named owner blocks that Plan's close-out** (`plan finish` names it as
-`seam_unowned`; an owner Road that does not exist or is not DONE blocks too). This is the
+`seam_unowned`; an owner Road that does not exist or is not DONE blocks too). The Leader writes
+seams with `akrs plan seam add <plan> --text <what> --road <id>` (or `--intent <wiring intent>`)
+and `akrs plan seam remove <plan> <seam>`; the Plan record itself comes from
+`akrs plan new <plan> --title <text>`. The record is never hand-edited. This is the
 counterweight to scope discipline — do **not** loosen Worker scope to compensate.
 
 ---
@@ -163,7 +169,10 @@ counterweight to scope discipline — do **not** loosen Worker scope to compensa
 Every open question has an **owner Plan** (the Plan record's `questions`). **A Plan cannot close
 while it owns an open question** (`plan finish` -> `question_open`): either resolve it, or the
 Leader records *"accepted as-is because ___"* and it becomes a **Decision**. "Open forever" is not
-a legal state.
+a legal state. The Leader opens one with `akrs plan question add <plan> --text <question>` (the
+CLI picks the next `Q<n>`) and closes it with
+`akrs plan question resolve <plan> <question> --resolution <answer>` (`--decision <ULID>` points
+at the Memory Decision record when there is one).
 
 In the mirror-test, blown-out lighting was correctly diagnosed and recorded as an open question
 during U3 — the workflow's best moment — and then shipped anyway, because "non-blocking" had no

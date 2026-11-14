@@ -16,7 +16,7 @@ test('F19 the shipped manifest projects to exactly seven tools, in manifest orde
   const actions = Object.fromEntries(projection.tools.map((tool) => [tool.name, tool.inputSchema.properties.action.enum]));
   assert.deepEqual(actions, {
     akrs_status: ['validate', 'explain', 'status', 'next', 'graph', 'boot'],
-    akrs_write: ['road_new', 'task_new', 'memory_add', 'road_update', 'verification_define', 'state_set', 'executor_set', 'activate', 'lease_release', 'plan_finish'],
+    akrs_write: ['road_new', 'task_new', 'memory_add', 'road_update', 'verification_define', 'state_set', 'executor_set', 'activate', 'lease_release', 'plan_finish', 'plan_new', 'plan_question_add', 'plan_question_resolve', 'plan_seam_add', 'plan_seam_remove'],
     akrs_scope: ['request', 'approve', 'reject', 'list'],
     akrs_test: ['handoff', 'details', 'run', 'result'],
     akrs_road: ['fit', 'details', 'verify', 'check', 'template'],

@@ -171,7 +171,8 @@ test('a move operation carries a destination and equal before and after hashes',
 
 test('TRANSACTIONAL_COMMANDS pins every workflow mutation that must use the coordinator', () => {
   assert.deepEqual(TRANSACTIONAL_COMMANDS, [
-    'done', 'executor-remove', 'executor-set', 'init-scaffold', 'log-append', 'memory-add', 'plan-finish',
+    'done', 'executor-remove', 'executor-set', 'init-scaffold', 'log-append', 'memory-add', 'plan-finish', 'plan-new', 'plan-question-add',
+    'plan-question-resolve', 'plan-seam-add', 'plan-seam-remove',
     'road-activate', 'road-finish', 'road-move', 'road-new', 'road-reopen', 'road-update', 'scope-approve',
     'scope-reject', 'scope-request', 'state-render', 'state-set', 'task-new', 'test-define', 'test-handoff',
     'test-result', 'yield',

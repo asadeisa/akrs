@@ -165,6 +165,12 @@ const P0_COMMANDS = {
   'test-run': { idempotency: 'none', expected_snapshot: 'lease', mcp: ['akrs_test', 'run'], dry_run: false },
   'test-result': { idempotency: 'journal', expected_snapshot: 'lease', mcp: ['akrs_test', 'result'], dry_run: true },
   'plan-finish': { idempotency: 'journal', expected_snapshot: 'required', mcp: ['akrs_write', 'plan_finish'], dry_run: true },
+  // P2-W11 (owner decision 2026-11-14): the Plan record writers, actions of akrs_write.
+  'plan-new': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'plan_new'], dry_run: true },
+  'plan-question-add': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'plan_question_add'], dry_run: true },
+  'plan-question-resolve': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'plan_question_resolve'], dry_run: true },
+  'plan-seam-add': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'plan_seam_add'], dry_run: true },
+  'plan-seam-remove': { idempotency: 'journal', expected_snapshot: 'revalidate', mcp: ['akrs_write', 'plan_seam_remove'], dry_run: true },
   status: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_status', 'status'], dry_run: false },
   next: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: ['akrs_status', 'next'], dry_run: false },
   where: { idempotency: 'not_applicable', expected_snapshot: 'not_applicable', mcp: [null, null], dry_run: false },

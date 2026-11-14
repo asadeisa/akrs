@@ -24,7 +24,8 @@ import * as core from '../../lib/core/index.js';
 const MATRIX_COMMANDS = [
   'agents-doctor', 'agents-list', 'agents-setup', 'audit', 'boot', 'doctor', 'done', 'executor-list',
   'executor-remove', 'executor-set', 'explain', 'graph', 'help', 'init', 'init-scaffold', 'lease-release', 'log',
-  'log-append', 'mcp', 'memory-add', 'next', 'page', 'plan-finish', 'postinstall', 'projects-add', 'projects-list',
+  'log-append', 'mcp', 'memory-add', 'next', 'page', 'plan-finish', 'plan-new', 'plan-question-add',
+  'plan-question-resolve', 'plan-seam-add', 'plan-seam-remove', 'postinstall', 'projects-add', 'projects-list',
   'projects-remove', 'reuse-scan', 'road-activate', 'road-check', 'road-details', 'road-finish', 'road-fit',
   'road-move', 'road-new', 'road-reopen', 'road-update', 'scope-approve', 'scope-list', 'scope-reject',
   'scope-request', 'stale', 'state-render', 'state-set', 'status', 'status-all-projects', 'sync', 'task-new',

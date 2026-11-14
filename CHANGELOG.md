@@ -45,9 +45,14 @@ release.**
   (`akrs executor set`); Road size and packet shape follow the class (`road fit` proposes splits).
 - **Scope control.** `scope request | approve | reject | list`, an envelope the Leader can pre-grant,
   and a pre-write `akrs-guard` hook.
+- **Plan records.** `plan new`, `plan question add | resolve` and `plan seam add | remove` write a
+  Plan's title, open questions and integration seams, one call per intent, with the next `Q<n>` /
+  `S<n>` picked by the CLI. They are also `akrs_write` actions over MCP. A closed or hand-edited
+  Plan is never rewritten.
 - **Verification.** A Plan-level contract, a scenario runner (`test run`: browser and HTTP,
   evidence, run records), raw measurement against a budget, and `plan finish` that refuses without a
-  current Tester pass. `akrs page` reads a running page through an installed Chrome, Edge or
+  current Tester pass. A Worker `done` stores the outcome of the checks it ran in its handoff, and
+  the Tester packet shows it as the Worker's run (current only while the product is unchanged). `akrs page` reads a running page through an installed Chrome, Edge or
   Chromium with no dependency.
 - **Every agent.** `akrs mcp` (a dual-era MCP stdio server with seven flat tools) and
   `akrs agents setup | doctor | list` for Claude Code, Codex, Gemini CLI, Pi, opencode, Kimi Code

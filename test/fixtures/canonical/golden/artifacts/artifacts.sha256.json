@@ -2,7 +2,7 @@
   "files": {
     "closure.jsonl": "sha256:f33b0b4834e8405912b433a134b199ef00134fd4fc4f92894a05e0af0045448e",
     "executors.json": "sha256:ad8f3e45c4e0cc0d07d1e863c08f94ed1305936c4b185bdadd023e1c5e98bc8b",
-    "handoff.jsonl": "sha256:2e996674148e4afb1694c63d40ecc02708b561b63746a9c3fe3b65b13573d06a",
+    "handoff.jsonl": "sha256:92eeb5c3c7b64cc4464610246a4d8fec0b89da8a0f4c24dc3234aa6c2f5a5bea",
     "memory-input.json": "sha256:7e866f359f235965caf28d74ff63608ef201fb872fc2ff32e0bbc82ccd190f93",
     "memory-record.md": "sha256:51fb08642ed4ba709460cfa5bb1d16fb0615c9a60821177cb6d86cf37b8021a3",
     "plan.json": "sha256:8c9432764cab31b609903d841f4729806d8209b485625e351ea941d7f2d9df1f",

@@ -109,7 +109,7 @@
             },
             {
               "name": "akrs_write",
-              "description": "Leader writes: Roads, Tasks, Memory, State, executors, verification contracts, activation and Plan close.",
+              "description": "Leader writes: Roads, Tasks, Memory, State, executors, verification contracts, activation, Plan questions and seams, and Plan close.",
               "inputSchema": {
                 "type": "object",
                 "properties": {
@@ -125,7 +125,12 @@
                       "executor_set",
                       "activate",
                       "lease_release",
-                      "plan_finish"
+                      "plan_finish",
+                      "plan_new",
+                      "plan_question_add",
+                      "plan_question_resolve",
+                      "plan_seam_add",
+                      "plan_seam_remove"
                     ],
                     "description": "The action to run."
                   },
@@ -135,11 +140,11 @@
                   },
                   "dry_run": {
                     "type": "boolean",
-                    "description": "CLI --dry-run (road_new, task_new, memory_add, road_update, verification_define, state_set, executor_set, activate, lease_release, plan_finish)"
+                    "description": "CLI --dry-run (road_new, task_new, memory_add, road_update, verification_define, state_set, executor_set, activate, lease_release, plan_finish, plan_new, plan_question_add, plan_question_resolve, plan_seam_add, plan_seam_remove)"
                   },
                   "if_snapshot": {
                     "type": "string",
-                    "description": "CLI --if-snapshot (road_new, task_new, memory_add, road_update, verification_define, state_set, executor_set, activate, plan_finish)"
+                    "description": "CLI --if-snapshot (road_new, task_new, memory_add, road_update, verification_define, state_set, executor_set, activate, plan_finish, plan_new, plan_question_add, plan_question_resolve, plan_seam_add, plan_seam_remove)"
                   },
                   "again": {
                     "type": "boolean",
@@ -147,7 +152,7 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "CLI <id> / <plan> / <road> (road_update, verification_define, executor_set, activate, lease_release, plan_finish)"
+                    "description": "CLI <id> / <plan> / <road> (road_update, verification_define, executor_set, activate, lease_release, plan_finish, plan_new, plan_question_add, plan_question_resolve, plan_seam_add, plan_seam_remove)"
                   },
                   "patch": {
                     "type": "boolean",
@@ -217,6 +222,38 @@
                       "type": "string"
                     },
                     "description": "CLI --clear-override (executor_set)"
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "CLI --title (plan_new)"
+                  },
+                  "text": {
+                    "type": "string",
+                    "description": "CLI --text (plan_question_add, plan_seam_add)"
+                  },
+                  "question": {
+                    "type": "string",
+                    "description": "CLI --question / <question> (plan_question_add, plan_question_resolve)"
+                  },
+                  "resolution": {
+                    "type": "string",
+                    "description": "CLI --resolution (plan_question_resolve)"
+                  },
+                  "decision": {
+                    "type": "string",
+                    "description": "CLI --decision (plan_question_resolve)"
+                  },
+                  "seam": {
+                    "type": "string",
+                    "description": "CLI --seam / <seam> (plan_seam_add, plan_seam_remove)"
+                  },
+                  "road": {
+                    "type": "string",
+                    "description": "CLI --road (plan_seam_add)"
+                  },
+                  "intent": {
+                    "type": "string",
+                    "description": "CLI --intent (plan_seam_add)"
                   }
                 },
                 "required": [
