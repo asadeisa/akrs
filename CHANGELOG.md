@@ -9,6 +9,22 @@ version lines relate.
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- **`npm create akrs`.** A separate package, `create-akrs` (published as `create-akrs@2.0.0`), runs
+  `akrs init` from `akrs-framework@2` and passes every argument through
+  (`npm create akrs -- --scaffold --plan P1`). The bare npm name `akrs` is blocked, so this is the
+  short form; `npx akrs <command>` works once `akrs-framework` is installed in the project.
+
+### Changed
+
+- The README names `npm create akrs` as the short install form and notes that pnpm 10+ runs the
+  postinstall only after `pnpm approve-builds`.
+
+---
+
 ## [2.0.0] — 2026-11-14
 
 The **v2 release**: content from the agent, form from the CLI. A workflow is no longer Markdown that

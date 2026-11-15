@@ -228,6 +228,10 @@ git clone https://github.com/asadeisa/akrs
 Installing the package as a dependency runs a postinstall that syncs the doctrine into
 `docs/akrs/framework/` so your workflow reads local files, never `node_modules`; it never
 overwrites a local edit and always exits 0. (Set `AKRS_SKIP_POSTINSTALL=1` to opt out.)
+
+pnpm 10 and newer block dependency install scripts by default, so with pnpm the sync runs only after
+you allow it once (`pnpm approve-builds`, then pick `akrs-framework`); `npm create akrs` needs no
+install script at all.
 </details>
 
 ---
