@@ -195,7 +195,8 @@ The fastest way to use AKRS is to copy the framework into your project with a
 single command — no permanent dependency, nothing buried in `node_modules`:
 
 ```bash
-npx akrs-framework init
+npm create akrs              # the short form (create-akrs runs the line below)
+npx akrs-framework init      # the same, named in full
 ```
 
 This drops the framework into **`docs/akrs/`** in your current project:
@@ -207,7 +208,8 @@ docs/akrs/
 ```
 
 The files now live in your repo, ready to read and to hand to your Leader model. The same
-package is the `akrs` CLI (`npx akrs-framework <command>`, or `akrs <command>` when installed).
+package is the `akrs` CLI (`npx akrs-framework <command>`; once `akrs-framework` is installed in the
+project, `npx akrs <command>`, or `akrs <command>` from a global install).
 Re-run `init` with `--force` to replace the copied doctrine and `akrs sync` to refresh it while
 keeping local edits. The human guides live on GitHub (linked below).
 
@@ -232,7 +234,7 @@ overwrites a local edit and always exits 0. (Set `AKRS_SKIP_POSTINSTALL=1` to op
 
 ## Quick Start (2 Minutes)
 
-1. Run `npx akrs-framework init` in your project
+1. Run `npm create akrs` (or `npx akrs-framework init`) in your project
 2. Read `docs/akrs/GETTING_STARTED.md`
 3. Let your Leader model build the workflow: it asks which models you use and how strong each
    is, then runs `akrs init --scaffold`
