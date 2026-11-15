@@ -38,4 +38,4 @@ PACKAGE-BUILD-PLAN.md
 scratch/
 .tmp/
 # The local planning / working folder for this effort (never committed)
-plans/
+/plans/
