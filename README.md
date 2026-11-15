@@ -186,6 +186,11 @@ Specification: [`05-Platform-Adapter-Specification.md`](docs/framework/05-Platfo
 
 ## Installation
 
+> **Coming from v1?** v2 is a breaking release with no migration: it never reads a v1 Markdown
+> workflow (State, Roads or log) as state. A v1 project keeps working as it is; to stay on the v1 line,
+> pin it (`npm install akrs-framework@1`). To move to v2, start a new workflow with
+> `akrs init --scaffold` and keep the v1 folder as history. Details: [`CHANGELOG.md`](CHANGELOG.md).
+
 The fastest way to use AKRS is to copy the framework into your project with a
 single command — no permanent dependency, nothing buried in `node_modules`:
 

@@ -259,6 +259,17 @@ In the Plan tier (`akrs init --scaffold --plan P1`) the Leader then closes the P
 `akrs plan finish P1 --dry-run` names every remaining blocker, then run it with the `--if-snapshot`
 it prints. A single Road without a Plan ends at the Tester's result.
 
+While the Plan runs, the Leader records what is still undecided and what must be wired, so the
+close-out cannot forget it (the CLI picks the next `Q1`, `S1` …):
+
+```bash
+akrs plan question add P1 --text "Which payment provider?"
+akrs plan question resolve P1 Q1 --resolution "Stripe, decided with the owner"
+akrs plan seam add P1 --text "Checkout calls the payment adapter" --road R-P1-2
+```
+
+An open question or a seam with no owner blocks `plan finish` until it is resolved or owned.
+
 If something's off, don't patch a canonical file by hand — run the command the finding names
 (`akrs explain <code>` says which), or point the AI back at it:
 

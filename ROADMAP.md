@@ -12,7 +12,7 @@ and `package.json`), not before.
   contracts: content from the agent, form from the CLI.
 - **The Kernel** — heavy doctrine teaches the Leader; a ~1-page compiled kernel folder is what
   the target project carries. New behavior ships as skills, not Kernel prose.
-- **Canonical workflow records** — Roads, State, executors, verification contracts, handoffs,
+- **Canonical workflow records** — Roads, State, executors, Plans, verification contracts, handoffs,
   results and the closure ledger are JSON/JSONL written only by their command (schemas, content
   hashes, `--dry-run`, snapshot guards, an operation journal and recoverable transactions).
   `STATE.md` is derived.
@@ -25,7 +25,9 @@ and `package.json`), not before.
   agent ever reads a whole large source.
 - **Verification** — a Plan-level contract, a scenario runner (`test run`: browser and HTTP,
   evidence, run records), raw measurement against a budget, the Mirror Check, seam ownership and
-  expiring open questions; `plan finish` refuses without a current pass.
+  expiring open questions (written with `plan new`, `plan question add | resolve` and
+  `plan seam add | remove`); `plan finish` refuses without a current pass. The Tester packet also
+  shows the outcome of the checks the Worker's `done` ran, as the Worker's run.
 - **Every agent** — `akrs agents setup|doctor|list` for Claude Code, Codex, Gemini CLI, Pi,
   opencode, Kimi Code CLI, Qwen Code, Cursor and Freebuff; an MCP stdio server (`akrs mcp`).
 - **Honest validation** — `validate` (19 checks, read-only), `explain`, `doctor`, `audit`,
